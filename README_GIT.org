@@ -58,14 +58,14 @@ git push --tags origin master
 ** Get a stable version of code in new folder
 #+BEGIN_SRC bash
 cd /var/genorama/web_side
-git archive -v -9 --format=tar.gz --prefix genorama-0.1/ --remote /srv/repo/genorama.git 0.1 | tar -xzf -
+git archive -v -9 --format=tar.gz --prefix release-0.1/ --remote /srv/repo/genorama.git 0.1 | tar -xzf -
 #+END_SRC
 ** Change Local confir
 ** Stop current Server
 ** Update/Copy Database
 ** Update links
 #+BEGIN_SRC bash
-ln -sf genorama-0.1 genorama-stable
+ln -sf release-0.1 stable
 #+END_SRC
 ** Start new Server
 
