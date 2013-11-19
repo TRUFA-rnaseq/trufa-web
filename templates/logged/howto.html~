@@ -1,0 +1,18 @@
+<div class="container">
+
+  <div class="well">
+
+    <div class="row">
+      <div class="span4">
+	Responsive video from <a href="http://www.streetart.nl/">Streetart.nl</a>
+      </div> 
+      <div class="span8">
+	<div class="flex-video widescreen" style="margin: 0 auto;text-align:center;">
+	  <iframe allowfullscreen="" src="http://www.youtube.com/embed/6NbAAmDuv_8?feature=player_detailpage" frameborder="0"></iframe>
+	</div>
+      </div>
+    </div> 
+    
+  </div>
+
+</div>
