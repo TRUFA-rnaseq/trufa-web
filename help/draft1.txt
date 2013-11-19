@@ -1,0 +1,83 @@
+Help page:
+
+>>> 1. Problem or problems to solve: You can tell here what kind of
+    problems can solve the program. Or you can choose only one example
+    and talk about it:
+
+RNA-seq, also called whole transcriptome shotgun sequencing, is the
+use of next generation sequencing methods to obtain a high throughput
+of RNA sequences. Until now, analysing RNA-seq data remains
+Bioinformatic challenge. This webserver is designed to make analysis
+of RNA-seq data in a fast and user-friendly manner, by using cluster
+computing and reducing the amount of Bioinformatic knowledge
+necessary. So far, this dynamic pipeline is allowing you to perform
+the following steps (programs used are specified in the parentheses):
+
+- Reads cleaning: 
+  - Quality trimming and duplicates removal (Prinseq)
+  - Trimming adapters (Cutadapt)
+  - Filtering out potential contaminants (Blat)
+- De novo assembly of your reads (Trinity)
+- Reads mapping (Bowtie)
+- Contigs (i.e transcripts) identification:
+  - based on sequence alignment (Blat, Blast)
+  - based on protein dominions, profiles (HMMER)
+  - Affiliation to GO terms (Blast2GO)
+- Expression quantification:
+  - providing FPKMs (cuffdiff)
+  - differential expression analysis (cuffdiff)
+
+All the steps of the pipeline can be run as a whole or independently,
+depending on your needs. In the case of making a complete pipeline,
+your reads files will be cleaned, then assembled into transcripts and
+finally the transcripts will be identified and quantified.
+
+>>> 2. Input, preprocessing: everything you need before using the
+    program, like files or whatever (and if it's possible how to get
+    these files).
+
+The input files can be of multiple sources, depending on the kind of
+analysis you want to perform and the data you have available. So far
+the accepted inputs are:
+
+- 1 or 2 reads files (paired-end or single) in fastq format.
+- 1 file with already assembled reads, i.e contigs file in fasta format. 
+
+>>> 3. Run program step by step: what you have to do to run the
+    program: load files, configure everything, etc.
+
+Essentially, all the steps of the RNA-seq pipeline on the webserver
+can be realized with only reads files (1 or 2) as input. For the
+purpose of testing and parameters tuning, later steps can be as well
+directly performed with an assembly (fasta file with already assembled
+reads).
+
+First, you should specify and upload the necessary input files:
+- For Reads cleaning:
+  You will need one or two fastq files (i.e. single or paired end reads files)
+
+- For Assembly:
+  You will need one or two fastq files (i.e. single or paired end reads files)
+
+- For Identification, you will need either:
+  - a fasta file with the reads already assembled 
+  OR  
+  - 1 or 2 fastq reads files and generate an assembly (see How to generate an assembly).
+
+- For Reads mapping:
+  - 1 fasta file with the reads already assembled and the corresponding reads in 1 or 2 fastq files
+  OR
+  - 1 or 2 fastq reads files and generate an assembly (see How to generate an assembly).
+
+- For Expression quantification:
+  - 1 fasta file with the reads already assembled and the corresponding reads in 1 or 2 fastq files
+  OR
+  - 1 or 2 fastq reads files and generate an assembly (see How to generate an assembly).
+
+Then, by specifying in the “Run a Job” part the type of input and the
+input files, different possibilities will be available to you,
+depending on the type and number of input files you specified.
+
+>>> 4. Postprocessing: get result, get output files or whatever. You
+    can say something about how to analyze the results, like tools to
+    do so.
