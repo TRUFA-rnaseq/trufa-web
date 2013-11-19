@@ -1,2 +1,5 @@
 *.pyc
 *~
+/sessions/
+template.db
+database.db
