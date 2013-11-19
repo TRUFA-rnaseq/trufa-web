@@ -1,0 +1,37 @@
+<div class="container-fluid">
+  <div class="row-fluid show-grid">
+    <div class="well well-small span3">
+      <h4>Files</h4>
+      <ul id="filelist" />
+    </div>
+    <div class="well well-small span3">
+      <h4>Jobs</h4>
+      <ul id="joblist" />
+    </div>
+    <div class="span6">
+      <div class="well well-large">
+        <h3>File Upload</h3>
+        <form id="fileform" enctype="multipart/form-data">
+          <input id="filesel" type="file" name="myfile"/>
+          <div class="input-prepend input-append">
+            <span class="add-on"><i class="icon-file"></i></span>
+            <input id="filename" class="input-large" type="text" />
+            <a id="filebrowse" class="btn">Browse</a>
+            <a id="filesend" class="btn btn-primary" >
+              <i class="icon-upload icon-white"></i> Send</a>
+          </div>
+        </form>
+
+        <div id="filebar" class="progress">
+          <div class="bar" style="width: 0%;"></div>
+        </div>
+
+        <div id="filealert" class="alert alert-success">Upload Complete</div>
+
+      </div>
+    </div>
+  </div>
+
+</div> <!-- /container -->
+
+<script src="/static/js/main.js"></script>
