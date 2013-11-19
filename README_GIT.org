@@ -1,0 +1,75 @@
+#+STARTUP: showall
+
+* Repositories
+
+  | /srv/repo/genorama.git             | MAIN WEB            |
+  | ${HOME}/[YUR_REPO_genorama]        | Working WEB         |
+  | /var/genorama/web_side/release-0.1 | Web Release 0.1     |
+  | /var/genorama/web_side/stable      | Link stable release |
+
+* Simple Git configurations
+
+#+BEGIN_SRC bash
+git config --global user.name "John Doe"
+git config --global user.email johndoe@example.com
+git config --global color.ui true
+#+END_SRC
+
+* A Working Day
+** Get a new working folder
+#+BEGIN_SRC bash
+cd ${HOME}/[WORKING DIR]
+git clone /srv/repo/genorama.git
+#+END_SRC
+
+** Edit in the working folder
+#+BEGIN_SRC bash
+git pull origin
+git checkout develop
+
+## edit/develop 
+
+## repeat until $(git status) is clear
+   ## git add -p
+   ## git add [new files]
+   ## git commit -m"commit message"
+
+git push origin
+#+END_SRC
+
+
+* Create a new RELEASE
+
+** Merge Develop to Master
+#+BEGIN_SRC bash
+git checkout develop
+## update version to 0.1
+git commit -a -m"Advance version number 0.1"
+git checkout master
+git merge --no-ff develop
+git tag -a 0.1 -m"Release 0.1"
+git push origin master
+git push --tags origin master
+#+END_SRC
+
+
+* Deploy a new RELEASE
+
+** Get a stable version of code in new folder
+#+BEGIN_SRC bash
+cd /var/genorama/web_side
+git archive -v -9 --format=tar.gz --prefix genorama-0.1/ --remote /srv/repo/genorama.git 0.1 | tar -xzf -
+#+END_SRC
+** Change Local confir
+** Stop current Server
+** Update/Copy Database
+** Update links
+#+BEGIN_SRC bash
+ln -sf genorama-0.1 genorama-stable
+#+END_SRC
+** Start new Server
+
+
+* References
+** [[http://git-scm.com/documentation][Git Man]]
+** [[http://nvie.com/posts/a-successful-git-branching-model/][A Successful Git Model]]
