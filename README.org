@@ -12,6 +12,22 @@
 
    Open the main page in your web browser, usually https://localhost:8080
 
+** Query the Database from the command line
+
+   Example: How to get the tables in the database and get the users:
+
+   #+begin_src bash
+   sqlite3 database.db
+   sqlite> .tables
+   file     job      jobfile  user
+   sqlite> .header ON
+   sqlite> .mode column
+   sqlite> select * from user;
+   uid         name        passwd
+   ----------  ----------  ------------------------------------------------------------
+   1           admin       $2a$05$LsPocRuTdKMH3UMtNQOjxOq9IXTqIAPC6y0toXHC6QDyG6.YNJfXq
+   #+end_src
+
 ** Moreover
 
 *** Use your own certificate
