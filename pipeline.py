@@ -11,6 +11,7 @@ import database
 #-------------------------------------------------------------------------------
 remotehost = config.REMOTEHOST
 remotehome = config.REMOTEHOME
+pipe_launch = config.PIPE_LAUNCH
 
 reJOBID = re.compile(r"Submitted batch job (?P<slurmid>\d+)")
 
@@ -35,7 +36,8 @@ def runjob( user, jobid, var1, fileid ):
     database.addJobFile( jobid, fileid, database.FILEIN )
 
     # submit
-    command = ["ssh", remotehost, "webserver/pipe_launcher.py", user, var1, remotefile ]
+    command = [ pipe_launch, user, var1, remotefile ]
+    print command
     proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     output = proc.communicate()[0]
     mm = reJOBID.search( output )
