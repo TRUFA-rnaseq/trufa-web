@@ -29,11 +29,6 @@ def mkEmptyDatabase( dbname ):
     c = conn.cursor()
     c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, passwd text)" )
 
-    name = 'admin' # same name and passwd
-    h = bcrypt.hashpw( name, bcrypt.gensalt(BCRYPT_ROUNDS) )
-    c.execute( 'INSERT INTO user VALUES (null,?,?)', (name,h) )
-    conn.commit()
-
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text)" )
     conn.commit()
 
@@ -44,6 +39,9 @@ def mkEmptyDatabase( dbname ):
     conn.commit()
 
     conn.close()
+
+    name = 'admin' # same name and passwd
+    insertUser( name, name )
 
 #-------------------------------------------------------------------------------
 def clearDB():
