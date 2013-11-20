@@ -4,11 +4,13 @@ import bcrypt
 import os
 import shutil
 import data
+import htpasswd
 
 #-------------------------------------------------------------------------------
 BCRYPT_ROUNDS = 5
 template = 'template.db'
 database = 'database.db'
+passwdfile = 'htpasswd.db'
 
 # JOB STATE
 JOB_CREATED = 0   # Just Created
@@ -40,9 +42,6 @@ def mkEmptyDatabase( dbname ):
 
     conn.close()
 
-    name = 'admin' # same name and passwd
-    insertUser( name, name )
-
 #-------------------------------------------------------------------------------
 def clearDB():
     mkEmptyDatabase( template )
@@ -57,6 +56,12 @@ def init():
     if not os.path.isfile( database ):
         shutil.copy( template, database )
 
+    # create empty password file
+    open( passwdfile, 'w' ).close()
+
+    name = 'admin' # same name and passwd
+    insertUser( name, name )
+
 #-------------------------------------------------------------------------------
 def insertUser( name, passwd ):
     conn = sqlite3.connect( database )
@@ -65,6 +70,12 @@ def insertUser( name, passwd ):
     c.execute( 'INSERT INTO user VALUES (null,?,?)', (name,h) )
     conn.commit()
     conn.close()
+
+    with htpasswd.Basic( passwdfile ) as userdb:
+        try:
+            userdb.add( name, passwd )
+        except htpasswd.basic.UserExists, e:
+            print "User Already Exists ", e
 
 #-------------------------------------------------------------------------------
 def checkUser( name, passwd ):
