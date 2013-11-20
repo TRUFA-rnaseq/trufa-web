@@ -31,7 +31,7 @@ def mkEmptyDatabase( dbname ):
     c = conn.cursor()
     c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, passwd text)" )
 
-    c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text)" )
+    c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
 
     c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, state INTEGER, slurmid INTEGER)" )
@@ -99,7 +99,24 @@ def insertFile( user, filename ):
         c.execute( 'SELECT fid FROM file WHERE uid=? AND filename=?', (uid[0],filename) )
         exists = c.fetchone()
         if exists is None:
-            c.execute( 'INSERT INTO file VALUES (null,?,?,?)', (uid[0],0,filename) )
+            c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (uid[0],0,filename,0) )
+            conn.commit()
+            conn.close()
+    else:
+        conn.close()
+        raise DataBaseError
+
+#-------------------------------------------------------------------------------
+def insertFileWithType( user, filename, filetype ):
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'SELECT uid FROM user WHERE name=?', (user,) )
+    uid = c.fetchone()
+    if uid is not None:
+        c.execute( 'SELECT fid FROM file WHERE uid=? AND filename=?', (uid[0],filename) )
+        exists = c.fetchone()
+        if exists is None:
+            c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (uid[0],0,filename,filetype) )
             conn.commit()
             conn.close()
     else:
@@ -110,7 +127,18 @@ def insertFile( user, filename ):
 def createFile( userid, filename ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'INSERT INTO file VALUES (null,?,?,?)', (userid,0,filename) )
+    c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (userid,0,filename,0) )
+    c.execute( 'SELECT last_insert_rowid() FROM file' )
+    fileid = c.fetchone()[0]
+    conn.commit()
+    conn.close()
+    return fileid
+
+#-------------------------------------------------------------------------------
+def createFileWithType( userid, filename, filetype ):
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (userid,0,filename,filetype) )
     c.execute( 'SELECT last_insert_rowid() FROM file' )
     fileid = c.fetchone()[0]
     conn.commit()
@@ -126,6 +154,23 @@ def getUserFiles( user ):
     uid = c.fetchone()
     if uid is not None:
         c.execute( 'SELECT fid,filename FROM file WHERE uid=? OR global=1', (uid[0],) )
+        dbfiles = c.fetchall()
+        for f in dbfiles:
+            files.append( {'id': f[0], 'file': f[1]} )
+
+    conn.close()
+
+    return files
+
+#-------------------------------------------------------------------------------
+def getUserFilesWithType( user, filetype ):
+    files = []
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'SELECT uid FROM user WHERE name=?', (user,) )
+    uid = c.fetchone()
+    if uid is not None:
+        c.execute( 'SELECT fid,filename FROM file WHERE (uid=? OR global=1) AND filetype=?', (uid[0],filetype) )
         dbfiles = c.fetchall()
         for f in dbfiles:
             files.append( {'id': f[0], 'file': f[1]} )
