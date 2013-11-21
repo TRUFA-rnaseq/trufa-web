@@ -199,22 +199,22 @@ $(document).ready(function(){
 
 // Setting single or paired reads
     in_type.change(function (){
-	var in_type = $("input[name=input_type]:checked").val()
+        var in_type = $("input[name=input_type]:checked").val()
 
-	if (in_type == "single")
-	{
-	    reads_1.children("label").text("Single reads file:")
-	    reads_1.show()
-	    reads_2.hide()
-//	    $("p[id=demo]").text(in_type)
-	}
-	else if (in_type == "paired")
-	{
-	    reads_1.children("label").text("Left reads file:")
-	    reads_1.show()
-	    reads_2.show()
-//	    $("p[id=demo]").text(in_type)
-	}
+        if (in_type == "single")
+        {
+            reads_1.children("label").text("Single reads file:")
+            reads_1.show()
+            reads_2.hide()
+//          $("p[id=demo]").text(in_type)
+        }
+        else if (in_type == "paired")
+        {
+            reads_1.children("label").text("Left reads file:")
+            reads_1.show()
+            reads_2.show()
+//          $("p[id=demo]").text(in_type)
+        }
 
 
     })
@@ -225,16 +225,16 @@ $(document).ready(function(){
     var warn = $('div[id=no_assembly_alert]')
 
     trin_check.change( function(){
-	if (trin_check.is(':checked'))
-	{
-	    warn.hide()
-	}
-	else
-	{
-	    warn.show()
-	}
+        if (trin_check.is(':checked'))
+        {
+            warn.hide()
+        }
+        else
+        {
+            warn.show()
+        }
     })
-    
+
 })(jQuery);
 
 
@@ -245,22 +245,21 @@ $(function() {
     var warn_read = $('div[id=no_reads_alert]')
 
     in_type.change(function (){
-	$("p[id=demo]").text($(this).val())
+        $("p[id=demo]").text($(this).val())
 
-	cleaning_arr = ["single","paired","contigs_with_single","contigs_with_paired"]
+        cleaning_arr = ["single","paired","contigs_with_single","contigs_with_paired"]
 
-	if (jQuery.inArray($(this).val(), cleaning_arr) === -1)
-	{
-	    $('.cleaning_steps').attr('disabled', true);
-	    warn_read.show()
-	}
-	else
-	{
-	    $('.cleaning_steps').attr('disabled', false);
-	    warn_read.hide()
-	}
+        if (jQuery.inArray($(this).val(), cleaning_arr) === -1)
+        {
+            $('.cleaning_steps').attr('disabled', true);
+            warn_read.show()
+        }
+        else
+        {
+            $('.cleaning_steps').attr('disabled', false);
+            warn_read.hide()
+        }
     });
 });
 
 $('#example').popover({html:true})
-
