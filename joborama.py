@@ -175,11 +175,7 @@ class AjaxJobs:
             x = web.input()
 
             try:
-                print x
-                x2 = str(x) ### TO CHANGE (just for testing)
-                x2 = '"' + x2 + '"'### TO CHANGE (just for testing)
-                print x2
-                pipeline.startJob( session.user, x2, int(x.file) )
+                pipeline.startJob( session.user, x )
 
             except:
                 print sys.exc_info()
