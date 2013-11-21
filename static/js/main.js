@@ -162,13 +162,13 @@ function refreshFileList(){
 
         $('#jobfile').replaceWith( newformlist );
 // EK edit --------------------------------------------------
-        // var newformlist = $('<select/>', {
-        //     'id': 'jobfile2',
-        //     'name': 'file2',
-        //     html: items2.join('')
-        // });
+         var newformlist = $('<select/>', {
+            'id': 'jobfile2',
+            'name': 'file2',
+             html: items2.join('')
+        });
 
-        // $('#jobfile2').replaceWith( newformlist );
+        $('#jobfile2').replaceWith( newformlist );
 
         // var newformlist = $('<select/>', {
         //     'id': 'jobfile3',
