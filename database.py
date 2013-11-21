@@ -5,6 +5,8 @@ import os
 import shutil
 import data
 import htpasswd
+import re
+from email.utils import parseaddr
 
 #-------------------------------------------------------------------------------
 BCRYPT_ROUNDS = 5
@@ -22,6 +24,8 @@ JOB_COMPLETED = 3 # Completed
 FILEIN = 0
 FILEOUT = 1
 
+EMAIL_REGEX = re.compile(r"[^@ ]+@[^@ ]+\.[^@ ]+")
+
 #-------------------------------------------------------------------------------
 def mkEmptyDatabase( dbname ):
     if os.path.isfile( dbname ):
@@ -29,7 +33,7 @@ def mkEmptyDatabase( dbname ):
 
     conn = sqlite3.connect( dbname )
     c = conn.cursor()
-    c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, passwd text)" )
+    c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, passwd text, email text, UNIQUE(name))" )
 
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
@@ -60,22 +64,30 @@ def init():
     open( passwdfile, 'w' ).close()
 
     name = 'admin' # same name and passwd
-    insertUser( name, name )
+    insertUser( name, name, "j.smith@example.com" )
 
 #-------------------------------------------------------------------------------
-def insertUser( name, passwd ):
-    conn = sqlite3.connect( database )
-    c = conn.cursor()
-    h = bcrypt.hashpw( passwd, bcrypt.gensalt(BCRYPT_ROUNDS) )
-    c.execute( 'INSERT INTO user VALUES (null,?,?)', (name,h) )
-    conn.commit()
-    conn.close()
+def insertUser( name, passwd, email ):
+    checkedName, checkedEmail = parseaddr( email )
+    if len( checkedEmail ) == 0 or not EMAIL_REGEX.match( checkedEmail):
+        print "ERROR: Invalid email ", email
+        return
 
-    with htpasswd.Basic( passwdfile ) as userdb:
-        try:
+    h = bcrypt.hashpw( passwd, bcrypt.gensalt(BCRYPT_ROUNDS) )
+
+    conn = sqlite3.connect( database )
+    try:
+        with conn:
+            conn.execute( 'INSERT INTO user VALUES (null,?,?,?)', (name,h,checkedEmail) )
+    except sqlite3.IntegrityError:
+        print "ERROR: User Already Exists ", name
+        return
+
+    try:
+        with htpasswd.Basic( passwdfile ) as userdb:
             userdb.add( name, passwd )
-        except htpasswd.basic.UserExists, e:
-            print "User Already Exists ", e
+    except htpasswd.basic.UserExists, e:
+        print "ERROR: User Already Exists ", name, e
 
 #-------------------------------------------------------------------------------
 def checkUser( name, passwd ):
