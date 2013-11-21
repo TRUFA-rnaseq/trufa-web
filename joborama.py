@@ -145,9 +145,8 @@ class AjaxFiles:
 
     def PUT( self ):
         if logged():
-            x = web.input(myfile={})
-
             try:
+                x = web.input(myfile={})
                 filename = data.getUserFilename( session.user, x['myfile'].filename )
                 print filename
                 data.saveFile( filename, x['myfile'].file )
