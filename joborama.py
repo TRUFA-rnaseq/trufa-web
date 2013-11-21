@@ -26,6 +26,7 @@ urls = (
     '/login', 'Login',
     '/login_error', 'LoginError',
     '/logout', 'Logout',
+    '/ajax/me', 'AjaxMe',
     '/ajax/file', 'AjaxFiles',
     '/ajax/job', 'AjaxJobs',
     '/job/(.*)', 'Job',
@@ -111,6 +112,14 @@ class Logout:
         session.login = 0
         session.kill()
         raise web.seeother('/')
+
+#-------------------------------------------------------------------------------
+class AjaxMe:
+    def GET( self ):
+        if logged():
+            return json.dumps( {'username': session.user} )
+        else:
+            raise web.seeother('/')
 
 #-------------------------------------------------------------------------------
 class AjaxFiles:
