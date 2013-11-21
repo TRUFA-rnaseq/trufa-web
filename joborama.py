@@ -128,6 +128,7 @@ class AjaxFiles:
             
             try:
                 filename = data.getUserFilename( session.user, x['myfile'].filename )
+                print filename
                 data.saveFile( filename, x['myfile'].file )
                 database.insertFile( session.user, x['myfile'].filename )
             except:
@@ -157,6 +158,7 @@ class AjaxJobs:
                 print x
                 x2 = str(x) ### TO CHANGE (just for testing)
                 x2 = '"' + x2 + '"'### TO CHANGE (just for testing)
+                print x2
                 pipeline.startJob( session.user, x2, int(x.file) )
                 
             except:

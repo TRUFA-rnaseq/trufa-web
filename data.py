@@ -4,7 +4,7 @@ import os
 import os.path
 
 #-------------------------------------------------------------------------------
-DATADIR = "cache"
+DATADIR = "/var/genorama/cluster/res_projects/"
 
 #-------------------------------------------------------------------------------
 def getUserFilename( username, filename ):
