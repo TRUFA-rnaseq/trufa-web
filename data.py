@@ -4,7 +4,7 @@ import os
 import os.path
 
 #-------------------------------------------------------------------------------
-DATADIR = "/var/genorama/cluster/res_projects/"
+DATADIR = "/gpfs/res_projects/cvcv/webserver/"
 
 #-------------------------------------------------------------------------------
 def getUserFilename( username, filename ):
