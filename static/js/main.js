@@ -1,3 +1,16 @@
+/* = DEBUG ==================================================================== */
+function showWarning( msg ){
+    if( $('#msgerror').length ){
+        $('#msgerror').append( '<div class="alert">' + msg + '</div>' );
+    }
+}
+
+function showError( msg ){
+    if( $('#msgerror').length ){
+        $('#msgerror').append( '<div class="alert alert-error">' + msg + '</div>' );
+    }
+}
+
 /* = USER NAME = ============================================================== */
 !function ($) {
     "use strict"; // jshint ;_;
