@@ -53,6 +53,13 @@ function refreshUserName(){
     });
 
     $('#filesend').click( function(){
+        var input = document.getElementById('filesel')
+        var size = getFileSize( input )
+        if( size == 0 || size > 2*1024*1024*1024 ){
+            showError( "Can't load Files > 2 GBs" )
+            return
+        }
+
         $('#filebar > .bar').replaceWith( '<div class="bar" style="width: 0%;"></div>' );
         $('#filebar').addClass( 'progress-striped' );
         $('#filebar').addClass( 'active' );
@@ -86,6 +93,23 @@ function refreshUserName(){
     });
 
 }(window.jQuery);
+
+function getFileSize( input ){
+    if( ! window.FileReader) {
+        showError( "The file API isn't supported on this browser yet." );
+    }else if( ! input ){
+        showError( "Couldn't find the file input element." );
+    }else if( ! input.files ){
+        showError( "This browser doesn't support the `files` property of file inputs.");
+    }else if( ! input.files[0] ){
+        showError( "Please select a file before clicking 'Load'" );
+    }else{
+        var file = input.files[0];
+        return file.size;
+    }
+
+    return 0;
+}
 
 /* = FILE LIST ============================================================== */
 !function ($) {
