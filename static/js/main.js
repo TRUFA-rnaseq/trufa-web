@@ -1,3 +1,26 @@
+!function ($) {
+    "use strict"; // jshint ;_;
+
+    if( $( '#username').length ){
+        refreshUserName();
+    }
+
+}(window.jQuery);
+
+function getUserName( f_ok ){
+    $.ajax({
+        dataType: "json",
+        url: '/ajax/me',
+        success: function( data ) { f_ok( data['username'] ) }
+    });
+}
+
+function refreshUserName(){
+    getUserName( function( username ){
+        $('#username').replaceWith( '<p>' + username + '</p>' );
+    });
+}
+
 /* = FILE UPLOAD ============================================================== */
 !function ($) {
     "use strict"; // jshint ;_;
