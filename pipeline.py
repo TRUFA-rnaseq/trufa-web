@@ -28,15 +28,17 @@ def runjob( user, jobid, var1, fileid ):
 
     # stagein
     localfile = database.getFileFullName( fileid )
-    (localdir, localbase) = os.path.split( localfile )
-    remotedir = os.path.join( remotehome, localdir )
+    #(localdir, localbase) = os.path.split( localfile )
+    # print localdir
+    # remotedir = os.path.join( remotehome, localdir )
+    # print remotedir
     remotefile = os.path.join( remotehome, localfile )
-    os.system('ssh "%s" "mkdir -p %s"' % (remotehost, remotedir) )
-    os.system('scp "%s" "%s:%s"' % (localfile, remotehost, remotefile) )
+    # os.system('ssh "%s" "mkdir -p %s"' % (remotehost, remotedir) )
+    # os.system('scp "%s" "%s:%s"' % (localfile, remotehost, remotefile) )
     database.addJobFile( jobid, fileid, database.FILEIN )
 
     # submit
-    command = [ pipe_launch, user, var1, remotefile ]
+    command = [ pipe_launch, user, var1, remotefile, str(jobid) ]
     print command
     proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     output = proc.communicate()[0]
