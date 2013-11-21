@@ -55,41 +55,11 @@ function refreshUserName(){
     $('#filesend').click( function(){
         var input = document.getElementById('filesel')
         var size = getFileSize( input )
-        if( size == 0 || size > 2*1024*1024*1024 ){
-            showError( "Can't load Files > 2 GBs" )
-            return
+        if( size > 0 && size < 2*1024*1024*1024 ){
+            sendLittleFile()
+        }else{
+            sendBigFile()
         }
-
-        $('#filebar > .bar').replaceWith( '<div class="bar" style="width: 0%;"></div>' );
-        $('#filebar').addClass( 'progress-striped' );
-        $('#filebar').addClass( 'active' );
-        $('#filealert').css( 'visibility', 'hidden' );
-        var xhr = new XMLHttpRequest();
-        if( xhr.upload ){
-            xhr.upload.onprogress = function( e ){
-                var done = e.position || e.loaded, total = e.totalSize || e.total;
-                var perc = (Math.floor(done/total*1000)/10);
-                $('#filebar > .bar').css( 'width', perc + '%' );
-            };
-        }
-        xhr.onreadystatechange = function( e ){
-            if( 4 == this.readyState ){
-                $('#filebar > .bar').css( 'width', '100%' );
-                $('#filebar').removeClass( 'progress-striped' );
-                $('#filebar').removeClass( 'active' )
-                $('#fileform').css( 'visibility', 'visible' );
-                $('#filealert').css( 'visibility', 'visible' );
-                refreshFileList();
-            }
-        };
-
-        xhr.open( 'PUT', '/ajax/file', true );
-
-        var form = $('#fileform')[0];
-        var fd = new FormData( form );
-        xhr.send( fd );
-
-        $('#fileform').css( 'visibility', 'hidden' );
     });
 
 }(window.jQuery);
@@ -109,6 +79,48 @@ function getFileSize( input ){
     }
 
     return 0;
+}
+
+function sendLittleFile(){
+    $('#filebar > .bar').replaceWith( '<div class="bar" style="width: 0%;"></div>' );
+    $('#filebar').addClass( 'progress-striped' );
+    $('#filebar').addClass( 'active' );
+    $('#filealert').css( 'visibility', 'hidden' );
+    var xhr = new XMLHttpRequest();
+    if( xhr.upload ){
+        xhr.upload.onprogress = function( e ){
+            var done = e.position || e.loaded, total = e.totalSize || e.total;
+            var perc = (Math.floor(done/total*1000)/10);
+            $('#filebar > .bar').css( 'width', perc + '%' );
+        };
+    }
+    xhr.onreadystatechange = function( e ){
+        if( 4 == this.readyState ){
+            $('#filebar > .bar').css( 'width', '100%' );
+            $('#filebar').removeClass( 'progress-striped' );
+            $('#filebar').removeClass( 'active' )
+            $('#fileform').css( 'visibility', 'visible' );
+            $('#filealert').css( 'visibility', 'visible' );
+            refreshFileList();
+        }
+    };
+
+    xhr.open( 'PUT', '/ajax/file', true );
+
+    var form = $('#fileform')[0];
+    var fd = new FormData( form );
+    xhr.send( fd );
+
+    $('#fileform').css( 'visibility', 'hidden' );
+}
+
+function sendBigFile(){
+    showError( "Can't load Files > 2 GBs" )
+    // var input = $('#filesel')[0]
+    // var file = input.files[0]
+    // showWarning( file )
+    // var blob = file.slice( 0, 1024 )
+    // showWarning( file + " size" + blob.size )
 }
 
 /* = FILE LIST ============================================================== */
