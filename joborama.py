@@ -72,7 +72,7 @@ class Howto:
 class RunJob:
     def GET( self ):
         return get_render().run_job()
-        
+
 #-------------------------------------------------------------------------------
 class About:
     def GET( self ):
@@ -117,15 +117,27 @@ class AjaxFiles:
     def GET( self ):
         if logged():
             web.header('Content-Type', 'application/json')
-            files = database.getUserFiles( session.user )
-            return json.dumps( {'files': files} )
+            x = web.input()
+            try:
+                files = []
+                if x.has_key( 'filetype' ):
+                    filetype = x['filetype']
+                    files = database.getUserFilesWithType( session.user, int(filetype) )
+                else:
+                    files = database.getUserFiles( session.user )
+
+                return json.dumps( {'files': files} )
+            except:
+                print sys.exc_info()
+                web.debug( "can't get filelist" )
+
         else:
             raise web.seeother('/')
 
     def PUT( self ):
         if logged():
             x = web.input(myfile={})
-            
+
             try:
                 filename = data.getUserFilename( session.user, x['myfile'].filename )
                 print filename
@@ -153,14 +165,14 @@ class AjaxJobs:
     def POST( self ):
         if logged():
             x = web.input()
-            
+
             try:
                 print x
                 x2 = str(x) ### TO CHANGE (just for testing)
                 x2 = '"' + x2 + '"'### TO CHANGE (just for testing)
                 print x2
                 pipeline.startJob( session.user, x2, int(x.file) )
-                
+
             except:
                 print sys.exc_info()
                 web.debug( "can't start new job" )
