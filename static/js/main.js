@@ -58,56 +58,66 @@
 
 }(window.jQuery);
 
-function refreshFileList(){
+function getFileList( f_ok ){
     $.ajax({
         dataType: "json",
         url: '/ajax/file',
-        success: function( data ) {
-            var items1 = [];
-            var items2 = [];
-            var files = data['files']
+        success: function( data ) { f_ok( data['files'] ) }
+    });
+}
 
-            $.each(files, function( key, val ) {
-                items1.push('<li>' + val['file'] + '</li>');
-                items2.push('<option value="' + val['id'] + '">' + val['file'] + '</option>');
-            });
+function getFileListWithType( ftype, f_ok ){
+    $.ajax({
+        dataType: "json",
+        data: { filetype: ftype },
+        url: '/ajax/file',
+        success: function( data ) { f_ok( data['files'] ) }
+    });
+}
 
-            var newlist = $('<ul/>', {
-                'id': 'filelist',
-                'class': 'unstyled',
-                html: items1.join('')
-            });
+function refreshFileList(){
+    getFileList( function( files ){
+        var items1 = [];
+        var items2 = [];
 
-            $('#filelist').replaceWith( newlist );
+        $.each(files, function( key, val ) {
+            items1.push('<li>' + val['file'] + '</li>');
+            items2.push('<option value="' + val['id'] + '">' + val['file'] + '</option>');
+        });
 
-            var newformlist = $('<select/>', {
-                'id': 'jobfile',
-                'name': 'file',
-                html: items2.join('')
-            });
+        var newlist = $('<ul/>', {
+            'id': 'filelist',
+            'class': 'unstyled',
+            html: items1.join('')
+        });
 
-            $('#jobfile').replaceWith( newformlist );
+        $('#filelist').replaceWith( newlist );
+
+        var newformlist = $('<select/>', {
+            'id': 'jobfile',
+            'name': 'file',
+            html: items2.join('')
+        });
+
+        $('#jobfile').replaceWith( newformlist );
 // EK edit --------------------------------------------------
-            // var newformlist = $('<select/>', {
-            //     'id': 'jobfile2',
-            //     'name': 'file2',
-            //     html: items2.join('')
-            // });
+        // var newformlist = $('<select/>', {
+        //     'id': 'jobfile2',
+        //     'name': 'file2',
+        //     html: items2.join('')
+        // });
 
-            // $('#jobfile2').replaceWith( newformlist );
+        // $('#jobfile2').replaceWith( newformlist );
 
-            // var newformlist = $('<select/>', {
-            //     'id': 'jobfile3',
-            //     'name': 'file',
-            //     html: items2.join('')
-            // });
+        // var newformlist = $('<select/>', {
+        //     'id': 'jobfile3',
+        //     'name': 'file',
+        //     html: items2.join('')
+        // });
 
-            // $('#jobfile3').replaceWith( newformlist );
+        // $('#jobfile3').replaceWith( newformlist );
 
 // EK edit --------------------------------------------------
-
-
-        }
     });
 }
 
@@ -126,7 +136,7 @@ function refreshFileList(){
         };
 
         xhr.open( 'POST', '/ajax/job', true );
-	
+
         var form = $('#jobform')[0];
         var fd = new FormData( form );
         xhr.send( fd );
@@ -163,21 +173,21 @@ function refreshJobList(){
 
     <!-- to prevent the screen to move when user click on a tab -->
     $('.nav-tabs').click(function (e) {
-	e.preventDefault();
+        e.preventDefault();
     });
 
 
     <!-- Scroll down when clicking on the accordion -->
     $('.accordion-toggle').click(function (e) {
-	e.preventDefault();
-	var n = $(document).height();
-	$('html, body').animate({ scrollTop: n/2 },'500');
+        e.preventDefault();
+        var n = $(document).height();
+        $('html, body').animate({ scrollTop: n/2 },'500');
     });
 
     // <!-- Enable tabs -->
     // $('#myTab a').click(function (e) {
-    // 	e.preventDefault();
-    // 	$(this).tab('show');
+    //  e.preventDefault();
+    //  $(this).tab('show');
     // })
 
 // Select the number and type of input:
