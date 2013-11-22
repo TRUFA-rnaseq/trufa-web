@@ -31,6 +31,7 @@ urls = (
     '/ajax/job', 'AjaxJobs',
     '/job/(.*)', 'Job',
     '/file/(.*)/.*', 'File',
+    '/manager', 'Manager',
 )
 
 #-------------------------------------------------------------------------------
@@ -78,6 +79,11 @@ class RunJob:
 class About:
     def GET( self ):
         return get_render().about()
+
+#-------------------------------------------------------------------------------
+class Manager:
+    def GET( self ):
+        return get_render().manager()
 
 #-------------------------------------------------------------------------------
 class Login:
@@ -148,9 +154,9 @@ class AjaxFiles:
             try:
                 x = web.input(myfile={})
                 filename = data.getUserFilename( session.user, x['myfile'].filename )
-                print filename
+                filetype = data.getFileType( x['myfile'].filename, x['myfiletype'] )
                 data.saveFile( filename, x['myfile'].file )
-                database.insertFile( session.user, x['myfile'].filename )
+                database.insertFileWithType( session.user, x['myfile'].filename, filetype )
             except:
                 print sys.exc_info()
                 web.debug( "can't save file" )
