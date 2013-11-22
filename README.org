@@ -28,6 +28,12 @@
    1           admin       $2a$05$LsPocRuTdKMH3UMtNQOjxOq9IXTqIAPC6y0toXHC6QDyG6.YNJfXq
    #+end_src
 
+   Also it's posible to use the Sqliteman Graphical Interface to work with the database:
+
+   #+begin_src bash
+   sqliteman database.db
+   #+end_src
+
 ** Moreover
 
 *** Use your own certificate

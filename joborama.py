@@ -26,6 +26,7 @@ urls = (
     '/login', 'Login',
     '/login_error', 'LoginError',
     '/logout', 'Logout',
+    '/ajax/me', 'AjaxMe',
     '/ajax/file', 'AjaxFiles',
     '/ajax/job', 'AjaxJobs',
     '/job/(.*)', 'Job',
@@ -72,7 +73,7 @@ class Howto:
 class RunJob:
     def GET( self ):
         return get_render().run_job()
-        
+
 #-------------------------------------------------------------------------------
 class About:
     def GET( self ):
@@ -113,21 +114,41 @@ class Logout:
         raise web.seeother('/')
 
 #-------------------------------------------------------------------------------
+class AjaxMe:
+    def GET( self ):
+        if logged():
+            return json.dumps( {'username': session.user} )
+        else:
+            raise web.seeother('/')
+
+#-------------------------------------------------------------------------------
 class AjaxFiles:
     def GET( self ):
         if logged():
             web.header('Content-Type', 'application/json')
-            files = database.getUserFiles( session.user )
-            return json.dumps( {'files': files} )
+            x = web.input()
+            try:
+                files = []
+                if x.has_key( 'filetype' ):
+                    filetype = x['filetype']
+                    files = database.getUserFilesWithType( session.user, int(filetype) )
+                else:
+                    files = database.getUserFiles( session.user )
+
+                return json.dumps( {'files': files} )
+            except:
+                print sys.exc_info()
+                web.debug( "can't get filelist" )
+
         else:
             raise web.seeother('/')
 
     def PUT( self ):
         if logged():
-            x = web.input(myfile={})
-            
             try:
+                x = web.input(myfile={})
                 filename = data.getUserFilename( session.user, x['myfile'].filename )
+                print filename
                 data.saveFile( filename, x['myfile'].file )
                 database.insertFile( session.user, x['myfile'].filename )
             except:
@@ -152,13 +173,10 @@ class AjaxJobs:
     def POST( self ):
         if logged():
             x = web.input()
-            
+
             try:
-                print x
-                x2 = str(x) ### TO CHANGE (just for testing)
-                x2 = '"' + x2 + '"'### TO CHANGE (just for testing)
-                pipeline.startJob( session.user, x2, int(x.file) )
-                
+                pipeline.startJob( session.user, x )
+
             except:
                 print sys.exc_info()
                 web.debug( "can't start new job" )
