@@ -14,7 +14,7 @@ function fillupBlatMenu1(){
         var items1 = [];
 
         $.each(files, function( key, val ) {
-            items1.push( "<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" href=\"#\"> "+ val['file'] + "</a></li>" )
+            items1.push( "<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" href=\"#\"> " + val['file'] + "</a></li>" )
         });
 
         $( '#blat_menu1').append( items1 );
