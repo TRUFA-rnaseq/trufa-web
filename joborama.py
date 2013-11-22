@@ -30,6 +30,7 @@ urls = (
     '/ajax/job', 'AjaxJobs',
     '/job/(.*)', 'Job',
     '/file/(.*)/.*', 'File',
+    '/manager', 'Manager',
 )
 
 #-------------------------------------------------------------------------------
@@ -77,6 +78,11 @@ class RunJob:
 class About:
     def GET( self ):
         return get_render().about()
+
+#-------------------------------------------------------------------------------
+class Manager:
+    def GET( self ):
+        return get_render().manager()
 
 #-------------------------------------------------------------------------------
 class Login:
