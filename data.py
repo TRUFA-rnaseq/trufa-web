@@ -4,7 +4,7 @@ import os
 import os.path
 
 #-------------------------------------------------------------------------------
-DATADIR = "cache"
+DATADIR = "/gpfs/res_projects/cvcv/webserver/data/"
 
 #-------------------------------------------------------------------------------
 def getUserFilename( username, filename ):
