@@ -16,27 +16,36 @@ pipe_launch = config.PIPE_LAUNCH
 reJOBID = re.compile(r"Submitted batch job (?P<slurmid>\d+)")
 
 #-------------------------------------------------------------------------------
-def startJob( user, var1, fileid ):
+def startJob( user, var1 ):
     jobid = database.createJob( user )
 
-    p = multiprocessing.Process( target=runjob, args=(user, jobid, var1, fileid ) )
+    p = multiprocessing.Process( target=runjob, args=(user, jobid, var1) )
     p.start()
 
 #-------------------------------------------------------------------------------
-def runjob( user, jobid, var1, fileid ):
+def runjob( user, jobid, var1):
     print "RUNNING JOB " + str(jobid)
 
-    # stagein
-    localfile = database.getFileFullName( fileid )
-    (localdir, localbase) = os.path.split( localfile )
-    remotedir = os.path.join( remotehome, localdir )
-    remotefile = os.path.join( remotehome, localfile )
-    os.system('ssh "%s" "mkdir -p %s"' % (remotehost, remotedir) )
-    os.system('scp "%s" "%s:%s"' % (localfile, remotehost, remotefile) )
-    database.addJobFile( jobid, fileid, database.FILEIN )
+# stagein
+    if var1.file:
+        fileid1 = int(var1.file)
+        localfile1 = database.getFileFullName( fileid1 )
+        remotefile1 = os.path.join( remotehome, localfile1 )
+        database.addJobFile( jobid, fileid1, database.FILEIN )
+        var1['file1name'] = remotefile1
 
-    # submit
-    command = [ pipe_launch, user, var1, remotefile ]
+    if var1.file2:
+        fileid2 = int(var1.file2)
+        localfile2 = database.getFileFullName( fileid2 )
+        remotefile2 = os.path.join( remotehome, localfile2 )
+        database.addJobFile( jobid, fileid2, database.FILEIN )
+        var1['file2name'] = remotefile2
+        
+    if not var1.file2:
+        # submit
+        command = [ pipe_launch, user, str(var1), remotefile1, str(jobid) ]
+    if var1.file and var1.file2:
+        command = [ pipe_launch, user, str(var1), remotefile1, remotefile2, str(jobid) ]
     print command
     proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     output = proc.communicate()[0]
