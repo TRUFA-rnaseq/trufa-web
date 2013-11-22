@@ -18,8 +18,18 @@
             <input id="filename" class="input-large" type="text" />
             <a id="filebrowse" class="btn">Browse</a>
             <a id="filesend" class="btn btn-primary" >
-              <i class="icon-upload icon-white"></i> Send</a>
+            <i class="icon-upload icon-white"></i> Send</a>
           </div>
+          <select class="span9" id="filetype" name="myfiletype"/>
+          <option value="undef" />undefined</option>
+          <option value="auto" />auto</option>
+          <option value="fast" />fastq</option>
+          <option value="tgz_fast" />compressed fastq</option>
+          <option value="seq_db" />seq database</option>
+          <option value="assem" />assembly</option>
+          <option value="map_assem" />mapped assembly</option>
+          <option />
+          </select>
         </form>
 
         <div id="filebar" class="progress">
