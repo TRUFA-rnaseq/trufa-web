@@ -149,7 +149,13 @@ function getFileListWithType( ftype, f_ok ){
 }
 
 function refreshFileList(){
-    getFileList( function( files ){
+//    var in_type = $("input[name=input_type]")
+
+//    if var in_type == "single" 
+
+
+
+    getFileListWithType( 1,  function( files ){
         var items1 = [];
         var items2 = [];
 
@@ -181,6 +187,15 @@ function refreshFileList(){
         });
 
         $('#jobfile2').replaceWith( newformlist );
+
+         var newformlist = $('<select/>', {
+            'id': 'jobfile3',
+            'name': 'file3',
+             html: items2.join('')
+        });
+
+        $('#jobfile3').replaceWith( newformlist );
+
 
         // var newformlist = $('<select/>', {
         //     'id': 'jobfile3',
@@ -268,29 +283,46 @@ function refreshJobList(){
 $(document).ready(function(){
     var reads_1 = $("div[id=reads_1]")
     var reads_2 = $("div[id=reads_2]")
+    var assembly_in = $("div[id=assembly_in]")
     var in_type = $("input[name=input_type]")
 
 // Setting single or paired reads
     in_type.change(function (){
         var in_type = $("input[name=input_type]:checked").val()
+	$('#demo').append(in_type)
 
-        if (in_type == "single")
-        {
+	switch(in_type){
+	case "single": 
             reads_1.children("label").text("Single reads file:")
             reads_1.show()
             reads_2.hide()
-//          $("p[id=demo]").text(in_type)
-        }
-        else if (in_type == "paired")
-        {
+	    assembly_in.hide()
+	    break;
+	case "paired":
             reads_1.children("label").text("Left reads file:")
             reads_1.show()
             reads_2.show()
-//          $("p[id=demo]").text(in_type)
-        }
-
-
-    })
+	    assembly_in.hide()
+	    break;
+	case "contigs":
+            reads_1.hide()
+            reads_2.hide()
+	    assembly_in.show()
+	    break;
+	case "contigs_with_single":
+            reads_1.children("label").text("Single reads file:")
+	    reads_1.show()
+	    assembly_in.show()
+            reads_2.hide()
+	    break;
+	case "contigs_with_paired":
+	    reads_1.children("label").text("Left reads file:")
+	    reads_1.show()
+            reads_2.show()
+	    assembly_in.show()
+	    break;
+	}
+    });
 });
 // Displaying warning message if action are not available with the current input
 (function($) {

@@ -4,6 +4,7 @@
 
       <p id="demo">test</p>
 
+
       <h2>What type of input:</h2>
 
       <a href="#" class="btn" data-toggle="popover" title="" data-content="Depending on the input you will specify you can perform various steps:<br>
@@ -35,17 +36,17 @@
 	  </label>
 	  <label class="radio">
 	    <input type="radio" name="input_type" value="contigs_with_single" />
-	    Already assembled contigs and single reads (1 fasta file and 1 fastq file)
+	    Already assembled contigs and single reads (1 fastq file and 1 fasta file)
 	  </label>
 	  <label class="radio">
 	    <input type="radio" name="input_type" value="contigs_with_paired" />
-	    Already assembled contigs and paired reads (1 fasta file and 2 fastq files)
+	    Already assembled contigs and paired reads (2 fastq file and 1 fasta files)
 	  </label>
 
 	</div>
       </div>
       
-      <div class="control-group" id="reads_1">
+      <div class="control-group" id="reads_1" hidden>
 	<label class="control-label" for="inputFile1">Single reads file:</label>
 	<div class="controls">
 	  <span id="jobfile" ></span>
@@ -58,6 +59,13 @@
       	  <span id="jobfile2" ></span>
       	</div>
       </div>
+      <div class="control-group" id="assembly_in" hidden>
+      	<label class="control-label" for="inputFile3">Assembly file:</label>
+      	<div class="controls">
+      	  <span id="jobfile3" ></span>
+      	</div>
+      </div>
+     
       <!-- EK edit END-->
     </div>
 
@@ -118,11 +126,25 @@
 	    <ul class="nav nav-pills">
 	      <li class="dropdown">
 		<a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">Databases available for blat<b class="caret"></b></a>
+		
 		<ul id="blat_menu0" class="dropdown-menu" role="menu" aria-labelledby="drop2">
 		</ul>
 	      </li>
 	    </ul>
 	  </div> <!-- end of blat db for reads cleaning dropdown -->
+
+	  <div class="myDropdownCheckbox dropdown-checkbox dropdown" >
+	    <button class="dropdown-checkbox-toggle btn btn-primary" data-toggle="dropdown" href="#" >Dropdown Checkbox 
+	      <span class="dropdown-checkbox-nbselected" ></span>
+	    </button>    
+	    <div class="dropdown-checkbox-content">
+	      <div class="dropdown-checkbox-header">
+		<input class="checkbox-all" type="checkbox"><input type="text" placeholder="Search" class="search">
+	      </div> 
+	      <ul class="dropdown-checkbox-menu" name="custom_blat_dbs_1">
+	      </ul>
+	    </div>
+	  </div>
 
 	  <!-- end of the cleaning steps --> 
 
@@ -581,9 +603,9 @@
 	  <div class="bs-docs-example">
 	    <ul class="nav nav-pills">
 	      <li class="dropdown">
-		    <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">Databases available for blat<b class="caret"></b></a>
-		    <ul id="blat_menu1" class="dropdown-menu" role="menu" aria-labelledby="drop3">
-		    </ul>
+		<a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">Databases available for blat<b class="caret"></b></a>
+		<ul id="blat_menu1" class="dropdown-menu" role="menu" aria-labelledby="drop3">
+		</ul>
 	      </li>
 	    </ul>
 	  </div> <!-- end contig blat dropdown -->
