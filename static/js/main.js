@@ -153,24 +153,30 @@ function refreshFileList(){
 
 //    if var in_type == "single" 
 
+    var items1 = [];
+    var items2 = [];
+    var items3 = [];
 
-
-    getFileListWithType( 1,  function( files ){
-        var items1 = [];
-        var items2 = [];
-
-        $.each(files, function( key, val ) {
+// Getting all files for list in the home page
+    getFileList( function( files ){
+	$.each(files, function(key, val){
             items1.push('<li>' + val['file'] + '</li>');
-            items2.push('<option value="' + val['id'] + '">' + val['file'] + '</option>');
-        });
-
+	});
         var newlist = $('<ul/>', {
             'id': 'filelist',
             'class': 'unstyled',
             html: items1.join('')
         });
-
         $('#filelist').replaceWith( newlist );
+
+    });
+
+// Getting only reads files for the "start a job" form
+    getFileListWithType( 1,  function( files ){
+
+        $.each(files, function( key, val ) {
+            items2.push('<option value="' + val['id'] + '">' + val['file'] + '</option>');
+        });
 
         var newformlist = $('<select/>', {
             'id': 'jobfile',
@@ -187,11 +193,19 @@ function refreshFileList(){
         });
 
         $('#jobfile2').replaceWith( newformlist );
+    });
+
+// Getting only assembly files for the "start a job" form
+    getFileListWithType( 4,  function( files ){
+
+        $.each(files, function( key, val ) {
+            items3.push('<option value="' + val['id'] + '">' + val['file'] + '</option>');
+        });
 
          var newformlist = $('<select/>', {
             'id': 'jobfile3',
             'name': 'file3',
-             html: items2.join('')
+             html: items3.join('')
         });
 
         $('#jobfile3').replaceWith( newformlist );
