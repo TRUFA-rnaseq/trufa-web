@@ -41,7 +41,6 @@ function fillupBlatMenu1(){
     });
 }
 
-var test = $("myselector").dropdownCheckbox("checked");
+//var test = $("myselector").dropdownCheckbox("checked");
 
-console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ")
-console.log(test)
+
