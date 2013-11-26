@@ -32,14 +32,14 @@ def runjob( user, jobid, var1):
         localfile1 = database.getFileFullName( fileid1 )
         remotefile1 = os.path.join( remotehome, localfile1 )
         database.addJobFile( jobid, fileid1, database.FILEIN )
-        var1['file1name'] = remotefile1
+        var1['filename1'] = remotefile1
 
     if var1.file2:
         fileid2 = int(var1.file2)
         localfile2 = database.getFileFullName( fileid2 )
         remotefile2 = os.path.join( remotehome, localfile2 )
         database.addJobFile( jobid, fileid2, database.FILEIN )
-        var1['file2name'] = remotefile2
+        var1['filename2'] = remotefile2
         
     if not var1.file2:
         # submit
