@@ -140,12 +140,41 @@ function getFileList( f_ok ){
 }
 
 function getFileListWithType( ftype, f_ok ){
-    $.ajax({
-        dataType: "json",
-        data: { filetype: ftype },
-        url: '/ajax/file',
-        success: function( data ) { f_ok( data['files'] ) }
-    });
+    var tname = typeof ftype
+    if( tname == "number" ){
+        $.ajax({
+            dataType: "json",
+            data: { filetype: ftype },
+            url: '/ajax/file',
+            success: function( data ) { f_ok( data['files'] ) }
+        });
+        return
+    }else if( tname == "object" ){
+        if( ftype.constructor == Array ){
+            getFileListWithTypes_([], ftype, f_ok )
+            return
+        }
+    }
+    showError( "unknown file type" )
+}
+
+function getFileListWithTypes_( items, ftype, f_ok ){
+    if( ftype.length == 0 ){
+        f_ok( items )
+    }else{
+        var xs = ftype.slice(1)
+        $.ajax({
+            dataType: "json",
+            data: { filetype: ftype[0] },
+            url: '/ajax/file',
+            success: function( data ) {
+                $.each( data['files'], function(key, val){
+                    items.push( val )
+                });
+                getFileListWithTypes_( items, xs, f_ok )
+            }
+        });
+    }
 }
 
 function refreshFileList(){
