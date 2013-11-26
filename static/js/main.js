@@ -311,12 +311,14 @@ $(document).ready(function(){
             reads_1.show()
             reads_2.hide()
 	    assembly_in.hide()
+//	    $('#jobfile2').attr('disabled','disabled')
 	    break;
 	case "paired":
             reads_1.children("label").text("Left reads file:")
             reads_1.show()
             reads_2.show()
 	    assembly_in.hide()
+//	    $('#jobfile2').removeAttr('disabled')
 	    break;
 	case "contigs":
             reads_1.hide()
