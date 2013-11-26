@@ -201,7 +201,7 @@ function refreshFileList(){
     });
 
 // Getting only reads files for the "start a job" form
-    getFileListWithType( 1,  function( files ){
+    getFileListWithType( [1,2],  function( files ){
 
         $.each(files, function( key, val ) {
             items2.push('<option value="' + val['id'] + '">' + val['file'] + '</option>');
