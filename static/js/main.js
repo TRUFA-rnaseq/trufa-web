@@ -336,31 +336,42 @@ $(document).ready(function(){
 
 	switch(in_type){
 	case "single": 
+	    $('#jobfile2').attr('disabled','disabled')
+	    $('#jobfile3').attr('disabled','disabled')
             reads_1.children("label").text("Single reads file:")
             reads_1.show()
             reads_2.hide()
 	    assembly_in.hide()
-//	    $('#jobfile2').attr('disabled','disabled')
 	    break;
 	case "paired":
+	    $('#jobfile2').removeAttr('disabled')
+	    $('#jobfile3').attr('disabled','disabled')
             reads_1.children("label").text("Left reads file:")
             reads_1.show()
             reads_2.show()
 	    assembly_in.hide()
-//	    $('#jobfile2').removeAttr('disabled')
 	    break;
 	case "contigs":
+	    $('#jobfile3').removeAttr('disabled')
+	    $('#jobfile').attr('disabled','disabled')
+	    $('#jobfile2').attr('disabled','disabled')
             reads_1.hide()
             reads_2.hide()
 	    assembly_in.show()
 	    break;
 	case "contigs_with_single":
+	    $('#jobfile').removeAttr('disabled')
+	    $('#jobfile2').attr('disabled','disabled')
+	    $('#jobfile3').removeAttr('disabled')
             reads_1.children("label").text("Single reads file:")
 	    reads_1.show()
 	    assembly_in.show()
             reads_2.hide()
 	    break;
 	case "contigs_with_paired":
+	    $('#jobfile').removeAttr('disabled')
+	    $('#jobfile2').removeAttr('disabled','disabled')
+	    $('#jobfile3').removeAttr('disabled')
 	    reads_1.children("label").text("Left reads file:")
 	    reads_1.show()
             reads_2.show()
