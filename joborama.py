@@ -28,6 +28,7 @@ urls = (
     '/logout', 'Logout',
     '/ajax/me', 'AjaxMe',
     '/ajax/file', 'AjaxFiles',
+    '/ajax/filepart', 'AjaxFileParts',
     '/ajax/job', 'AjaxJobs',
     '/job/(.*)', 'Job',
     '/file/(.*)/.*', 'File',
@@ -157,6 +158,33 @@ class AjaxFiles:
                 filetype = data.getFileType( x['myfile'].filename, x['myfiletype'] )
                 data.saveFile( filename, x['myfile'].file )
                 database.insertFileWithType( session.user, x['myfile'].filename, filetype )
+            except:
+                print sys.exc_info()
+                web.debug( "can't save file" )
+
+            return "OK"
+
+        else:
+            raise web.seeother('/')
+
+#-------------------------------------------------------------------------------
+class AjaxFileParts:
+    def PUT( self ):
+        if logged():
+            try:
+                x = web.input(myfile={})
+                if x['status'] == "start":
+                    filename = data.getUserFilename( session.user, x['myfilename'] )
+                    data.clearFilePart( filename )
+                elif x['status'] == "end":
+                    filename = data.getUserFilename( session.user, x['myfilename'] )
+                    filetype = data.getFileType( x['myfilename'], x['myfiletype'] )
+                    data.endFilePart( filename )
+                    database.insertFileWithType( session.user, x['myfilename'], filetype )
+                elif x['status'] == "part":
+                    filename = data.getUserFilename( session.user, x['myfilename'] )
+                    data.saveFilePart( filename, x['myfile'].file )
+
             except:
                 print sys.exc_info()
                 web.debug( "can't save file" )
