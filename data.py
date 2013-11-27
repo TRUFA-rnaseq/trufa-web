@@ -53,6 +53,25 @@ def saveFile( filename, filedata ):
         shutil.copyfileobj( filedata, f )
 
 #-------------------------------------------------------------------------------
+def clearFilePart( filename ):
+    if os.path.isfile( filename + '.part' ):
+        os.remove( filename + '.part' )
+
+#-------------------------------------------------------------------------------
+def saveFilePart( filename, filedata ):
+    dir = os.path.dirname( filename )
+    if not os.path.isdir( dir ):
+        os.makedirs( dir )
+
+    with open( filename + '.part', 'a' ) as f:
+        shutil.copyfileobj( filedata, f )
+
+#-------------------------------------------------------------------------------
+def endFilePart( filename ):
+    if os.path.isfile( filename + '.part' ):
+        shutil.move( filename + '.part', filename )
+
+#-------------------------------------------------------------------------------
 def getFileType( filename, option ):
     if option == 'auto':
         lname = filename.lower()
