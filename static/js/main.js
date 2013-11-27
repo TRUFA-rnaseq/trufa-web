@@ -207,7 +207,7 @@ function refreshFileList(){
             items2.push('<option value="' + val['id'] + '">' + val['file'] + '</option>');
         });
 
-        var newformlist = $('<select/>', {
+        var newformlist = $('<select>', {
             'id': 'jobfile',
             'name': 'file',
             html: items2.join('')
