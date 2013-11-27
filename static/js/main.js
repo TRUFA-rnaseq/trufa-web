@@ -55,7 +55,7 @@ function refreshUserName(){
     $('#filesend').click( function(){
         var input = document.getElementById('filesel')
         var size = getFileSize( input )
-        if( size > 0 && size < 2*1024*1024*1024 ){
+        if( size > 0 && size < 512*1024*1024 ){
             sendLittleFile()
         }else{
             sendBigFile()
@@ -114,13 +114,103 @@ function sendLittleFile(){
     $('#fileform').css( 'visibility', 'hidden' );
 }
 
+function sendBigFilePart( desc ){
+    if( desc.sended >= desc.total ){
+        sendBigFileEnd( desc )
+    }else{
+        var perc = Math.floor(desc.sended/desc.total*1000)/10
+        $('#filebar > .bar').css( 'width', perc + '%' )
+
+        var chunk = Math.min( desc.total - desc.sended, desc.chunkSize )
+        var current = desc.sended
+        var blob = desc.file.slice( current, current + chunk )
+
+        desc.sended = desc.sended + chunk
+
+        var xhr = new XMLHttpRequest();
+        if( xhr.upload ){
+            xhr.upload.onprogress = function( e ){
+                var partdone = e.position || e.loaded
+                var done = current + partdone
+                var perc = Math.floor(done/desc.total*1000)/10
+                $('#filealert').css( 'visibility', 'visible' );
+                $('#filealert').html( "done " + done + " " + perc + "%" )
+                $('#filebar > .bar').css( 'width', perc + '%' );
+            };
+        }
+        xhr.onreadystatechange = function( e ){
+            if( 4 == this.readyState ){
+                sendBigFilePart( desc )
+            }
+        };
+
+        xhr.open( 'PUT', '/ajax/filepart', true );
+
+        var fd = new FormData();
+        fd.append( 'myfile', blob )
+        fd.append( 'status', 'part' )
+        fd.append( 'myfilename', desc.filename )
+        fd.append( 'myfiletype', desc.filetype )
+        xhr.send( fd );
+    }
+}
+
+function sendBigFileEnd( desc ){
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function( e ){
+        if( 4 == this.readyState ){
+            $('#filebar > .bar').css( 'width', '100%' )
+            $('#filebar').removeClass( 'progress-striped' )
+            $('#filebar').removeClass( 'active' )
+            $('#fileform').css( 'visibility', 'visible' )
+            $('#filealert').css( 'visibility', 'visible' )
+            $('#filealert').html( 'Upload Complete' )
+            refreshFileList();
+        }
+    };
+
+    xhr.open( 'PUT', '/ajax/filepart', true )
+
+    var fd = new FormData()
+    fd.append( 'status', 'end' )
+    fd.append( 'myfilename', desc.filename )
+    fd.append( 'myfiletype', desc.filetype )
+    xhr.send( fd )
+}
+
 function sendBigFile(){
-    showError( "Can't load Files > 2 GBs" )
-    // var input = $('#filesel')[0]
-    // var file = input.files[0]
-    // showWarning( file )
-    // var blob = file.slice( 0, 1024 )
-    // showWarning( file + " size" + blob.size )
+    $('#filebar > .bar').replaceWith( '<div class="bar" style="width: 0%;"></div>' );
+    $('#filebar').addClass( 'progress-striped' );
+    $('#filebar').addClass( 'active' );
+    $('#filealert').css( 'visibility', 'hidden' );
+
+    var input = $('#filesel')[0]
+    var file = input.files[0]
+    var descriptor = {
+        sended: 0,
+        file: file,
+        filetype: $('#filetype').val(),
+        filename: file.name,
+        total: file.size,
+        chunkSize: 5*1024*1024,
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function( e ){
+        if( 4 == this.readyState ){
+            sendBigFilePart( descriptor )
+        }
+    };
+
+    xhr.open( 'PUT', '/ajax/filepart', true )
+
+    var fd = new FormData()
+    fd.append( 'status', 'start' )
+    fd.append( 'myfilename', descriptor.filename )
+    fd.append( 'myfiletype', descriptor.filetype )
+    xhr.send( fd )
+
+    $('#fileform').css( 'visibility', 'hidden' );
 }
 
 /* = FILE LIST ============================================================== */
