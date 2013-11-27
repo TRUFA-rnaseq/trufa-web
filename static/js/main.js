@@ -291,13 +291,13 @@ function refreshFileList(){
     });
 
 // Getting only reads files for the "start a job" form
-    getFileListWithType( 1,  function( files ){
+    getFileListWithType( [1,2],  function( files ){
 
         $.each(files, function( key, val ) {
             items2.push('<option value="' + val['id'] + '">' + val['file'] + '</option>');
         });
 
-        var newformlist = $('<select/>', {
+        var newformlist = $('<select>', {
             'id': 'jobfile',
             'name': 'file',
             html: items2.join('')
@@ -426,29 +426,44 @@ $(document).ready(function(){
 
 	switch(in_type){
 	case "single": 
+	    $('#jobfile').removeAttr('disabled')
+	    $('#jobfile2').attr('disabled','disabled')
+	    $('#jobfile3').attr('disabled','disabled')
             reads_1.children("label").text("Single reads file:")
             reads_1.show()
             reads_2.hide()
 	    assembly_in.hide()
 	    break;
 	case "paired":
+	    $('#jobfile').removeAttr('disabled')
+	    $('#jobfile2').removeAttr('disabled')
+	    $('#jobfile3').attr('disabled','disabled')
             reads_1.children("label").text("Left reads file:")
             reads_1.show()
             reads_2.show()
 	    assembly_in.hide()
 	    break;
 	case "contigs":
+	    $('#jobfile3').removeAttr('disabled')
+	    $('#jobfile').attr('disabled','disabled')
+	    $('#jobfile2').attr('disabled','disabled')
             reads_1.hide()
             reads_2.hide()
 	    assembly_in.show()
 	    break;
 	case "contigs_with_single":
+	    $('#jobfile').removeAttr('disabled')
+	    $('#jobfile2').attr('disabled','disabled')
+	    $('#jobfile3').removeAttr('disabled')
             reads_1.children("label").text("Single reads file:")
 	    reads_1.show()
 	    assembly_in.show()
             reads_2.hide()
 	    break;
 	case "contigs_with_paired":
+	    $('#jobfile').removeAttr('disabled')
+	    $('#jobfile2').removeAttr('disabled','disabled')
+	    $('#jobfile3').removeAttr('disabled')
 	    reads_1.children("label").text("Left reads file:")
 	    reads_1.show()
             reads_2.show()
