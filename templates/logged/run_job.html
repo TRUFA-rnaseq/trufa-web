@@ -298,11 +298,11 @@
 	    Trinity assembly
 	  </label>
 	  <label class="checkbox hidden">
-	    <input type="checkbox" id="bowtie1" name="BOWTIE1">
+	    <input type="checkbox" id="bowtie1" name="BOWTIE1" class="mapping_steps" disabled>
 	    Aligning reads against contigs (Bowtie1)
 	  </label>
 	  <label class="checkbox">
-	    <input type="checkbox" id="bowtie2" name="BOWTIE2">
+	    <input type="checkbox" id="bowtie2" name="BOWTIE2" class="mapping_steps" disabled>
 	    Aligning reads against contigs (Bowtie2)
 	  </label>
 	  <!-- <label class="checkbox"> -->
@@ -569,15 +569,15 @@
 	  </div>
 	  <h4> Classic Blat searches:</h4>
 	  <label class="checkbox">
-	    <input type="checkbox" id="blat_cegma" name="BLAT_CEGMA">
+	    <input type="checkbox" id="blat_cegma" name="BLAT_CEGMA" class="identification_steps" disabled>
 	    Cegma 
 	  </label>
 	  <label class="checkbox">
-	    <input type="checkbox" id="blat_uniref" name="BLAT_UNIREF">
+	    <input type="checkbox" id="blat_uniref" name="BLAT_UNIREF" class="identification_steps" disabled>
 	    Uniref 
 	  </label>
 	  <label class="checkbox">
-	    <input type="checkbox" id="blat_nr" name="BLAT_NR">
+	    <input type="checkbox" id="blat_nr" name="BLAT_NR" class="identification_steps" disabled>
 	    nr 
 	  </label>
 
@@ -605,15 +605,15 @@
 
 	  <h4>Classic HMMER searches:</h4>
 	  <label class="checkbox">
-	    <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA">
+	    <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA" class="identification_steps" disabled>
 	    Cegma
 	  </label>
 	  <label class="checkbox">
-	    <input type="checkbox" id="hmmer_PfamA" name="HMMER_PFAMA">
+	    <input type="checkbox" id="hmmer_PfamA" name="HMMER_PFAMA" class="identification_steps" disabled>
 	    PfamA
 	  </label>
 	  <label class="checkbox">
-	    <input type="checkbox" id="hmmer_PfamB" name="HMMER_PFAMB">
+	    <input type="checkbox" id="hmmer_PfamB" name="HMMER_PFAMB" class="identification_steps" disabled>
 	    PfamB
 	  </label>
 
@@ -633,15 +633,15 @@
 
 	  <h4>Blast2GO searches:</h4>
 	  <label class="checkbox">
-	    <input type="checkbox" id="blast_nr" name="BLAST_NR">
+	    <input type="checkbox" id="blast_nr" name="BLAST_NR" class="identification_steps" disabled>
 	    Blast against nr
 	  </label>
 	  <label class="checkbox">
-	    <input type="checkbox" id="interproscan" name="INTERPROSCAN" disabled>
+	    <input type="checkbox" id="interproscan" name="INTERPROSCAN" class="identification_steps" disabled>
 	    Interproscan (in dvpt)
 	  </label>
 	  <label class="checkbox">
-	    <input type="checkbox" id="blast2go" name="BLAST2GO">
+	    <input type="checkbox" id="blast2go" name="BLAST2GO" class="identification_steps" disabled>
 	    Blast2GO
 	  </label>
 
@@ -650,15 +650,15 @@
 	<div class="tab-pane" id="expression">
 	  <h3> Expression quantification steps:</h3>
 	  <label class="checkbox hidden">
-	    <input type="checkbox" id="tophat" name="TOPHAT">
+	    <input type="checkbox" id="tophat" name="TOPHAT" class="" disabled>
 	    Tophat
 	  </label>
 	  <label class="checkbox">
-	    <input type="checkbox" id="cufflinks" name="CUFFLINKS">
+	    <input type="checkbox" id="cufflinks" name="CUFFLINKS" class="expression_steps" disabled>
 	    Cufflinks
 	  </label>
 	  <label class="checkbox hidden">
-	    <input type="checkbox" id="cuffdiff" name="CUFFDIFF">
+	    <input type="checkbox" id="cuffdiff" name="CUFFDIFF" class="expression_steps" disabled>
 	    Cuffdiff
 	  </label>
 	</div>
