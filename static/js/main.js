@@ -472,36 +472,17 @@ $(document).ready(function(){
 	}
     });
 });
-// Displaying warning message if action are not available with the current input
-(function($) {
-    var trin_check = $("input[id=trinity]")
-    var warn = $('div[id=no_assembly_alert]')
-
-    trin_check.change( function(){
-        if (trin_check.is(':checked'))
-        {
-            warn.hide()
-        }
-        else
-        {
-            warn.show()
-        }
-    })
-
-})(jQuery);
 
 
-// Function to have activation/deactivation of checkboxes
+// Function to have activation/deactivation if reads/ no reads 
 $(function() {
 
     var in_type = $("input[name=input_type]")
     var warn_read = $('div[id=no_reads_alert]')
+    var cleaning_arr = ["single","paired","contigs_with_single","contigs_with_paired"]
 
     in_type.change(function (){
-        $("p[id=demo]").text($(this).val())
-
-        cleaning_arr = ["single","paired","contigs_with_single","contigs_with_paired"]
-
+  
         if (jQuery.inArray($(this).val(), cleaning_arr) === -1)
         {
             $('.cleaning_steps').attr('disabled', true);
@@ -511,9 +492,54 @@ $(function() {
         {
             $('.cleaning_steps').attr('disabled', false);
             warn_read.hide()
-        }
+        }	
     });
 });
+
+// Function to have activation/deactivation if assembly/no assembly
+$(function(){
+    var warn_ass = $('div[id=no_assembly_alert]')
+    var assembly_arr = ["contigs","contigs_with_single","contigs_with_paired"]
+    var trin_check = $("input[id=trinity]")
+    var in_type = $("input[name=input_type]")
+
+    in_type.change(function (){
+        if (jQuery.inArray($(this).val(), assembly_arr) === -1) 
+	{
+	    if (!trin_check.is(':checked'))
+	    {
+            $('.mapping_steps').attr('disabled', true);
+            $('.identification_steps').attr('disabled', true);
+            warn_ass.show()
+	    }
+        }
+        else
+        {
+            $('.mapping_steps').attr('disabled', false);
+            $('.identification_steps').attr('disabled', false);
+            warn_ass.hide()
+        }	
+
+    trin_check.change(function (){
+	if (!$(this).is(':checked')) 
+	{
+	    if (jQuery.inArray(in_type.val(), assembly_arr) === -1)
+		{
+		    $('.mapping_steps').attr('disabled', true);	
+		    $('.identification_steps').attr('disabled', true);
+		    warn_ass.show()
+		}
+	}
+	else
+	{
+	    $('.mapping_steps').attr('disabled', false);
+            $('.identification_steps').attr('disabled', false);
+	    warn_ass.hide()
+	}
+	
+    });
+    });
+}); 
 
 $('#example').popover({html:true})
 
