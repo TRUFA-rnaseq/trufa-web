@@ -351,7 +351,7 @@ function refreshFileList(){
 
         xhr.onreadystatechange = function( e ){
             if( 4 == this.readyState ){
-                alert( "job sended" );
+                alert( "Job sent: Go to 'Home' to check its status" );
                 refreshJobList();
             }
         };
@@ -516,3 +516,5 @@ $(function() {
 });
 
 $('#example').popover({html:true})
+
+			    

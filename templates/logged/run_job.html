@@ -114,26 +114,19 @@
 	    <input class="cleaning_steps" type="checkbox" id="Scere_reads" name="BLAT_SCERE" disabled>
 	    S. cerevisiae hits
 	  </label>
-	  <label class="checkbox hidden">
-	    <input class="cleaning_steps" type="checkbox" id="custom_blat_reads" name="BLAT_CUSTOM_READS" disabled>
-	    Custom blat
-	  </label>
-	  <label class="checkbox">
-	    <input class="cleaning_steps" type="checkbox" id="fastqc" name="FASTQC" disabled>
-	    FastQC
-	  </label>
-	  <div class="bs-docs-example">
-	    <ul class="nav nav-pills">
+	    <ul class="nav nav-pills" id="custom_blat_reads_db">
 	      <li class="dropdown">
-		<a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">Databases available for blat<b class="caret"></b></a>
+		<a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">Databases available for custom blat<b class="caret"></b></a>
 		
 		<ul id="blat_menu0" class="dropdown-menu" role="menu" aria-labelledby="drop2">
 		</ul>
 	      </li>
 	    </ul>
-	  </div>
 
-<div class="myDropdownCheckbox"></div>
+	  <label class="checkbox">
+	    <input class="cleaning_steps" type="checkbox" id="fastqc" name="FASTQC" disabled>
+	    FastQC
+	  </label>
 
 	  <!-- end of the cleaning steps --> 
 
