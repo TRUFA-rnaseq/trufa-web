@@ -14,7 +14,11 @@ function fillupBlatMenu1(){
 
 	var count = 0
         $.each(files, function( key, val ) {
-            items1.push( "<li role=\"presentation\"><input type='checkbox' name='my_blat_custom[]' value=" + val['file'] + " href=\"#\"> " + val['file'] + "</li>" )
+
+// this currently defines an array but dont get all values in (just one)
+//            items1.push( "<li role=\"presentation\"><input type='checkbox' name='my_blat_custom[]' value=" + val['file'] + " href=\"#\"> " + val['file'] + "</li>" )
+            items1.push( "<li role=\"presentation\"><input type='checkbox' class='cleaning_steps' name='blat_custom_reads_n'" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
+
 	    count = count + 1
         });
 
