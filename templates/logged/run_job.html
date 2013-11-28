@@ -65,7 +65,7 @@
       	  <span id="jobfile3" ></span>
       	</div>
       </div>
-     
+      
       <!-- EK edit END-->
     </div>
 
@@ -88,6 +88,7 @@
 	    <p><b> Cleaning option are currently disabled.</b></p>
 	    <p><b>If you want to perform reads cleaning, you need to specify a type of input with reads files in.</b></p>
 	  </div>	  
+	  <h4>Prinseq:</h4>
 	  <label class="checkbox">
 	    <input class="cleaning_steps" type="checkbox" id="duplication" name="DUP" disabled>
 	    Duplicated reads
@@ -101,7 +102,7 @@
 	    <input class="cleaning_steps" type="checkbox" id="adapters"  name="ADAPT" disabled>
 	    Adapters cleaning
 	  </label>
-
+	  <h4>BLAT against potential contaminants:</h4>
 	  <label class="checkbox">
 	    <input class="cleaning_steps" type="checkbox" id="univec_reads" name="BLAT_UNIVEC" disabled>
 	    Univec hits
@@ -114,22 +115,23 @@
 	    <input class="cleaning_steps" type="checkbox" id="Scere_reads" name="BLAT_SCERE" disabled>
 	    S. cerevisiae hits
 	  </label>
-	    <ul class="nav nav-pills" id="custom_blat_reads_db">
-	      <li class="dropdown">
-		<a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">Databases available for custom blat<b class="caret"></b></a>
-		
-		<ul id="blat_menu0" class="dropdown-menu" role="menu" aria-labelledby="drop2">
-		</ul>
-	      </li>
-	    </ul>
+	  <ul class="nav nav-pills" id="custom_blat_reads_db">
+	    <li class="dropdown">
+	      <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">Databases available for custom blat<b class="caret"></b></a>
+	      
+	      <ul id="blat_menu0" class="dropdown-menu" role="menu" aria-labelledby="drop2">
+	      </ul>
+	    </li>
+	  </ul>
 
+	  <h4>Post-cleaning quality control:</h4>
 	  <label class="checkbox">
 	    <input class="cleaning_steps" type="checkbox" id="fastqc" name="FASTQC" disabled>
 	    FastQC
 	  </label>
 
 	  <!-- end of the cleaning steps --> 
-
+<h4>Options:</h4>
 	  <div class="accordion" id="accordion1">
 	    <div class="accordion-group">
 	      <div class="accordion-heading">
@@ -168,7 +170,6 @@
 		</div>	<!-- End of  Duplication options -->
 	      </div>
 	    </div>
-
 	    <div class="accordion-group">
 	      <div class="accordion-heading">
 		<a class="accordion-toggle" data-toggle="collapse" href="#collapse1_2" id="trimming_option">
@@ -310,7 +311,7 @@
 	  <!-- </label> -->
 	  <!-- check if this step is actually getting the isoforms, and not just the similar sequences -->
 	  <!-- end of assembly/mapping steps -->
-	  
+	  <h4>Options:</h4>
 	  <div class="accordion" id="accordion2">
 	    <div class="accordion-group">
 	      <div class="accordion-heading">
@@ -413,7 +414,7 @@
 	      </div>
 	    </div>
 
-	    <div class="accordion-group">
+	    <div class="accordion-group" hidden>
 	      <div class="accordion-heading">
 		<a class="accordion-toggle" data-toggle="collapse" href="#collapse2_2">
 		  Bowtie1 options
@@ -581,22 +582,21 @@
 	  </label>
 
 	  <h4> Custom Blat searches:</h4>
-	  Add custom nucleotide databases for the blat search:
+	  Add custom nucleotides or protein sequences databases for the blat search (in fasta format):
 	  <div class="bs-docs-example">
 	    <ul class="nav nav-pills">
 	      <li class="dropdown">
-		<a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">Databases available for blat<b class="caret"></b></a>
+		<a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">Nucleotides db<b class="caret"></b></a>
 		<ul id="blat_menu1" class="dropdown-menu" role="menu" aria-labelledby="drop3">
 		</ul>
 	      </li>
 	    </ul>
 	  </div> <!-- end contig blat dropdown -->
 
-	  Add custom protein databases for the blat search: 
 	  <div class="bs-docs-example">
 	    <ul class="nav nav-pills">
 	      <li class="dropdown">
-		<a class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Databases available for blatx<b class="caret"></b></a>
+		<a class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Proteins db<b class="caret"></b></a>
 		<ul id="blat_menu2" class="dropdown-menu" role="menu" aria-labelledby="drop4">
 		</ul>
 	      </li>
