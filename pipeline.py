@@ -29,7 +29,10 @@ def runjob( user, jobid, var1):
 # stagein
     if hasattr(var1, "blat_custom_reads_n"):
         var1['BLAT_CUSTOM_READS'] = 'on'
-    
+
+    if hasattr(var1, "blat_custom_ass_n"):
+        var1['BLAT_CUSTOM_ASS'] = 'on'
+
     if hasattr(var1, "file"):
         fileid1 = int(var1.file)
         localfile1 = database.getFileFullName( fileid1 )
