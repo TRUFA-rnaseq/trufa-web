@@ -61,7 +61,8 @@ def init():
         shutil.copy( template, database )
 
     # create empty password file
-    open( passwdfile, 'w' ).close()
+    if not os.path.isfile( passwdfile ):
+        open( passwdfile, 'w' ).close()
 
     name = 'admin' # same name and passwd
     insertUser( name, name, "j.smith@example.com" )
