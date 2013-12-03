@@ -486,11 +486,13 @@ $(function() {
         if (jQuery.inArray($(this).val(), cleaning_arr) === -1)
         {
             $('.cleaning_steps').attr('disabled', true);
+            $('.assembly_steps').attr('disabled', true);
             warn_read.show()
         }
         else
         {
             $('.cleaning_steps').attr('disabled', false);
+            $('.assembly_steps').attr('disabled', false);
             warn_read.hide()
         }	
     });
@@ -539,7 +541,26 @@ $(function(){
 	
     });
     });
-}); 
+});
+
+// activate/desactivate expression steps:
+$(function(){
+    var ass_reads_arr = ["contigs_with_single","contigs_with_paired"]
+    var reads_arr = ["single","paired"]
+    var in_type = $("input[name=input_type]")
+    var bow_check = $("input[id=bowtie2]")
+    
+    bow_check.change(function (){
+	if ($(this).is(':checked'))
+	{
+	    $('.expression_steps').attr('disabled', false)
+	}
+	else
+	{
+	    $('.expression_steps').attr('disabled', true)
+	}
+    });
+});
 
 $('#example').popover({html:true})
 
