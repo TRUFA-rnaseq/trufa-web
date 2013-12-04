@@ -24,6 +24,7 @@ urls = (
     '/run_job',"RunJob",
     '/about', 'About',
     '/login', 'Login',
+    '/setup', 'Setup',
     '/login_error', 'LoginError',
     '/logout', 'Logout',
     '/ajax/me', 'AjaxMe',
@@ -84,7 +85,18 @@ class About:
 #-------------------------------------------------------------------------------
 class Manager:
     def GET( self ):
-        return get_render().manager()
+        if logged():
+            return get_render().manager()
+        else:
+            raise web.seeother('/')
+
+#-------------------------------------------------------------------------------
+class Setup:
+    def GET( self ):
+        if logged():
+            return get_render().setup()
+        else:
+            raise web.seeother('/')
 
 #-------------------------------------------------------------------------------
 class Login:
