@@ -61,7 +61,8 @@ def init():
         shutil.copy( template, database )
 
     # create empty password file
-    open( passwdfile, 'w' ).close()
+    if not os.path.isfile( passwdfile ):
+        open( passwdfile, 'w' ).close()
 
     name = 'admin' # same name and passwd
     insertUser( name, name, "j.smith@example.com" )
@@ -88,6 +89,27 @@ def insertUser( name, passwd, email ):
             userdb.add( name, passwd )
     except htpasswd.basic.UserExists, e:
         print "ERROR: User Already Exists ", name, e
+
+#-------------------------------------------------------------------------------
+def changeUserPassword( name, newpass ):
+    try:
+        with htpasswd.Basic( passwdfile ) as userdb:
+            userdb.change_password( name, newpass )
+    except htpasswd.basic.UserNotExists, e:
+        print "ERROR: User Not Exists ", name, e
+        return False
+
+    h = bcrypt.hashpw( newpass, bcrypt.gensalt(BCRYPT_ROUNDS) )
+
+    conn = sqlite3.connect( database )
+    try:
+        with conn:
+            conn.execute( 'UPDATE user SET passwd=? WHERE name=?', (h,name) )
+    except:
+        print "ERROR: changing password ", name
+        return False
+
+    return True
 
 #-------------------------------------------------------------------------------
 def checkUser( name, passwd ):
