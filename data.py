@@ -12,6 +12,7 @@ FT_TGZ_FAST = 2
 FT_SEQ_DB = 3
 FT_ASSEM = 4
 FT_MAP_ASSEM = 5
+FT_HMM = 6
 
 fileExtTable = {
     'fastq': FT_FAST,
@@ -20,6 +21,7 @@ fileExtTable = {
     'fq.tar.gz': FT_TGZ_FAST,
     'bam': FT_MAP_ASSEM,
     'sam': FT_MAP_ASSEM,
+    'hmm': FT_HMM
 }
 
 fileOptionTable = {
@@ -29,6 +31,7 @@ fileOptionTable = {
     'seq_db' : FT_SEQ_DB,
     'assem' : FT_ASSEM,
     'map_assem' : FT_MAP_ASSEM,
+    'hmm_profile' : FT_HMM
 }
 
 #         typo            extension
@@ -38,6 +41,7 @@ fileOptionTable = {
 # 3       seq databases   .fas
 # 4       assemblies      .fas
 # 5       mapped assbl.   .bam or .sam
+# 6       hmm profile     .hmm 
 
 #-------------------------------------------------------------------------------
 def getUserFilename( username, filename ):
