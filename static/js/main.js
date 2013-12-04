@@ -1,4 +1,16 @@
 /* = DEBUG ==================================================================== */
+function showClear( msg ){
+    if( $('#msgerror').length ){
+        $('#msgerror').empty()
+    }
+}
+
+function showOK( msg ){
+    if( $('#msgerror').length ){
+        $('#msgerror').append( '<div class="alert alert-success">' + msg + '</div>' );
+    }
+}
+
 function showWarning( msg ){
     if( $('#msgerror').length ){
         $('#msgerror').append( '<div class="alert">' + msg + '</div>' );
@@ -15,8 +27,8 @@ function showError( msg ){
 !function ($) {
     "use strict"; // jshint ;_;
 
-    if( $( '#username').length ){
-        refreshUserName();
+    if( $( '#navbar-username').length ){
+        refreshNavbarUserName();
     }
 
 }(window.jQuery);
@@ -29,9 +41,9 @@ function getUserName( f_ok ){
     });
 }
 
-function refreshUserName(){
+function refreshNavbarUserName(){
     getUserName( function( username ){
-        $('#username').replaceWith( '<p>' + username + '</p>' );
+        $('#navbar-username').html( username );
     });
 }
 

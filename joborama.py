@@ -24,6 +24,7 @@ urls = (
     '/run_job',"RunJob",
     '/about', 'About',
     '/login', 'Login',
+    '/setup', 'Setup',
     '/login_error', 'LoginError',
     '/logout', 'Logout',
     '/ajax/me', 'AjaxMe',
@@ -84,7 +85,18 @@ class About:
 #-------------------------------------------------------------------------------
 class Manager:
     def GET( self ):
-        return get_render().manager()
+        if logged():
+            return get_render().manager()
+        else:
+            raise web.seeother('/')
+
+#-------------------------------------------------------------------------------
+class Setup:
+    def GET( self ):
+        if logged():
+            return get_render().setup()
+        else:
+            raise web.seeother('/')
 
 #-------------------------------------------------------------------------------
 class Login:
@@ -125,6 +137,32 @@ class AjaxMe:
     def GET( self ):
         if logged():
             return json.dumps( {'username': session.user} )
+        else:
+            raise web.seeother('/')
+
+    def PUT( self ):
+        if logged():
+            try:
+                passwd = web.input().oldpass
+                if not database.checkUser( session.user, passwd ):
+                    return json.dumps( {'ok':False, 'msg': "invalid password" } )
+
+                newpass = web.input().newpass
+                repeatpass = web.input().repeatpass
+
+                if newpass != repeatpass:
+                    return json.dumps( {'ok':False, 'msg': "password check invalid" } )
+
+                if database.changeUserPassword( session.user, newpass ):
+                    return json.dumps( {'ok':True } )
+                else:
+                    return json.dumps( {'ok':False, 'msg': "password change error" } )
+
+            except:
+                print sys.exc_info()
+                return json.dumps( {'ok':False, 'msg':"can't update user"} )
+
+            return json.dumps( {'ok':False, 'msg':"unknown error"} )
         else:
             raise web.seeother('/')
 
