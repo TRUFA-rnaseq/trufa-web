@@ -1,4 +1,16 @@
 /* = DEBUG ==================================================================== */
+function showClear( msg ){
+    if( $('#msgerror').length ){
+        $('#msgerror').empty()
+    }
+}
+
+function showOK( msg ){
+    if( $('#msgerror').length ){
+        $('#msgerror').append( '<div class="alert alert-success">' + msg + '</div>' );
+    }
+}
+
 function showWarning( msg ){
     if( $('#msgerror').length ){
         $('#msgerror').append( '<div class="alert">' + msg + '</div>' );
