@@ -2,15 +2,18 @@
   <form id="jobform">
     <div class="well well-large">
 
-      <p id="demo">test</p>
+      <p id="demo" hidden>test</p>
 
 
-      <h2>What type of input:</h2>
+      <h2>Type of input:</h2>
 
-      <a href="#" class="btn" data-toggle="popover" title="" data-content="Depending on the input you will specify you can perform various steps:<br>
-									   - with reads only, you can produce an assembly, then identify and quantify the expression of each contigs<br>
-									   - with an assembly, you can go directly to the idenfication steps<br>
-									   - with both assembly and reads you can directly identify and quantify the expression." data-original-title="Input" id="example">Help</a>
+<!-- Other possibily for help messages -->
+
+      <!-- <a href="#" class="btn" data-toggle="popover" title="" data-content="Depending on the input you will specify you can perform various steps:<br> -->
+      <!-- 									   - with reads only, you can produce an assembly, then identify and quantify the expression of each contigs<br> -->
+      <!-- 									   - with an assembly, you can go directly to the idenfication steps<br> -->
+      <!-- 									   - with both assembly and reads you can directly identify and quantify the expression." data-original-title="Input" id="example">Help</a> -->
+
       
       <div class="alert alert-info">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -320,15 +323,15 @@
 	  <h3>Assembly and Mapping steps:</h3>
 	  <label class="checkbox">
 	    <input type="checkbox" id="trinity" name="TRINITY" class="assembly_steps" disabled>
-	    Trinity assembly
+	    Assemble with Trinity
 	  </label>
 	  <label class="checkbox hidden">
 	    <input type="checkbox" id="bowtie1" name="BOWTIE1" class="mapping_steps" disabled>
-	    Aligning reads against contigs (Bowtie1)
+	    Align reads against contigs (Bowtie1)
 	  </label>
 	  <label class="checkbox">
 	    <input type="checkbox" id="bowtie2" name="BOWTIE2" class="mapping_steps" disabled>
-	    Aligning reads against contigs (Bowtie2)
+	    Align reads against contigs with Bowtie2
 	  </label>
 	  <!-- <label class="checkbox"> -->
 	  <!--   <input type="checkbox" id="cdhitest" name="CDHITEST"> -->
@@ -629,10 +632,12 @@
 	  </div> <!-- end contig blatx dropdown -->
 
 	  <h4>Classic HMMER searches:</h4>
-	  <label class="checkbox">
-	    <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA" class="identification_steps" disabled>
-	    Cegma
-	  </label>
+
+	  <!-- <label class="checkbox"> -->
+	  <!--   <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA" class="identification_steps" disabled> -->
+	  <!--   Cegma -->
+	  <!-- </label> -->
+
 	  <label class="checkbox">
 	    <input type="checkbox" id="hmmer_PfamA" name="HMMER_PFAMA" class="identification_steps" disabled>
 	    PfamA
@@ -661,10 +666,12 @@
 	    <input type="checkbox" id="blast_nr" name="BLAST_NR" class="identification_steps" disabled>
 	    Blast against nr
 	  </label>
-	  <label class="checkbox">
-	    <input type="checkbox" id="interproscan" name="INTERPROSCAN" class="identification_steps" disabled hidden>
-	    Interproscan (in dvpt)
-	  </label>
+
+	  <!-- <label class="checkbox"> -->
+	  <!--   <input type="checkbox" id="interproscan" name="INTERPROSCAN" class="identification_steps" disabled> -->
+	  <!--   Interproscan (in dvpt) -->
+	  <!-- </label> -->
+
 	  <label class="checkbox">
 	    <input type="checkbox" id="blast2go" name="BLAST2GO" class="identification_steps" disabled>
 	    Blast2GO
