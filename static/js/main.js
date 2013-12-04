@@ -443,7 +443,9 @@ $(document).ready(function(){
         var in_type = $("input[name=input_type]:checked").val()
 //	$('#demo').append(in_type)
 	var warn_read = $('div[id=no_reads_alert]')
+	var warn_read2 = $('div[id=no_reads_alert2]')
 	var warn_ass = $('div[id=no_assembly_alert]')
+
 
 	switch(in_type){
 	case "single": 
@@ -457,6 +459,7 @@ $(document).ready(function(){
             $('.cleaning_steps').attr('disabled', false);
             $('.assembly_steps').attr('disabled', false);
 	    warn_read.hide()
+	    warn_read2.hide()
             $('.mapping_steps').attr('disabled', true);
             $('.identification_steps').attr('disabled', true);
             warn_ass.show()
@@ -473,6 +476,7 @@ $(document).ready(function(){
             $('.cleaning_steps').attr('disabled', false);
             $('.assembly_steps').attr('disabled', false);
 	    warn_read.hide()
+	    warn_read2.hide()
             $('.mapping_steps').attr('disabled', true);
             $('.identification_steps').attr('disabled', true);
             warn_ass.show()
@@ -488,6 +492,7 @@ $(document).ready(function(){
             $('.cleaning_steps').attr('disabled', true);
             $('.assembly_steps').attr('disabled', true);
 	    warn_read.show()
+	    warn_read2.show()
             $('.mapping_steps').attr('disabled', true);
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
@@ -504,6 +509,7 @@ $(document).ready(function(){
             $('.cleaning_steps').attr('disabled', false);
             $('.assembly_steps').attr('disabled', true);
 	    warn_read.hide()
+	    warn_read2.show()
             $('.mapping_steps').attr('disabled', false);
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
@@ -520,6 +526,7 @@ $(document).ready(function(){
             $('.cleaning_steps').attr('disabled', false);
             $('.assembly_steps').attr('disabled', true);
 	    warn_read.hide()
+	    warn_read2.show()
             $('.mapping_steps').attr('disabled', false);
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()

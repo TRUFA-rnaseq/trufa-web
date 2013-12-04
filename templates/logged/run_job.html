@@ -321,6 +321,13 @@
 
 	<div class="tab-pane" id="assembly">
 	  <h3>Assembly and Mapping steps:</h3>
+
+	  <div class="alert alert-error" id="no_reads_alert2" hide>
+	    <span class="label label-important">Warning</span>
+	    <p><b> Assembling options are currently disabled.</b></p>
+	    <p><b>If you want to perform an assembly, you need to specify reads files and solely reads files as input (single or paired reads)</b></p>
+	  </div>	  
+
 	  <label class="checkbox">
 	    <input type="checkbox" id="trinity" name="TRINITY" class="assembly_steps" disabled>
 	    Assemble with Trinity
