@@ -27,8 +27,8 @@ function showError( msg ){
 !function ($) {
     "use strict"; // jshint ;_;
 
-    if( $( '#username').length ){
-        refreshUserName();
+    if( $( '#navbar-username').length ){
+        refreshNavbarUserName();
     }
 
 }(window.jQuery);
@@ -41,9 +41,9 @@ function getUserName( f_ok ){
     });
 }
 
-function refreshUserName(){
+function refreshNavbarUserName(){
     getUserName( function( username ){
-        $('#username').replaceWith( '<p>' + username + '</p>' );
+        $('#navbar-username').html( username );
     });
 }
 
