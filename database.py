@@ -91,6 +91,27 @@ def insertUser( name, passwd, email ):
         print "ERROR: User Already Exists ", name, e
 
 #-------------------------------------------------------------------------------
+def changeUserPassword( name, newpass ):
+    try:
+        with htpasswd.Basic( passwdfile ) as userdb:
+            userdb.change_password( name, newpass )
+    except htpasswd.basic.UserNotExists, e:
+        print "ERROR: User Not Exists ", name, e
+        return False
+
+    h = bcrypt.hashpw( newpass, bcrypt.gensalt(BCRYPT_ROUNDS) )
+
+    conn = sqlite3.connect( database )
+    try:
+        with conn:
+            conn.execute( 'UPDATE user SET passwd=? WHERE name=?', (h,name) )
+    except:
+        print "ERROR: changing password ", name
+        return False
+
+    return True
+
+#-------------------------------------------------------------------------------
 def checkUser( name, passwd ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
