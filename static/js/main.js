@@ -351,7 +351,7 @@ function refreshFileList(){
 
         xhr.onreadystatechange = function( e ){
             if( 4 == this.readyState ){
-                alert( "job sended" );
+                alert( "Job sent: Go to 'Home' to check its status" );
                 refreshJobList();
             }
         };
@@ -421,8 +421,17 @@ $(document).ready(function(){
 
 // Setting single or paired reads
     in_type.change(function (){
+// unchecking all boxes
+	$('.cleaning_steps').attr('checked', false)
+	$('.assembly_steps').attr('checked', false)
+	$('.mapping_steps').attr('checked', false)
+	$('.identification_steps').attr('checked', false)
+	$('.expression_steps').attr('checked', false)
+
         var in_type = $("input[name=input_type]:checked").val()
-	$('#demo').append(in_type)
+//	$('#demo').append(in_type)
+	var warn_read = $('div[id=no_reads_alert]')
+	var warn_ass = $('div[id=no_assembly_alert]')
 
 	switch(in_type){
 	case "single": 
@@ -433,6 +442,13 @@ $(document).ready(function(){
             reads_1.show()
             reads_2.hide()
 	    assembly_in.hide()
+            $('.cleaning_steps').attr('disabled', false);
+            $('.assembly_steps').attr('disabled', false);
+	    warn_read.hide()
+            $('.mapping_steps').attr('disabled', true);
+            $('.identification_steps').attr('disabled', true);
+            warn_ass.show()
+	    $('.expression_steps').attr('disabled', true)
 	    break;
 	case "paired":
 	    $('#jobfile').removeAttr('disabled')
@@ -442,6 +458,13 @@ $(document).ready(function(){
             reads_1.show()
             reads_2.show()
 	    assembly_in.hide()
+            $('.cleaning_steps').attr('disabled', false);
+            $('.assembly_steps').attr('disabled', false);
+	    warn_read.hide()
+            $('.mapping_steps').attr('disabled', true);
+            $('.identification_steps').attr('disabled', true);
+            warn_ass.show()
+	    $('.expression_steps').attr('disabled', true)
 	    break;
 	case "contigs":
 	    $('#jobfile3').removeAttr('disabled')
@@ -450,6 +473,13 @@ $(document).ready(function(){
             reads_1.hide()
             reads_2.hide()
 	    assembly_in.show()
+            $('.cleaning_steps').attr('disabled', true);
+            $('.assembly_steps').attr('disabled', true);
+	    warn_read.show()
+            $('.mapping_steps').attr('disabled', true);
+            $('.identification_steps').attr('disabled', false);
+            warn_ass.hide()
+	    $('.expression_steps').attr('disabled', true)
 	    break;
 	case "contigs_with_single":
 	    $('#jobfile').removeAttr('disabled')
@@ -459,6 +489,13 @@ $(document).ready(function(){
 	    reads_1.show()
 	    assembly_in.show()
             reads_2.hide()
+            $('.cleaning_steps').attr('disabled', false);
+            $('.assembly_steps').attr('disabled', true);
+	    warn_read.hide()
+            $('.mapping_steps').attr('disabled', false);
+            $('.identification_steps').attr('disabled', false);
+            warn_ass.hide()
+	    $('.expression_steps').attr('disabled', true)
 	    break;
 	case "contigs_with_paired":
 	    $('#jobfile').removeAttr('disabled')
@@ -468,51 +505,55 @@ $(document).ready(function(){
 	    reads_1.show()
             reads_2.show()
 	    assembly_in.show()
+            $('.cleaning_steps').attr('disabled', false);
+            $('.assembly_steps').attr('disabled', true);
+	    warn_read.hide()
+            $('.mapping_steps').attr('disabled', false);
+            $('.identification_steps').attr('disabled', false);
+            warn_ass.hide()
+	    $('.expression_steps').attr('disabled', true)
 	    break;
 	}
     });
 });
-// Displaying warning message if action are not available with the current input
-(function($) {
+
+// activate/desactivate mapping/identification steps
+$(function (){
     var trin_check = $("input[id=trinity]")
-    var warn = $('div[id=no_assembly_alert]')
-
-    trin_check.change( function(){
-        if (trin_check.is(':checked'))
+    var warn_ass = $('div[id=no_assembly_alert]')
+    trin_check.change(function(){
+	if (trin_check.is(':checked'))
+	{
+            $('.mapping_steps').attr('disabled', false);
+            $('.identification_steps').attr('disabled', false);
+            warn_ass.hide()
+	}
+	else
         {
-            warn.hide()
-        }
-        else
-        {
-            warn.show()
-        }
-    })
+            $('.mapping_steps').attr('disabled', true);
+            $('.identification_steps').attr('disabled', true);
+            warn_ass.show()
+        }	
 
-})(jQuery);
+    });
+});
 
-
-// Function to have activation/deactivation of checkboxes
-$(function() {
-
-    var in_type = $("input[name=input_type]")
-    var warn_read = $('div[id=no_reads_alert]')
-
-    in_type.change(function (){
-        $("p[id=demo]").text($(this).val())
-
-        cleaning_arr = ["single","paired","contigs_with_single","contigs_with_paired"]
-
-        if (jQuery.inArray($(this).val(), cleaning_arr) === -1)
-        {
-            $('.cleaning_steps').attr('disabled', true);
-            warn_read.show()
-        }
-        else
-        {
-            $('.cleaning_steps').attr('disabled', false);
-            warn_read.hide()
-        }
+// activate/desactivate expression steps:
+$(function(){
+    var bow_check = $("input[id=bowtie2]")
+    
+    bow_check.change(function (){
+ 	if ($(this).is(':checked'))
+ 	{
+	    $('.expression_steps').attr('disabled', false)
+	}
+	else
+	{
+	    $('.expression_steps').attr('disabled', true)
+	}
     });
 });
 
 $('#example').popover({html:true})
+
+			    
