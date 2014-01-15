@@ -70,7 +70,7 @@ def runjob( user, jobid, var1):
 
     for k in var1:
         print k + " : " + var1[k]
-    
+
     proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     output = proc.communicate()[0]
     mm = reJOBID.search( output )
