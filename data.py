@@ -10,10 +10,11 @@ DATADIR = "/gpfs/res_projects/cvcv/webserver/users/"
 FT_UNKNOWN = 0
 FT_FAST = 1
 FT_TGZ_FAST = 2
-FT_SEQ_DB = 3
-FT_ASSEM = 4
-FT_MAP_ASSEM = 5
-FT_HMM = 6
+FT_SEQ_DB_NUC = 3
+FT_SEQ_DB_AA = 4
+FT_ASSEM = 5
+FT_MAP_ASSEM = 6
+FT_HMM = 7
 
 fileExtTable = {
     'fastq': FT_FAST,
@@ -29,7 +30,8 @@ fileOptionTable = {
     'undef' : FT_UNKNOWN,
     'fast' : FT_FAST,
     'tgz_fast' : FT_TGZ_FAST,
-    'seq_db' : FT_SEQ_DB,
+    'seq_db_nuc' : FT_SEQ_DB_NUC,
+    'seq_db_aa' : FT_SEQ_DB_AA,
     'assem' : FT_ASSEM,
     'map_assem' : FT_MAP_ASSEM,
     'hmm_profile' : FT_HMM

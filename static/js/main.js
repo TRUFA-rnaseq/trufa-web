@@ -327,7 +327,7 @@ function refreshFileList(){
     });
 
 // Getting only assembly files for the "start a job" form
-    getFileListWithType( 4,  function( files ){
+    getFileListWithType( 5,  function( files ){
 
         $.each(files, function( key, val ) {
             items3.push('<option value="' + val['id'] + '">' + val['file'] + '</option>');
