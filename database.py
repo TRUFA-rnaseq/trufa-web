@@ -365,6 +365,18 @@ def getJobInfo( jobid ):
     return { 'jobid': jobid, 'state': jdata[0], 'slurmids': slurms, 'files': files }
 
 #-------------------------------------------------------------------------------
+def getJustCreatedJobs():
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'SELECT jid,uid,state FROM job WHERE state=0' )
+    jdata = c.fetchall()
+    jobs = []
+    for j in jdata:
+        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2]} )
+
+    return jobs
+
+#-------------------------------------------------------------------------------
 def getActiveJobs():
     conn = sqlite3.connect( database )
     c = conn.cursor()
