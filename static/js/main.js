@@ -496,7 +496,7 @@ $(document).ready(function(){
             $('.mapping_steps').attr('disabled', true);
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
-	    $('.expression_steps').attr('disabled', false)
+	    $('.expression_steps').attr('disabled', true)
 	    break;
 	case "contigs_with_single":
 	    $('#jobfile').removeAttr('disabled')
@@ -513,7 +513,7 @@ $(document).ready(function(){
             $('.mapping_steps').attr('disabled', false);
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
-	    $('.expression_steps').attr('disabled', true)
+	    $('.expression_steps').attr('disabled', false)
 	    break;
 	case "contigs_with_paired":
 	    $('#jobfile').removeAttr('disabled')
@@ -530,7 +530,7 @@ $(document).ready(function(){
             $('.mapping_steps').attr('disabled', false);
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
-	    $('.expression_steps').attr('disabled', true)
+	    $('.expression_steps').attr('disabled', false)
 	    break;
 	}
     });
@@ -545,12 +545,14 @@ $(function (){
 	{
             $('.mapping_steps').attr('disabled', false);
             $('.identification_steps').attr('disabled', false);
+            $('.expression_steps').attr('disabled', false);
             warn_ass.hide()
 	}
 	else
         {
             $('.mapping_steps').attr('disabled', true);
             $('.identification_steps').attr('disabled', true);
+            $('.expression_steps').attr('disabled', true);
             warn_ass.show()
         }	
 
