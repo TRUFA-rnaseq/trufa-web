@@ -44,7 +44,7 @@ fileOptionTable = {
 # 3       seq databases   .fas
 # 4       assemblies      .fas
 # 5       mapped assbl.   .bam or .sam
-# 6       hmm profile     .hmm 
+# 6       hmm profile     .hmm
 
 #-------------------------------------------------------------------------------
 def getUserFilename( username, filename ):
