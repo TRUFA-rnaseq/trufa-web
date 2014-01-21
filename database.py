@@ -263,7 +263,7 @@ def createJob( user ):
     c.execute( 'SELECT uid FROM user WHERE name=?', (user,) )
     uid = c.fetchone()
     if uid is not None:
-        c.execute( 'INSERT INTO job VALUES (null,?,0,-1)', (uid[0],) )
+        c.execute( 'INSERT INTO job VALUES (null,?,0)', (uid[0],) )
         c.execute( 'SELECT last_insert_rowid() FROM job' )
         jobid = c.fetchone()[0]
         conn.commit()
@@ -334,7 +334,7 @@ def setJobCompleted( jobid ):
 def getJobInfo( jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute('SELECT state,slurmid FROM job WHERE jid=?', (jobid,) )
+    c.execute('SELECT state FROM job WHERE jid=?', (jobid,) )
     jdata = c.fetchone()
     if jdata is None:
         conn.close()
@@ -353,19 +353,26 @@ def getJobInfo( jobid ):
 
         files.append( {'fid': jf[0], 'name': fdata[0], 'type': jf[1] } )
 
+    c.execute('SELECT slurmid FROM jobslurm WHERE jid=?', (jobid,) )
+    jslurms = c.fetchall()
+
+    slurms = []
+    for js in jslurms:
+        slurms.append( {'slurmid': js[0] } )
+
     conn.close()
 
-    return { 'jobid': jobid, 'state': jdata[0], 'slurmid': jdata[1], 'files': files }
+    return { 'jobid': jobid, 'state': jdata[0], 'slurmids': slurms, 'files': files }
 
 #-------------------------------------------------------------------------------
 def getActiveJobs():
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'SELECT jid,uid,state,slurmid FROM job WHERE state=1 OR state=2' )
+    c.execute( 'SELECT jid,uid,state FROM job WHERE state=1 OR state=2' )
     jdata = c.fetchall()
     jobs = []
     for j in jdata:
-        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2],'slurmid':j[3]} )
+        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2]} )
 
     return jobs
 
