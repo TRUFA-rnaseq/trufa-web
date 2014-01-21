@@ -57,7 +57,8 @@ def runjob( user, jobid, var1):
     if mm:
         slurmid = int(mm.group('slurmid'))
         print "Slurm ID", str(slurmid)
-        database.setJobSubmitted( jobid, slurmid )
+        database.setJobSubmitted( jobid )
+        database.addJobSlurmRef( jobid, slurmid )
     else:
         raise (-1)
 
