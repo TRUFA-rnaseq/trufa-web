@@ -384,7 +384,16 @@ def getActiveJobs():
     jdata = c.fetchall()
     jobs = []
     for j in jdata:
-        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2]} )
+        c.execute('SELECT slurmid FROM jobslurm WHERE jid=?', (j[0],) )
+        jslurms = c.fetchall()
+
+        slurms = []
+        for js in jslurms:
+            slurms.append( js[0] )
+
+        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2],'slurmids':slurms} )
+
+    conn.close()
 
     return jobs
 
