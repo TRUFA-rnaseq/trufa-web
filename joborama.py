@@ -245,7 +245,7 @@ class AjaxJobs:
     def POST( self ):
         if logged():
             x = web.input()
-
+            print x
             try:
                 pipeline.startJob( session.user, x )
 

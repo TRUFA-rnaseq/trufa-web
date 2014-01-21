@@ -27,45 +27,25 @@ def runjob( user, jobid, var1):
     print "RUNNING JOB " + str(jobid)
 
 # stagein
-    if hasattr(var1, "blat_custom_reads_n"):
-        var1['BLAT_CUSTOM_READS'] = 'on'
-
-    if hasattr(var1, "blat_custom_ass_n"):
-        var1['BLAT_CUSTOM_ASS'] = 'on'
-
-    if hasattr(var1, "file"):
+    if var1.file:
         fileid1 = int(var1.file)
         localfile1 = database.getFileFullName( fileid1 )
         remotefile1 = os.path.join( remotehome, localfile1 )
         database.addJobFile( jobid, fileid1, database.FILEIN )
-        var1['file_read1'] = remotefile1
+        var1['filename1'] = remotefile1
 
-    if hasattr(var1, "file2"):
+    if var1.file2:
         fileid2 = int(var1.file2)
         localfile2 = database.getFileFullName( fileid2 )
         remotefile2 = os.path.join( remotehome, localfile2 )
         database.addJobFile( jobid, fileid2, database.FILEIN )
-        var1['file_read2'] = remotefile2
+        var1['filename2'] = remotefile2
 
-    if hasattr(var1, "file3"):
-        fileid3 = int(var1.file3)
-        localfile3 = database.getFileFullName( fileid3 )
-        remotefile3 = os.path.join( remotehome, localfile3 )
-        database.addJobFile( jobid, fileid3, database.FILEIN )
-        var1['file_ass'] = remotefile3
-
+    if not var1.file2:
         # submit
-    if var1.input_type == "single":
         command = [ pipe_launch, user, str(var1), remotefile1, str(jobid) ]
-    elif var1.input_type == "paired":
+    if var1.file and var1.file2:
         command = [ pipe_launch, user, str(var1), remotefile1, remotefile2, str(jobid) ]
-    elif var1.input_type =="contigs":
-        command = [ pipe_launch, user, str(var1), remotefile3, str(jobid) ]
-    elif var1.input_type =="contigs_with_single":
-        command = [ pipe_launch, user, str(var1), remotefile1, remotefile3, str(jobid) ]
-    elif var1.input_type =="contigs_with_paired":
-        command = [ pipe_launch, user, str(var1), remotefile1, remotefile2, remotefile3, str(jobid) ]   
-
     print command
 
     for k in var1:
@@ -77,7 +57,8 @@ def runjob( user, jobid, var1):
     if mm:
         slurmid = int(mm.group('slurmid'))
         print "Slurm ID", str(slurmid)
-        database.setJobSubmitted( jobid, slurmid )
+        database.setJobSubmitted( jobid )
+        database.addJobSlurmRef( jobid, slurmid )
     else:
         raise (-1)
 
@@ -89,49 +70,60 @@ def run():
     return p
 
 #-------------------------------------------------------------------------------
-def checkSlurmJob( slurmid ):
-    command = ["ssh", remotehost, "mnq", "--job", str(slurmid) ]
-    proc = subprocess.Popen( command, stdout=subprocess.PIPE )
-    output = proc.communicate()[0]
+def checkSlurmJob( slurmids ):
+    if len(slurmids) > 0:
+        idsstr = ",".join(map(str,slurmids))
+        command = ["ssh", remotehost, "mnq", "--job", idsstr ]
+        proc = subprocess.Popen( command, stdout=subprocess.PIPE )
+        output = proc.communicate()[0]
 
-    if len(output.splitlines()) <= 1:
-        return database.JOB_COMPLETED
+        if len(output.splitlines()) <= 1:
+            return database.JOB_COMPLETED
 
-    mm = re.search( "RUNNING", output )
-    if mm is not None:
-        return database.JOB_RUNNING
+        mm = re.search( "RUNNING", output )
+        if mm is not None:
+            return database.JOB_RUNNING
 
     return database.JOB_SUBMITTED
 
 #-------------------------------------------------------------------------------
 def pipelineLoop():
     try:
+        print "start pipeline loop"
         while (1 == 1):
-            time.sleep( 100 )
+            time.sleep( 60 )
+            # check
+            zjobs = database.getJustCreatedJobs()
+            if len(zjobs) > 0:
+                zjobids = map( lambda js: js['jid'], zjobs )
+                print "Warning: " + str(len(zjobs)) + " zombie jobs : " + str(zjobids)
+
             jobs = database.getActiveJobs()
             if len(jobs) > 0:
                 print "Checking " + str(len(jobs)) + " job/s"
 
             for job in jobs:
                 jobid = job['jid']
-                newstate = checkSlurmJob( job['slurmid'] )
+                newstate = checkSlurmJob( job['slurmids'] )
                 if newstate == database.JOB_RUNNING and job['state'] != database.JOB_RUNNING:
+                    print "Job " + str(jobid) + " start RUNNING"
                     database.setJobRunning( jobid )
 
                 if newstate == database.JOB_COMPLETED:
-                    userid = job['uid']
-                    slurmid = job['slurmid']
-                    # stageout
-                    outs = ["jor_"+str(slurmid)+".out", "jor_"+str(slurmid)+".err"]
-                    for fileoutname in outs:
-                        fileout = database.createFile( userid, fileoutname )
-                        database.addJobFile( jobid, fileout, database.FILEOUT )
-                        localfile = database.getFileFullName( fileout )
-                        (localdir, localbase) = os.path.split( localfile )
-                        remotedir = os.path.join( remotehome, localdir )
-                        remotefile = os.path.join( remotehome, localfile )
-                        os.system('scp "%s:%s" "%s"' % (remotehost, remotefile, localfile) )
+            #         userid = job['uid']
+            #         slurmid = job['slurmid']
+            #         # stageout
+            #         outs = ["jor_"+str(slurmid)+".out", "jor_"+str(slurmid)+".err"]
+            #         for fileoutname in outs:
+            #             fileout = database.createFile( userid, fileoutname )
+            #             database.addJobFile( jobid, fileout, database.FILEOUT )
+            #             localfile = database.getFileFullName( fileout )
+            #             (localdir, localbase) = os.path.split( localfile )
+            #             remotedir = os.path.join( remotehome, localdir )
+            #             remotefile = os.path.join( remotehome, localfile )
+            #             os.system('scp "%s:%s" "%s"' % (remotehost, remotefile, localfile) )
 
+                    print "Job " + str(jobid) + " COMPLETED"
                     database.setJobCompleted( jobid )
 
     except KeyboardInterrupt:
