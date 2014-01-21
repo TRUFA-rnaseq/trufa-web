@@ -47,6 +47,10 @@ def runjob( user, jobid, var1):
     if var1.file and var1.file2:
         command = [ pipe_launch, user, str(var1), remotefile1, remotefile2, str(jobid) ]
     print command
+
+    for k in var1:
+        print k + " : " + var1[k]
+
     proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     output = proc.communicate()[0]
     mm = reJOBID.search( output )

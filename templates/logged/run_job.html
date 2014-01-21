@@ -2,15 +2,18 @@
   <form id="jobform">
     <div class="well well-large">
 
-      <p id="demo">test</p>
+      <p id="demo" hidden>test</p>
 
 
-      <h2>What type of input:</h2>
+      <h2>Type of input:</h2>
 
-      <a href="#" class="btn" data-toggle="popover" title="" data-content="Depending on the input you will specify you can perform various steps:<br>
-									   - with reads only, you can produce an assembly, then identify and quantify the expression of each contigs<br>
-									   - with an assembly, you can go directly to the idenfication steps<br>
-									   - with both assembly and reads you can directly identify and quantify the expression." data-original-title="Input" id="example">Help</a>
+<!-- Other possibily for help messages -->
+
+      <!-- <a href="#" class="btn" data-toggle="popover" title="" data-content="Depending on the input you will specify you can perform various steps:<br> -->
+      <!-- 									   - with reads only, you can produce an assembly, then identify and quantify the expression of each contigs<br> -->
+      <!-- 									   - with an assembly, you can go directly to the idenfication steps<br> -->
+      <!-- 									   - with both assembly and reads you can directly identify and quantify the expression." data-original-title="Input" id="example">Help</a> -->
+
       
       <div class="alert alert-info">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -98,9 +101,10 @@
 	    Quality Trimming
 	  </label>
 
-	  <label class="checkbox hidden">
-	    <input class="cleaning_steps" type="checkbox" id="adapters"  name="ADAPT" disabled>
-	    Adapters cleaning
+	  <h4>Removing adapters:</h4>
+	  <label class="checkbox">
+	    <input class="cleaning_steps" type="checkbox" id="adapters"  name="CUTADAPT" disabled>
+	    Cutadapt
 	  </label>
 	  <h4>BLAT against potential contaminants:</h4>
 	  <label class="checkbox">
@@ -318,17 +322,28 @@
 
 	<div class="tab-pane" id="assembly">
 	  <h3>Assembly and Mapping steps:</h3>
+
+	  <div class="alert alert-error" id="no_reads_alert2" hide>
+	    <span class="label label-important">Warning</span>
+	    <p><b> Assembling options are currently disabled.</b></p>
+	    <p><b>If you want to perform an assembly, you need to specify reads files and solely reads files as input (single or paired reads)</b></p>
+	  </div>	  
+
 	  <label class="checkbox">
 	    <input type="checkbox" id="trinity" name="TRINITY" class="assembly_steps" disabled>
-	    Trinity assembly
+	    Assemble with Trinity
+	  </label>
+	  <label class="checkbox">
+	    <input type="checkbox" id="assembly_qual" name="ASSEMBLY_QUAL" class="identification_steps" disabled>
+	    Assembly quality checks
 	  </label>
 	  <label class="checkbox hidden">
 	    <input type="checkbox" id="bowtie1" name="BOWTIE1" class="mapping_steps" disabled>
-	    Aligning reads against contigs (Bowtie1)
+	    Align reads against contigs (Bowtie1)
 	  </label>
 	  <label class="checkbox">
 	    <input type="checkbox" id="bowtie2" name="BOWTIE2" class="mapping_steps" disabled>
-	    Aligning reads against contigs (Bowtie2)
+	    Align reads against contigs with Bowtie2
 	  </label>
 	  <!-- <label class="checkbox"> -->
 	  <!--   <input type="checkbox" id="cdhitest" name="CDHITEST"> -->
@@ -629,10 +644,12 @@
 	  </div> <!-- end contig blatx dropdown -->
 
 	  <h4>Classic HMMER searches:</h4>
-	  <label class="checkbox">
-	    <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA" class="identification_steps" disabled>
-	    Cegma
-	  </label>
+
+	  <!-- <label class="checkbox"> -->
+	  <!--   <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA" class="identification_steps" disabled> -->
+	  <!--   Cegma -->
+	  <!-- </label> -->
+
 	  <label class="checkbox">
 	    <input type="checkbox" id="hmmer_PfamA" name="HMMER_PFAMA" class="identification_steps" disabled>
 	    PfamA
@@ -647,10 +664,7 @@
 	    <ul class="nav nav-pills">
 	      <li class="dropdown">
 		<a class="dropdown-toggle" id="drop5" role="button" data-toggle="dropdown" href="#">Databases available for HMMER<b class="caret"></b></a>
-		<ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop5">
-		  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">database 1</a></li>
-		  <li role="presentation" class="divider"></li>
-		  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">database 2</a></li>
+		<ul id="hmm_menu0" class="dropdown-menu" role="menu" aria-labelledby="drop5">
 		</ul>
 	      </li>
 	    </ul>
@@ -661,10 +675,12 @@
 	    <input type="checkbox" id="blast_nr" name="BLAST_NR" class="identification_steps" disabled>
 	    Blast against nr
 	  </label>
-	  <label class="checkbox">
-	    <input type="checkbox" id="interproscan" name="INTERPROSCAN" class="identification_steps" disabled hidden>
-	    Interproscan (in dvpt)
-	  </label>
+
+	  <!-- <label class="checkbox"> -->
+	  <!--   <input type="checkbox" id="interproscan" name="INTERPROSCAN" class="identification_steps" disabled> -->
+	  <!--   Interproscan (in dvpt) -->
+	  <!-- </label> -->
+
 	  <label class="checkbox">
 	    <input type="checkbox" id="blast2go" name="BLAST2GO" class="identification_steps" disabled>
 	    Blast2GO
@@ -682,6 +698,15 @@
 	    <input type="checkbox" id="cufflinks" name="CUFFLINKS" class="expression_steps" disabled>
 	    Cufflinks
 	  </label>
+
+	  <label class="checkbox">
+	    <input type="checkbox" id="RSEM" name="RSEM" class="identification_steps" disabled>
+<!-- The class is identification_steps (and not expression_steps) for RSEM possibility to be activated as soon as an assembly is available (bowtie alignment is embed in the RSEM command)
+
+WARNING !!!!!!!! >>> this is not completely correct, since RSEM will be checkable if only an assembly is given (without reads, which is a problem)-->
+	    RSEM
+	  </label>
+
 	  <label class="checkbox hidden">
 	    <input type="checkbox" id="cuffdiff" name="CUFFDIFF" class="expression_steps" disabled>
 	    Cuffdiff
