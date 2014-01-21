@@ -7,6 +7,13 @@
     if( $( '#blat_menu1').length ){
         fillupBlatMenu1()
     }
+    if( $( '#blat_menu2').length ){
+        fillupBlatMenu2()
+    }
+    if( $( '#hmm_menu0').length ){
+        fillupHmmerMenu0()
+    }
+
 
 
     
@@ -36,9 +43,7 @@ function fillupBlatMenu1(){
 	var count = 0
         $.each(files, function( key, val ) {
 
-// this currently defines an array but dont get all values in (just one)
-//            items1.push( "<li role=\"presentation\"><input type='checkbox' name='my_blat_custom[]' value=" + val['file'] + " href=\"#\"> " + val['file'] + "</li>" )
-            items1.push( "<li role=\"presentation\"><input type='checkbox' class='cleaning_steps' name='blat_custom_ass_n'" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
+            items1.push( "<li role=\"presentation\"><input type='checkbox' class='identification_steps' name='blat_custom_ass_n'" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
 
 	    count = count + 1
         });
@@ -47,3 +52,34 @@ function fillupBlatMenu1(){
     });
 }
 
+function fillupBlatMenu2(){
+    getFileListWithType( 4, function( files ){
+        var items1 = [];
+
+	var count = 0
+        $.each(files, function( key, val ) {
+
+            items1.push( "<li role=\"presentation\"><input type='checkbox' class='identification_steps' name='blat_custom_ass_aa'" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
+
+	    count = count + 1
+        });
+
+        $( '#blat_menu2').append( items1 );
+    });
+}
+
+function fillupHmmerMenu0(){
+    getFileListWithType( 7, function( files ){
+        var items1 = [];
+
+	var count = 0
+        $.each(files, function( key, val ) {
+
+            items1.push( "<li role=\"presentation\"><input type='checkbox' class='identification_steps' name='hmm_custom'" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
+
+	    count = count + 1
+        });
+
+        $( '#hmm_menu0').append( items1 );
+    });
+}

@@ -4,14 +4,17 @@ import os
 import os.path
 
 #-------------------------------------------------------------------------------
-DATADIR = "/gpfs/res_projects/cvcv/webserver/data/"
+
+DATADIR = "/gpfs/res_projects/cvcv/webserver/users/"
 
 FT_UNKNOWN = 0
 FT_FAST = 1
 FT_TGZ_FAST = 2
-FT_SEQ_DB = 3
-FT_ASSEM = 4
-FT_MAP_ASSEM = 5
+FT_SEQ_DB_NUC = 3
+FT_SEQ_DB_AA = 4
+FT_ASSEM = 5
+FT_MAP_ASSEM = 6
+FT_HMM = 7
 
 fileExtTable = {
     'fastq': FT_FAST,
@@ -20,15 +23,18 @@ fileExtTable = {
     'fq.tar.gz': FT_TGZ_FAST,
     'bam': FT_MAP_ASSEM,
     'sam': FT_MAP_ASSEM,
+    'hmm': FT_HMM
 }
 
 fileOptionTable = {
     'undef' : FT_UNKNOWN,
     'fast' : FT_FAST,
     'tgz_fast' : FT_TGZ_FAST,
-    'seq_db' : FT_SEQ_DB,
+    'seq_db_nuc' : FT_SEQ_DB_NUC,
+    'seq_db_aa' : FT_SEQ_DB_AA,
     'assem' : FT_ASSEM,
     'map_assem' : FT_MAP_ASSEM,
+    'hmm_profile' : FT_HMM
 }
 
 #         typo            extension
@@ -38,10 +44,13 @@ fileOptionTable = {
 # 3       seq databases   .fas
 # 4       assemblies      .fas
 # 5       mapped assbl.   .bam or .sam
+# 6       hmm profile     .hmm 
 
 #-------------------------------------------------------------------------------
 def getUserFilename( username, filename ):
-    return os.path.join( DATADIR, username, filename )
+    # NOTE EK: NOT SURE THIS IS CORRECT TO CHANGE PATH FOR DATA LIKE THIS
+    # BEFORE WAS:     return os.path.join( DATADIR, username, filename )
+    return os.path.join( DATADIR, username, "data", filename )
 
 #-------------------------------------------------------------------------------
 def saveFile( filename, filedata ):
