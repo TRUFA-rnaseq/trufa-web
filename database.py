@@ -38,7 +38,10 @@ def mkEmptyDatabase( dbname ):
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
 
-    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, state INTEGER, slurmid INTEGER)" )
+    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, state INTEGER)" )
+    conn.commit()
+
+    c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
     conn.commit()
 
     c.execute( "CREATE TABLE jobfile (jid INTEGER, fid INTEGER, jobfiletype INTEGER, PRIMARY KEY(jid, fid) )" )
@@ -296,10 +299,18 @@ def addJobFile( jobid, fileid, jftype ):
     conn.close()
 
 #-------------------------------------------------------------------------------
-def setJobSubmitted( jobid, slurmid ):
+def addJobSlurmRef( jobid, slurmid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'UPDATE job SET slurmid=?, state=1 WHERE jid=?', (slurmid,jobid) )
+    c.execute( 'INSERT INTO jobslurm VALUES (?,?)', (jobid,slurmid) )
+    conn.commit()
+    conn.close()
+
+#-------------------------------------------------------------------------------
+def setJobSubmitted( jobid ):
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'UPDATE job SET state=1 WHERE jid=?', (jobid,) )
     conn.commit()
     conn.close()
 
