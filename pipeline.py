@@ -13,7 +13,8 @@ remotehost = config.REMOTEHOST
 remotehome = config.REMOTEHOME
 pipe_launch = config.PIPE_LAUNCH
 
-reJOBID = re.compile(r"Submitted batch job (?P<slurmid>\d+)")
+reSLURMLINE = re.compile(r"slurmids: (?P<slurmids>\d+(,\d+)*)")
+reSLURMID = re.compile(r"\,")
 
 #-------------------------------------------------------------------------------
 def startJob( user, var1 ):
@@ -21,6 +22,17 @@ def startJob( user, var1 ):
 
     p = multiprocessing.Process( target=runjob, args=(user, jobid, var1) )
     p.start()
+
+#-------------------------------------------------------------------------------
+def getSlurmIds( output ):
+    mm = reSLURMLINE.search( output )
+    sids = []
+    if mm:
+        slurmline = mm.group('slurmids')
+        slurmids = reSLURMID.split( slurmline )
+        sids = map(int,slurmids)
+
+    return sids
 
 #-------------------------------------------------------------------------------
 def runjob( user, jobid, var1):
@@ -53,15 +65,15 @@ def runjob( user, jobid, var1):
 
     proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     output = proc.communicate()[0]
-    mm = reJOBID.search( output )
-    if mm:
-        slurmid = int(mm.group('slurmid'))
-        print "Slurm ID", str(slurmid)
-        database.setJobSubmitted( jobid )
-        database.addJobSlurmRef( jobid, slurmid )
-    else:
-        raise (-1)
+    slurmids = getSlurmIds( ouput )
 
+    if len(slurmids) > 0:
+        database.setJobSubmitted( jobid )
+    else:
+        print "WARNING : task without slurm ids"
+
+    for si in slurmids:
+        database.addJobSlurmRef( jobid, slurmid )
 
 #-------------------------------------------------------------------------------
 def run():
