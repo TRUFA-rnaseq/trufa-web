@@ -21,6 +21,7 @@ def startJob( user, var1 ):
     jobid = database.createJob( user )
 
     p = multiprocessing.Process( target=runjob, args=(user, jobid, var1) )
+    print var1
     p.start()
 
 #-------------------------------------------------------------------------------
@@ -39,25 +40,41 @@ def runjob( user, jobid, var1):
     print "RUNNING JOB " + str(jobid)
 
 # stagein
-    if var1.file:
-        fileid1 = int(var1.file)
+    if "file" in var1:
+        fileid1 = int(var1["file"])
         localfile1 = database.getFileFullName( fileid1 )
         remotefile1 = os.path.join( remotehome, localfile1 )
         database.addJobFile( jobid, fileid1, database.FILEIN )
-        var1['filename1'] = remotefile1
+        var1['file_read1'] = remotefile1
 
-    if var1.file2:
-        fileid2 = int(var1.file2)
+    if "file2" in var1:
+        fileid2 = int(var1["file2"])
         localfile2 = database.getFileFullName( fileid2 )
         remotefile2 = os.path.join( remotehome, localfile2 )
         database.addJobFile( jobid, fileid2, database.FILEIN )
-        var1['filename2'] = remotefile2
+        var1['file_read2'] = remotefile2
 
-    if not var1.file2:
+    if "file3" in var1:
+        fileid3 = int(var1.file3)
+        localfile3 = database.getFileFullName( fileid3 )
+        remotefile3 = os.path.join( remotehome, localfile3 )
+        database.addJobFile( jobid, fileid3, database.FILEIN )
+        var1['file_ass'] = remotefile3
+        
+
         # submit
+    if var1["input_type"] == "single":
         command = [ pipe_launch, user, str(var1), remotefile1, str(jobid) ]
-    if var1.file and var1.file2:
+    elif var1["input_type"] == "paired":
         command = [ pipe_launch, user, str(var1), remotefile1, remotefile2, str(jobid) ]
+    elif var1.input_type =="contigs":
+        command = [ pipe_launch, user, str(var1), remotefile3, str(jobid) ]
+    elif var1.input_type =="contigs_with_single":
+        command = [ pipe_launch, user, str(var1), remotefile1, remotefile3,
+                    str(jobid) ]
+    elif var1.input_type =="contigs_with_paired":
+        command = [ pipe_launch, user, str(var1), remotefile1, remotefile2,
+                    remotefile3, str(jobid) ]
     print command
 
     for k in var1:
@@ -65,7 +82,7 @@ def runjob( user, jobid, var1):
 
     proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     output = proc.communicate()[0]
-    slurmids = getSlurmIds( ouput )
+    slurmids = getSlurmIds( output )
 
     if len(slurmids) > 0:
         database.setJobSubmitted( jobid )
@@ -73,7 +90,7 @@ def runjob( user, jobid, var1):
         print "WARNING : task without slurm ids"
 
     for si in slurmids:
-        database.addJobSlurmRef( jobid, slurmid )
+        database.addJobSlurmRef( jobid, slurmids )
 
 #-------------------------------------------------------------------------------
 def run():
