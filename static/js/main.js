@@ -361,6 +361,11 @@ function refreshFileList(){
     $('#jobstart').click( function(){
         var xhr = new XMLHttpRequest();
 
+	// Cancel Job if not correct input
+	if ( ! checkInput()){
+	    return;
+	}
+
         xhr.onreadystatechange = function( e ){
             if( 4 == this.readyState ){
                 alert( "Job sent: Go to 'Home' to check its status" );
@@ -378,6 +383,15 @@ function refreshFileList(){
     refreshJobList();
 
 }(window.jQuery);
+
+function checkInput(){
+    // if no input type is selected:
+    if ( ! $("input[name=input_type]").is(':checked') ){
+	alert("You have to select a type of input at the top of the page before submitting the job")
+	return false
+    }
+    return true
+}
 
 function refreshJobList(){
     $.ajax({
