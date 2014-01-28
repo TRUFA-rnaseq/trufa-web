@@ -7,12 +7,13 @@ import data
 import htpasswd
 import re
 from email.utils import parseaddr
+import config
 
 #-------------------------------------------------------------------------------
 BCRYPT_ROUNDS = 5
 template = 'template.db'
-database = 'database.db'
-passwdfile = 'htpasswd.db'
+database = config.DB_DATABASE
+passwdfile = config.DB_PASSFILE
 
 # JOB STATE
 JOB_CREATED = 0   # Just Created
@@ -57,18 +58,19 @@ def clearDB():
 
 #-------------------------------------------------------------------------------
 def init():
-    if not os.path.isfile( template ):
-        clearDB()
+    if config.DB_RESET:
+        if not os.path.isfile( template ):
+            clearDB()
 
-    if not os.path.isfile( database ):
-        shutil.copy( template, database )
+        if not os.path.isfile( database ):
+            shutil.copy( template, database )
 
-    # create empty password file
-    if not os.path.isfile( passwdfile ):
-        open( passwdfile, 'w' ).close()
+        # create empty password file
+        if not os.path.isfile( passwdfile ):
+            open( passwdfile, 'w' ).close()
 
-    name = 'admin' # same name and passwd
-    insertUser( name, name, "j.smith@example.com" )
+        name = 'admin' # same name and passwd
+        insertUser( name, name, "j.smith@example.com" )
 
 #-------------------------------------------------------------------------------
 def insertUser( name, passwd, email ):
