@@ -55,7 +55,7 @@ def runjob( user, jobid, var1):
         var1['file_read2'] = remotefile2
 
     if "file3" in var1:
-        fileid3 = int(var1.file3)
+        fileid3 = int(var1["file3"])
         localfile3 = database.getFileFullName( fileid3 )
         remotefile3 = os.path.join( remotehome, localfile3 )
         database.addJobFile( jobid, fileid3, database.FILEIN )
