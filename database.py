@@ -7,12 +7,13 @@ import data
 import htpasswd
 import re
 from email.utils import parseaddr
+import config
 
 #-------------------------------------------------------------------------------
 BCRYPT_ROUNDS = 5
 template = 'template.db'
-database = 'database.db'
-passwdfile = 'htpasswd.db'
+database = config.DB_DATABASE
+passwdfile = config.DB_PASSFILE
 
 # JOB STATE
 JOB_CREATED = 0   # Just Created
@@ -38,7 +39,10 @@ def mkEmptyDatabase( dbname ):
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
 
-    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, state INTEGER, slurmid INTEGER)" )
+    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, state INTEGER)" )
+    conn.commit()
+
+    c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
     conn.commit()
 
     c.execute( "CREATE TABLE jobfile (jid INTEGER, fid INTEGER, jobfiletype INTEGER, PRIMARY KEY(jid, fid) )" )
@@ -54,17 +58,19 @@ def clearDB():
 
 #-------------------------------------------------------------------------------
 def init():
-    if not os.path.isfile( template ):
-        clearDB()
+    if config.DB_RESET:
+        if not os.path.isfile( template ):
+            clearDB()
 
-    if not os.path.isfile( database ):
-        shutil.copy( template, database )
+        if not os.path.isfile( database ):
+            shutil.copy( template, database )
 
-    # create empty password file
-    open( passwdfile, 'w' ).close()
+        # create empty password file
+        if not os.path.isfile( passwdfile ):
+            open( passwdfile, 'w' ).close()
 
-    name = 'admin' # same name and passwd
-    insertUser( name, name, "j.smith@example.com" )
+        name = 'admin' # same name and passwd
+        insertUser( name, name, "j.smith@example.com" )
 
 #-------------------------------------------------------------------------------
 def insertUser( name, passwd, email ):
@@ -88,6 +94,27 @@ def insertUser( name, passwd, email ):
             userdb.add( name, passwd )
     except htpasswd.basic.UserExists, e:
         print "ERROR: User Already Exists ", name, e
+
+#-------------------------------------------------------------------------------
+def changeUserPassword( name, newpass ):
+    try:
+        with htpasswd.Basic( passwdfile ) as userdb:
+            userdb.change_password( name, newpass )
+    except htpasswd.basic.UserNotExists, e:
+        print "ERROR: User Not Exists ", name, e
+        return False
+
+    h = bcrypt.hashpw( newpass, bcrypt.gensalt(BCRYPT_ROUNDS) )
+
+    conn = sqlite3.connect( database )
+    try:
+        with conn:
+            conn.execute( 'UPDATE user SET passwd=? WHERE name=?', (h,name) )
+    except:
+        print "ERROR: changing password ", name
+        return False
+
+    return True
 
 #-------------------------------------------------------------------------------
 def checkUser( name, passwd ):
@@ -238,7 +265,7 @@ def createJob( user ):
     c.execute( 'SELECT uid FROM user WHERE name=?', (user,) )
     uid = c.fetchone()
     if uid is not None:
-        c.execute( 'INSERT INTO job VALUES (null,?,0,-1)', (uid[0],) )
+        c.execute( 'INSERT INTO job VALUES (null,?,0)', (uid[0],) )
         c.execute( 'SELECT last_insert_rowid() FROM job' )
         jobid = c.fetchone()[0]
         conn.commit()
@@ -274,10 +301,18 @@ def addJobFile( jobid, fileid, jftype ):
     conn.close()
 
 #-------------------------------------------------------------------------------
-def setJobSubmitted( jobid, slurmid ):
+def addJobSlurmRef( jobid, slurmid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'UPDATE job SET slurmid=?, state=1 WHERE jid=?', (slurmid,jobid) )
+    c.execute( 'INSERT INTO jobslurm VALUES (?,?)', (jobid,slurmid) )
+    conn.commit()
+    conn.close()
+
+#-------------------------------------------------------------------------------
+def setJobSubmitted( jobid ):
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'UPDATE job SET state=1 WHERE jid=?', (jobid,) )
     conn.commit()
     conn.close()
 
@@ -301,7 +336,7 @@ def setJobCompleted( jobid ):
 def getJobInfo( jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute('SELECT state,slurmid FROM job WHERE jid=?', (jobid,) )
+    c.execute('SELECT state FROM job WHERE jid=?', (jobid,) )
     jdata = c.fetchone()
     if jdata is None:
         conn.close()
@@ -320,19 +355,47 @@ def getJobInfo( jobid ):
 
         files.append( {'fid': jf[0], 'name': fdata[0], 'type': jf[1] } )
 
+    c.execute('SELECT slurmid FROM jobslurm WHERE jid=?', (jobid,) )
+    jslurms = c.fetchall()
+
+    slurms = []
+    for js in jslurms:
+        slurms.append( {'slurmid': js[0] } )
+
     conn.close()
 
-    return { 'jobid': jobid, 'state': jdata[0], 'slurmid': jdata[1], 'files': files }
+    return { 'jobid': jobid, 'state': jdata[0], 'slurmids': slurms, 'files': files }
+
+#-------------------------------------------------------------------------------
+def getJustCreatedJobs():
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'SELECT jid,uid,state FROM job WHERE state=0' )
+    jdata = c.fetchall()
+    jobs = []
+    for j in jdata:
+        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2]} )
+
+    return jobs
 
 #-------------------------------------------------------------------------------
 def getActiveJobs():
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'SELECT jid,uid,state,slurmid FROM job WHERE state=1 OR state=2' )
+    c.execute( 'SELECT jid,uid,state FROM job WHERE state=1 OR state=2' )
     jdata = c.fetchall()
     jobs = []
     for j in jdata:
-        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2],'slurmid':j[3]} )
+        c.execute('SELECT slurmid FROM jobslurm WHERE jid=?', (j[0],) )
+        jslurms = c.fetchall()
+
+        slurms = []
+        for js in jslurms:
+            slurms.append( js[0] )
+
+        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2],'slurmids':slurms} )
+
+    conn.close()
 
     return jobs
 
