@@ -361,9 +361,6 @@ function refreshFileList(){
     $('#jobstart').click( function(){
         var xhr = new XMLHttpRequest();
 
-	//
-	checkInput()
-	return;
 	// Cancel Job if not correct input
 	if ( ! checkInput()){
 	    return;
@@ -574,28 +571,12 @@ $(function (){
 	}
 	else
         {
-            $('.mapping_steps').attr('disabled', true);
-            $('.identification_steps').attr('disabled', true);
-            $('.expression_steps').attr('disabled', true);
+            $('.mapping_steps').attr({'disabled': true, 'checked': false});
+            $('.identification_steps').attr({'disabled': true, 'checked': false});
+            $('.expression_steps').attr({'disabled': true, 'checked': false});
             warn_ass.show()
         }	
 
-    });
-});
-
-// activate/desactivate expression steps:
-$(function(){
-    var bow_check = $("input[id=bowtie2]")
-    
-    bow_check.change(function (){
- 	if ($(this).is(':checked'))
- 	{
-	    $('.expression_steps').attr('disabled', false)
-	}
-	else
-	{
-	    $('.expression_steps').attr('disabled', true)
-	}
     });
 });
 
