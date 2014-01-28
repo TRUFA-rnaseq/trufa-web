@@ -361,6 +361,9 @@ function refreshFileList(){
     $('#jobstart').click( function(){
         var xhr = new XMLHttpRequest();
 
+	//
+	checkInput()
+	return;
 	// Cancel Job if not correct input
 	if ( ! checkInput()){
 	    return;
@@ -388,6 +391,13 @@ function checkInput(){
     // if no input type is selected:
     if ( ! $("input[name=input_type]").is(':checked') ){
 	alert("You have to select a type of input at the top of the page before submitting the job")
+	return false
+    }
+    // if no analysis steps checked
+    var steps = $(".cleaning_steps, .assembly_steps, .identification_steps, .mapping_steps, .expression_steps")
+
+    if ( ! steps.is(":checked")){
+	alert("You did not specify any analysis steps")
 	return false
     }
     return true
