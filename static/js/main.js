@@ -390,6 +390,11 @@ function checkInput(){
 	alert("You have to select a type of input at the top of the page before submitting the job")
 	return false
     }
+    // if both reads files are the same:
+    if ( $('#jobfile').val() == $('#jobfile2').val()){
+	alert("You have to specify two different reads files as input")
+	return false
+    }	
     // if no analysis steps checked
     var steps = $(".cleaning_steps, .assembly_steps, .identification_steps, .mapping_steps, .expression_steps")
 
