@@ -282,7 +282,7 @@ function getFileListWithTypes_( items, ftype, f_ok ){
 function refreshFileList(){
 //    var in_type = $("input[name=input_type]")
 
-//    if var in_type == "single" 
+//    if var in_type == "single"
 
     var items1 = [];
     var items2 = [];
@@ -368,7 +368,12 @@ function refreshFileList(){
 
         xhr.onreadystatechange = function( e ){
             if( 4 == this.readyState ){
-                alert( "Job sent: Go to 'Home' to check its status" );
+                var obj = $.parseJSON( this.responseText );
+                if( ! obj.ok ){
+                    alert( "Job ERROR: " + obj.msg );
+                }else{
+                    alert( "Job sent: Go to 'Home' to check its status" );
+                }
                 refreshJobList();
             }
         };
@@ -580,11 +585,9 @@ $(function (){
             $('.identification_steps').attr({'disabled': true, 'checked': false});
             $('.expression_steps').attr({'disabled': true, 'checked': false});
             warn_ass.show()
-        }	
+        }
 
     });
 });
 
 $('#example').popover({html:true})
-
-			    
