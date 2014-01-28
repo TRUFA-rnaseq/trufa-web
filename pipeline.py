@@ -90,7 +90,7 @@ def runjob( user, jobid, var1):
         print "WARNING : task without slurm ids"
 
     for si in slurmids:
-        database.addJobSlurmRef( jobid, slurmids )
+        database.addJobSlurmRef( jobid, si )
 
 #-------------------------------------------------------------------------------
 def run():
