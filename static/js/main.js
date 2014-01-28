@@ -390,6 +390,13 @@ function checkInput(){
 	alert("You have to select a type of input at the top of the page before submitting the job")
 	return false
     }
+    // if no analysis steps checked
+    var steps = $(".cleaning_steps, .assembly_steps, .identification_steps, .mapping_steps, .expression_steps")
+
+    if ( ! steps.is(":checked")){
+	alert("You did not specify any analysis steps")
+	return false
+    }
     return true
 }
 
@@ -564,28 +571,12 @@ $(function (){
 	}
 	else
         {
-            $('.mapping_steps').attr('disabled', true);
-            $('.identification_steps').attr('disabled', true);
-            $('.expression_steps').attr('disabled', true);
+            $('.mapping_steps').attr({'disabled': true, 'checked': false});
+            $('.identification_steps').attr({'disabled': true, 'checked': false});
+            $('.expression_steps').attr({'disabled': true, 'checked': false});
             warn_ass.show()
         }	
 
-    });
-});
-
-// activate/desactivate expression steps:
-$(function(){
-    var bow_check = $("input[id=bowtie2]")
-    
-    bow_check.change(function (){
- 	if ($(this).is(':checked'))
- 	{
-	    $('.expression_steps').attr('disabled', false)
-	}
-	else
-	{
-	    $('.expression_steps').attr('disabled', true)
-	}
     });
 });
 
