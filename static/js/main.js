@@ -391,10 +391,13 @@ function checkInput(){
 	return false
     }
     // if both reads files are the same:
-    if ( $('#jobfile').val() == $('#jobfile2').val()){
-	alert("You have to specify two different reads files as input")
-	return false
-    }	
+    var in_type = $("input[name=input_type]:checked").val()
+    if ( in_type == "paired" || in_type == "contigs_with_paired"){
+	if ( $('#jobfile').val() == $('#jobfile2').val()){
+	    alert("You have to specify two different reads files as input")
+	    return false
+	}	
+    }
     // if no analysis steps checked
     var steps = $(".cleaning_steps, .assembly_steps, .identification_steps, .mapping_steps, .expression_steps")
 
