@@ -2,10 +2,11 @@
 import shutil
 import os
 import os.path
+import config
 
 #-------------------------------------------------------------------------------
 
-DATADIR = "/gpfs/res_projects/cvcv/webserver/users/"
+DATADIR = config.DATADIR
 
 FT_UNKNOWN = 0
 FT_FAST = 1
