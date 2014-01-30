@@ -1,4 +1,4 @@
-VERSION = "0.4.1"
+VERSION = "0.4.2"
 
 REMOTEHOST = "genorama@altamira1.ifca.es"
 REMOTEHOME = "users"
