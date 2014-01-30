@@ -252,8 +252,9 @@ class AjaxJobs:
             except:
                 print sys.exc_info()
                 web.debug( "can't start new job" )
+                return json.dumps( {'ok':False, 'msg':"can't start new job"} )
 
-            return "OK"
+            return json.dumps( {'ok':True} )
         else:
             raise web.seeother('/')
 
