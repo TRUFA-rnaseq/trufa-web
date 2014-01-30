@@ -27,7 +27,7 @@ git clone /srv/repo/genorama.git
 git pull origin
 git checkout develop
 
-## edit/develop 
+## edit/develop
 
 ## repeat until $(git status) is clear
    ## git add -p
@@ -38,16 +38,22 @@ git push origin
 #+END_SRC
 
 
-* Create a new RELEASE
+* Create a new RELEASE 0.A.B
+
+Using VERSION as the new release number:
+
+ - A is the RELEASE version
+ - B is the patch level number or 0 if there isn't patches
 
 ** Merge Develop to Master
 #+BEGIN_SRC bash
+VERSION=0.A.B
 git checkout develop
-## update version to 0.1
-git commit -a -m"Advance version number 0.1"
+sed -i "s/VERSION = \".*\"/VERSION = \"${VERSION}\"/g" config.py
+git commit -a -m"Advance version number ${VERSION}"
 git checkout master
 git merge --no-ff develop
-git tag -a 0.1 -m"Release 0.1"
+git tag -a ${VERSION} -m"Release ${VERSION}"
 git push origin master
 git push --tags origin master
 #+END_SRC
@@ -55,10 +61,13 @@ git push --tags origin master
 
 * Deploy a new RELEASE
 
+Using VERSION as the desired release to deploy:
+
 ** Get a stable version of code in new folder
 #+BEGIN_SRC bash
+VERSION=0.A.B
 cd /var/genorama/web_side
-git archive -v -9 --format=tar.gz --prefix release-0.1/ --remote /srv/repo/genorama.git 0.1 | tar -xzf -
+git archive -v -9 --format=tar.gz --prefix release-${VERSION}/ --remote /srv/repo/genorama.git ${VERSION} | tar -xzf -
 #+END_SRC
 ** Change Local confir
 ** Stop current Server
