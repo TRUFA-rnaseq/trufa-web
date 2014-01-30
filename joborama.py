@@ -9,6 +9,7 @@ import json
 import database
 import data
 import pipeline
+import config
 
 #-------------------------------------------------------------------------------
 CherryPyWSGIServer.ssl_certificate = "cert/server.crt"
@@ -42,15 +43,18 @@ store = web.session.DiskStore( 'sessions' )
 session = web.session.Session( app, store, initializer={'login': 0, 'user': None} )
 
 #-------------------------------------------------------------------------------
+globals = {'version': config.VERSION }
+
+#-------------------------------------------------------------------------------
 def logged():
     return (session.login == 1)
 
 #-------------------------------------------------------------------------------
 def get_render():
     if logged():
-        return web.template.render( 'templates/logged', base="layout" )
+        return web.template.render( 'templates/logged', base="layout", globals=globals )
     else:
-        return web.template.render( 'templates/anom', base="layout" )
+        return web.template.render( 'templates/anom', base="layout", globals=globals )
 
 #-------------------------------------------------------------------------------
 def clearSession():
