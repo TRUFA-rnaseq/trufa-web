@@ -34,6 +34,8 @@
    sqliteman database.db
    #+end_src
 
+   The database location should be configurate in the config.py file.
+
 ** Moreover
 
 *** Use your own certificate
