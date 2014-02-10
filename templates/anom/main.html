@@ -1,6 +1,29 @@
 <div class="container-fluid">
   <div class="row-fluid">
-    <div class="span6 offset3">
+    <div class="span6">
+      <h1>Welcome to TRUFA</h1>
+      <p>TRUFA (Transcriptomes User-Friendly Analysis) is a webserver designed to perform RNA-seq analysis.</p>  
+      <p>So far, TRUFA is allowing you to perform the following steps
+	(programs used are specified in the parentheses):</p>
+      <ul>
+	<li>Reads cleaning:
+	  <ul>
+	    <li>Quality trimming and duplicates removal (Prinseq)</li>
+	    <li>Trimming adapters (Cutadapt)</li> 
+	    <li>Filtering out potential contaminants (Blat)</li>  
+	  </ul>
+	<li>De novo assembly of your reads (Trinity) </li>
+	<li> Reads mapping (Bowtie)</li>
+	<li>Contigs (i.e transcripts) identification based on:</li>
+	<ul>
+	  <li>sequence alignment (Blat, Blast)</li>
+	  <li>protein dominions, profiles (HMMER)</li>
+	  <li>Annotation with GO terms (Blast2GO)</li>
+	</ul>
+	<li>Expression quantification: providing FPKMs (RSEM, cufflinks)</li>
+      </ul>
+    </div>
+    <div class="well well-small span6">
       <form class="form-horizontal" action="/login" method="POST">
         <div class="control-group">
           <div class="controls">
