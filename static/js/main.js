@@ -94,7 +94,7 @@ function getFileSize( input ){
     }else if( ! input.files[0] ){
         showError( "Please select a file before clicking 'Upload'" );
     }else if($("#filetype").val() == "undef"){
-	showError("Please specify the format of the input before clicking 'Upload'");
+	showError("The file type cannot be left to 'undefined'. Please specify the format of the input before clicking 'Upload'");
     }else{
         var file = input.files[0];
         return file.size;
