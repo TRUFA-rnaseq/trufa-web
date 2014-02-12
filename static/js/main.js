@@ -67,6 +67,14 @@ function refreshNavbarUserName(){
     $('#filesend').click( function(){
         var input = document.getElementById('filesel')
         var size = getFileSize( input )
+	 
+	/* EK trial
+	if( size >= 512*1024*1024 ){
+            sendBigFile()
+        }else if( size > 0 ){
+            sendLittleFile()
+        }
+	*/
         if( size > 0 && size < 512*1024*1024 ){
             sendLittleFile()
         }else{
@@ -85,6 +93,8 @@ function getFileSize( input ){
         showError( "This browser doesn't support the `files` property of file inputs.");
     }else if( ! input.files[0] ){
         showError( "Please select a file before clicking 'Upload'" );
+    }else if($("#filetype").val() == "undef"){
+	showError("Please specify the format of the input before clicking 'Upload'");
     }else{
         var file = input.files[0];
         return file.size;
