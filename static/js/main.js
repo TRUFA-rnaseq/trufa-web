@@ -84,7 +84,7 @@ function getFileSize( input ){
     }else if( ! input.files ){
         showError( "This browser doesn't support the `files` property of file inputs.");
     }else if( ! input.files[0] ){
-        showError( "Please select a file before clicking 'Load'" );
+        showError( "Please select a file before clicking 'Upload'" );
     }else{
         var file = input.files[0];
         return file.size;
