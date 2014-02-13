@@ -340,7 +340,7 @@ def getJobInfo( jobid ):
     jdata = c.fetchone()
     if jdata is None:
         conn.close()
-        raise RuntimeError( "getJobIndo with invalid id " + str(jobid) )
+        raise RuntimeError( "getJobInfo with invalid id " + str(jobid) )
 
     c.execute('SELECT fid,jobfiletype FROM jobfile WHERE jid=?', (jobid,) )
     jfiles = c.fetchall()
@@ -351,7 +351,7 @@ def getJobInfo( jobid ):
         fdata = c.fetchone()
         if fdata is None:
             conn.close()
-            raise RuntimeError( "getJobIndo with invalid file " + str(jf[0]) )
+            raise RuntimeError( "getJobInfo with invalid file " + str(jf[0]) )
 
         files.append( {'fid': jf[0], 'name': fdata[0], 'type': jf[1] } )
 
