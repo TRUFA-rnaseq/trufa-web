@@ -143,7 +143,7 @@ def insertFile( user, filename ):
             conn.close()
     else:
         conn.close()
-        raise DataBaseError
+        raise RuntimeError( "insertFile with invalid user " + user )
 
 #-------------------------------------------------------------------------------
 def insertFileWithType( user, filename, filetype ):
@@ -160,7 +160,7 @@ def insertFileWithType( user, filename, filetype ):
             conn.close()
     else:
         conn.close()
-        raise DataBaseError
+        raise RuntimeError( "insertFileWithType with invalid user " + user )
 
 #-------------------------------------------------------------------------------
 def createFile( userid, filename ):
@@ -226,13 +226,13 @@ def getFileFullName( fid ):
     fdata = c.fetchone()
     if fdata is None:
         conn.close()
-        raise DataBaseError
+        raise RuntimeError( "getFileFullName with invalid id " + str(fid) )
 
     c.execute('SELECT name FROM user WHERE uid=?', (fdata[0],) )
     udata = c.fetchone()
     if udata is None:
         conn.close()
-        raise DataBaseError
+        raise RuntimeError( "getFileFullName with invalid user " + str(fdata[0]) )
 
     conn.close()
 
@@ -273,7 +273,7 @@ def createJob( user ):
         return jobid
     else:
         conn.close()
-        raise DataBaseError
+        raise RuntimeError( "createJob with invalid user " + user )
 
 #-------------------------------------------------------------------------------
 def getUserJobs( user ):
@@ -340,7 +340,7 @@ def getJobInfo( jobid ):
     jdata = c.fetchone()
     if jdata is None:
         conn.close()
-        raise DataBaseError
+        raise RuntimeError( "getJobIndo with invalid id " + str(jobid) )
 
     c.execute('SELECT fid,jobfiletype FROM jobfile WHERE jid=?', (jobid,) )
     jfiles = c.fetchall()
@@ -351,7 +351,7 @@ def getJobInfo( jobid ):
         fdata = c.fetchone()
         if fdata is None:
             conn.close()
-            raise DataBaseError
+            raise RuntimeError( "getJobIndo with invalid file " + str(jf[0]) )
 
         files.append( {'fid': jf[0], 'name': fdata[0], 'type': jf[1] } )
 
