@@ -109,7 +109,8 @@ def insertUser( name, passwd, email ):
     conn = sqlite3.connect( database )
     try:
         with conn:
-            conn.execute( 'INSERT INTO user VALUES (null,?,?,?)', (name,h,checkedEmail) )
+            conn.execute( 'INSERT INTO user(uid,name,passwd,email) VALUES (null,?,?,?)',
+                          (name,h,checkedEmail) )
     except sqlite3.IntegrityError:
         print "ERROR: User Already Exists ", name
         return
@@ -163,7 +164,8 @@ def insertFile( user, filename ):
         c.execute( 'SELECT fid FROM file WHERE uid=? AND filename=?', (uid[0],filename) )
         exists = c.fetchone()
         if exists is None:
-            c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (uid[0],0,filename,0) )
+            c.execute( 'INSERT INTO file(fid,uid,global,filename,filetype) VALUES (null,?,?,?,?)',
+                       (uid[0],0,filename,0) )
             conn.commit()
             conn.close()
     else:
@@ -180,7 +182,8 @@ def insertFileWithType( user, filename, filetype ):
         c.execute( 'SELECT fid FROM file WHERE uid=? AND filename=?', (uid[0],filename) )
         exists = c.fetchone()
         if exists is None:
-            c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (uid[0],0,filename,filetype) )
+            c.execute( 'INSERT INTO file(fid,uid,global,filename,filetype) VALUES (null,?,?,?,?)',
+                       (uid[0],0,filename,filetype) )
             conn.commit()
             conn.close()
     else:
@@ -191,7 +194,8 @@ def insertFileWithType( user, filename, filetype ):
 def createFile( userid, filename ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (userid,0,filename,0) )
+    c.execute( 'INSERT INTO file(fid,uid,global,filename,filetype) VALUES (null,?,?,?,?)',
+               (userid,0,filename,0) )
     c.execute( 'SELECT last_insert_rowid() FROM file' )
     fileid = c.fetchone()[0]
     conn.commit()
@@ -202,7 +206,8 @@ def createFile( userid, filename ):
 def createFileWithType( userid, filename, filetype ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (userid,0,filename,filetype) )
+    c.execute( 'INSERT INTO file(fid,uid,global,filename,filetype) VALUES (null,?,?,?,?)',
+               (userid,0,filename,filetype) )
     c.execute( 'SELECT last_insert_rowid() FROM file' )
     fileid = c.fetchone()[0]
     conn.commit()
@@ -296,7 +301,8 @@ def createJob( user ):
         if lastjuid is not None:
             newjuid = lastjuid + 1
 
-        c.execute( 'INSERT INTO job VALUES (null,?,?,0)', (newjuid,uid[0],) )
+        c.execute( 'INSERT INTO job(jid,juid,uid,state) VALUES (null,?,?,0)',
+                   (newjuid,uid[0],) )
         c.execute( 'SELECT last_insert_rowid() FROM job' )
         jobid = c.fetchone()[0]
         conn.commit()
@@ -327,7 +333,8 @@ def getUserJobs( user ):
 def addJobFile( jobid, fileid, jftype ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'INSERT INTO jobfile VALUES (?,?,?)', (jobid,fileid,jftype) )
+    c.execute( 'INSERT INTO jobfile(jid,fid,jobfiletype) VALUES (?,?,?)',
+               (jobid,fileid,jftype) )
     conn.commit()
     conn.close()
 
@@ -335,7 +342,7 @@ def addJobFile( jobid, fileid, jftype ):
 def addJobSlurmRef( jobid, slurmid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'INSERT INTO jobslurm VALUES (?,?)', (jobid,slurmid) )
+    c.execute( 'INSERT INTO jobslurm(jid,slurmid) VALUES (?,?)', (jobid,slurmid) )
     conn.commit()
     conn.close()
 
