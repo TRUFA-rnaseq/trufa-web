@@ -533,6 +533,11 @@ $(document).ready(function(){
 	$('.identification_steps').attr('checked', false)
 	$('.expression_steps').attr('checked', false)
 
+// No defaults for input files:
+	document.getElementById("jobfile").selectedIndex = -1;
+	document.getElementById("jobfile2").selectedIndex = -1;
+	document.getElementById("jobfile3").selectedIndex = -1;
+
         var in_type = $("input[name=input_type]:checked").val()
 //	$('#demo').append(in_type)
 	var warn_read = $('div[id=no_reads_alert]')
