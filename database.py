@@ -39,7 +39,7 @@ def mkEmptyDatabase( dbname ):
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
 
-    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, state INTEGER)" )
+    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, FOREIGN KEY(uid) REFERENCES user(uid) )" )
     conn.commit()
 
     c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
@@ -73,6 +73,31 @@ def init():
         insertUser( name, name, "j.smith@example.com" )
 
 #-------------------------------------------------------------------------------
+def fixdbJobUID():
+    column_name = 'juid'
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    # add new column if needed
+    try:
+        c.execute( 'SELECT %s FROM job' % (column_name,))
+    except sqlite3.OperationalError, e:
+        print "Adding new Column ", column_name
+        c.execute( 'ALTER TABLE job ADD COLUMN %s INTEGER NOT NULL REFERENCES user(uid) DEFAULT 0' % (column_name,))
+
+    # fix all users
+    c.execute( 'SELECT uid,name FROM user' )
+    udata = c.fetchall()
+    for u in udata:
+        c.execute( 'SELECT jid FROM job WHERE uid=?', (u[0],) )
+        jdata = c.fetchall()
+        print "Enumerating jobs of ", u[1], "=", len( jdata )
+        for i,j in enumerate(jdata, start=1):
+            c.execute( 'UPDATE job SET %s=? WHERE jid=?' % (column_name,), (i,j[0],) )
+        conn.commit()
+
+    conn.close()
+
+#-------------------------------------------------------------------------------
 def insertUser( name, passwd, email ):
     checkedName, checkedEmail = parseaddr( email )
     if len( checkedEmail ) == 0 or not EMAIL_REGEX.match( checkedEmail):
@@ -84,7 +109,8 @@ def insertUser( name, passwd, email ):
     conn = sqlite3.connect( database )
     try:
         with conn:
-            conn.execute( 'INSERT INTO user VALUES (null,?,?,?)', (name,h,checkedEmail) )
+            conn.execute( 'INSERT INTO user(uid,name,passwd,email) VALUES (null,?,?,?)',
+                          (name,h,checkedEmail) )
     except sqlite3.IntegrityError:
         print "ERROR: User Already Exists ", name
         return
@@ -138,7 +164,8 @@ def insertFile( user, filename ):
         c.execute( 'SELECT fid FROM file WHERE uid=? AND filename=?', (uid[0],filename) )
         exists = c.fetchone()
         if exists is None:
-            c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (uid[0],0,filename,0) )
+            c.execute( 'INSERT INTO file(fid,uid,global,filename,filetype) VALUES (null,?,?,?,?)',
+                       (uid[0],0,filename,0) )
             conn.commit()
             conn.close()
     else:
@@ -155,7 +182,8 @@ def insertFileWithType( user, filename, filetype ):
         c.execute( 'SELECT fid FROM file WHERE uid=? AND filename=?', (uid[0],filename) )
         exists = c.fetchone()
         if exists is None:
-            c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (uid[0],0,filename,filetype) )
+            c.execute( 'INSERT INTO file(fid,uid,global,filename,filetype) VALUES (null,?,?,?,?)',
+                       (uid[0],0,filename,filetype) )
             conn.commit()
             conn.close()
     else:
@@ -166,7 +194,8 @@ def insertFileWithType( user, filename, filetype ):
 def createFile( userid, filename ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (userid,0,filename,0) )
+    c.execute( 'INSERT INTO file(fid,uid,global,filename,filetype) VALUES (null,?,?,?,?)',
+               (userid,0,filename,0) )
     c.execute( 'SELECT last_insert_rowid() FROM file' )
     fileid = c.fetchone()[0]
     conn.commit()
@@ -177,7 +206,8 @@ def createFile( userid, filename ):
 def createFileWithType( userid, filename, filetype ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'INSERT INTO file VALUES (null,?,?,?,?)', (userid,0,filename,filetype) )
+    c.execute( 'INSERT INTO file(fid,uid,global,filename,filetype) VALUES (null,?,?,?,?)',
+               (userid,0,filename,filetype) )
     c.execute( 'SELECT last_insert_rowid() FROM file' )
     fileid = c.fetchone()[0]
     conn.commit()
@@ -265,7 +295,14 @@ def createJob( user ):
     c.execute( 'SELECT uid FROM user WHERE name=?', (user,) )
     uid = c.fetchone()
     if uid is not None:
-        c.execute( 'INSERT INTO job VALUES (null,?,0)', (uid[0],) )
+        newjuid = 1
+        c.execute( 'SELECT max(juid) FROM job WHERE uid=?', (uid[0],) )
+        lastjuid = c.fetchone()[0]
+        if lastjuid is not None:
+            newjuid = lastjuid + 1
+
+        c.execute( 'INSERT INTO job(jid,juid,uid,state) VALUES (null,?,?,0)',
+                   (newjuid,uid[0],) )
         c.execute( 'SELECT last_insert_rowid() FROM job' )
         jobid = c.fetchone()[0]
         conn.commit()
@@ -296,7 +333,8 @@ def getUserJobs( user ):
 def addJobFile( jobid, fileid, jftype ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'INSERT INTO jobfile VALUES (?,?,?)', (jobid,fileid,jftype) )
+    c.execute( 'INSERT INTO jobfile(jid,fid,jobfiletype) VALUES (?,?,?)',
+               (jobid,fileid,jftype) )
     conn.commit()
     conn.close()
 
@@ -304,7 +342,7 @@ def addJobFile( jobid, fileid, jftype ):
 def addJobSlurmRef( jobid, slurmid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'INSERT INTO jobslurm VALUES (?,?)', (jobid,slurmid) )
+    c.execute( 'INSERT INTO jobslurm(jid,slurmid) VALUES (?,?)', (jobid,slurmid) )
     conn.commit()
     conn.close()
 
@@ -336,11 +374,11 @@ def setJobCompleted( jobid ):
 def getJobInfo( jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute('SELECT state FROM job WHERE jid=?', (jobid,) )
+    c.execute('SELECT state,juid FROM job WHERE jid=?', (jobid,) )
     jdata = c.fetchone()
     if jdata is None:
         conn.close()
-        raise RuntimeError( "getJobIndo with invalid id " + str(jobid) )
+        raise RuntimeError( "getJobInfo with invalid id " + str(jobid) )
 
     c.execute('SELECT fid,jobfiletype FROM jobfile WHERE jid=?', (jobid,) )
     jfiles = c.fetchall()
@@ -351,7 +389,7 @@ def getJobInfo( jobid ):
         fdata = c.fetchone()
         if fdata is None:
             conn.close()
-            raise RuntimeError( "getJobIndo with invalid file " + str(jf[0]) )
+            raise RuntimeError( "getJobInfo with invalid file " + str(jf[0]) )
 
         files.append( {'fid': jf[0], 'name': fdata[0], 'type': jf[1] } )
 
@@ -364,17 +402,17 @@ def getJobInfo( jobid ):
 
     conn.close()
 
-    return { 'jobid': jobid, 'state': jdata[0], 'slurmids': slurms, 'files': files }
+    return { 'jobid': jobid, 'juid': jdata[1], 'state': jdata[0], 'slurmids': slurms, 'files': files }
 
 #-------------------------------------------------------------------------------
 def getJustCreatedJobs():
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'SELECT jid,uid,state FROM job WHERE state=0' )
+    c.execute( 'SELECT jid,juid,uid,state FROM job WHERE state=0' )
     jdata = c.fetchall()
     jobs = []
     for j in jdata:
-        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2]} )
+        jobs.append( {'jid':j[0],'juid':j[1],'uid':j[2],'state':j[3]} )
 
     return jobs
 
@@ -382,7 +420,7 @@ def getJustCreatedJobs():
 def getActiveJobs():
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'SELECT jid,uid,state FROM job WHERE state=1 OR state=2' )
+    c.execute( 'SELECT jid,juid,uid,state FROM job WHERE state=1 OR state=2' )
     jdata = c.fetchall()
     jobs = []
     for j in jdata:
@@ -393,7 +431,7 @@ def getActiveJobs():
         for js in jslurms:
             slurms.append( js[0] )
 
-        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2],'slurmids':slurms} )
+        jobs.append( {'jid':j[0],'juid':j[1],'uid':j[2],'state':j[3],'slurmids':slurms} )
 
     conn.close()
 
