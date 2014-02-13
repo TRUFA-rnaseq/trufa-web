@@ -39,7 +39,7 @@ def mkEmptyDatabase( dbname ):
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
 
-    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, state INTEGER)" )
+    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, FOREIGN KEY(uid) REFERENCES user(uid) )" )
     conn.commit()
 
     c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
@@ -265,7 +265,13 @@ def createJob( user ):
     c.execute( 'SELECT uid FROM user WHERE name=?', (user,) )
     uid = c.fetchone()
     if uid is not None:
-        c.execute( 'INSERT INTO job VALUES (null,?,0)', (uid[0],) )
+        newjuid = 1
+        c.execute( 'SELECT max(juid) FROM job WHERE uid=?', (uid[0],) )
+        lastjuid = c.fetchone()[0]
+        if lastjuid is not None:
+            newjuid = lastjuid + 1
+
+        c.execute( 'INSERT INTO job VALUES (null,?,?,0)', (newjuid,uid[0],) )
         c.execute( 'SELECT last_insert_rowid() FROM job' )
         jobid = c.fetchone()[0]
         conn.commit()
@@ -336,7 +342,7 @@ def setJobCompleted( jobid ):
 def getJobInfo( jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute('SELECT state FROM job WHERE jid=?', (jobid,) )
+    c.execute('SELECT state,juid FROM job WHERE jid=?', (jobid,) )
     jdata = c.fetchone()
     if jdata is None:
         conn.close()
@@ -364,17 +370,17 @@ def getJobInfo( jobid ):
 
     conn.close()
 
-    return { 'jobid': jobid, 'state': jdata[0], 'slurmids': slurms, 'files': files }
+    return { 'jobid': jobid, 'juid': jdata[1], 'state': jdata[0], 'slurmids': slurms, 'files': files }
 
 #-------------------------------------------------------------------------------
 def getJustCreatedJobs():
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'SELECT jid,uid,state FROM job WHERE state=0' )
+    c.execute( 'SELECT jid,juid,uid,state FROM job WHERE state=0' )
     jdata = c.fetchall()
     jobs = []
     for j in jdata:
-        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2]} )
+        jobs.append( {'jid':j[0],'juid':j[1],'uid':j[2],'state':j[3]} )
 
     return jobs
 
@@ -382,7 +388,7 @@ def getJustCreatedJobs():
 def getActiveJobs():
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'SELECT jid,uid,state FROM job WHERE state=1 OR state=2' )
+    c.execute( 'SELECT jid,juid,uid,state FROM job WHERE state=1 OR state=2' )
     jdata = c.fetchall()
     jobs = []
     for j in jdata:
@@ -393,7 +399,7 @@ def getActiveJobs():
         for js in jslurms:
             slurms.append( js[0] )
 
-        jobs.append( {'jid':j[0],'uid':j[1],'state':j[2],'slurmids':slurms} )
+        jobs.append( {'jid':j[0],'juid':j[1],'uid':j[2],'state':j[3],'slurmids':slurms} )
 
     conn.close()
 
