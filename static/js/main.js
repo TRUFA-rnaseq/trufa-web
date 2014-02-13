@@ -75,7 +75,9 @@ function refreshNavbarUserName(){
             sendLittleFile()
         }
 	*/
-        if( size > 0 && size < 512*1024*1024 ){
+	if ( size <= 0 ){
+	    showError( "No file has been uploaded")}
+        else if( size < 512*1024*1024 ){
             sendLittleFile()
         }else{
             sendBigFile()
@@ -100,7 +102,7 @@ function getFileSize( input ){
         return file.size;
     }
 
-    return 0;
+    return -1;
 }
 
 function sendLittleFile(){
