@@ -407,19 +407,73 @@ function checkInput(){
 	alert("You have to select a type of input at the top of the page before submitting the job")
 	return false
     }
-    // if both reads files are the same:
+
     var in_type = $("input[name=input_type]:checked").val()
+    // check input type: single
+    if ( in_type == "single" ){
+	if ( $('#jobfile').val() == null ) {
+	    alert("You did not specify any reads file")
+	    return false
+	}	
+    }
+    // check input type: paired
+    // if both reads files are the same:
+    if ( in_type == "paired" ){
+	if ( $('#jobfile').val() == null || $('#jobfile2').val() == null ){
+	    alert("You did not specify two reads files")
+	    return false
+	}
+    }
+    // check input type: contigs
+    if ( in_type == "contigs" ){
+	if ( $('#jobfile3').val() == null ) {
+	    alert("You did not specify any assembly file")
+	    return false
+	}	
+    }
+    // check input type: contigs_with_single:
+    if ( in_type == "contigs_with_single" ){
+	if ( $('#jobfile').val() == null ) {
+	    alert("You did not specify any reads file")
+	    return false
+	}
+	if ( $('#jobfile3').val() == null ) {
+	    alert("You did not specify any assembly file")
+	    return false
+	}
+    }
+    // check input type: contigs_with_paired:
+    if ( in_type == "contigs_with_paired" ){
+	if ( $('#jobfile').val() == null || $('#jobfile2').val() == null ){
+	    alert("You did not specify two reads files")
+	    return false
+	}
+	if ( $('#jobfile3').val() == null ) {
+	    alert("You did not specify any assembly file")
+	    return false
+	}
+    }
+
+    // if both reads files are the same:
     if ( in_type == "paired" || in_type == "contigs_with_paired"){
 	if ( $('#jobfile').val() == $('#jobfile2').val()){
 	    alert("You have to specify two different reads files as input")
 	    return false
 	}	
     }
+
     // if no analysis steps checked
     var steps = $(".cleaning_steps, .assembly_steps, .identification_steps, .mapping_steps, .expression_steps")
 
     if ( ! steps.is(":checked")){
 	alert("You did not specify any analysis steps")
+	return false
+    }
+    // if no adapters but cutadapt activated:
+    if ($("#adapters").is(':checked')){
+	if ($("#cutadapt_option1").val() == '' || $("#cutadapt_option2").val() == '' ){
+	alert("You have selected Cutadapt but did not specify two adapter sequences: please input the sequences in Cutadapt options")
+	}
 	return false
     }
     return true
@@ -485,6 +539,11 @@ $(document).ready(function(){
 	$('.mapping_steps').attr('checked', false)
 	$('.identification_steps').attr('checked', false)
 	$('.expression_steps').attr('checked', false)
+
+// No defaults for input files:
+	document.getElementById("jobfile").selectedIndex = -1;
+	document.getElementById("jobfile2").selectedIndex = -1;
+	document.getElementById("jobfile3").selectedIndex = -1;
 
         var in_type = $("input[name=input_type]:checked").val()
 //	$('#demo').append(in_type)

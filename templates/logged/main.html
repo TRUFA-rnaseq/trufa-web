@@ -32,7 +32,9 @@
           </div>
           <select class="span9" id="filetype" name="myfiletype"/>
           <option value="undef" />undefined</option>
-          <option value="auto" />auto</option>
+<!-- auto detection of the format cannot work now because of  -->
+<!-- redundancy in extension names -->
+<!--           <option value="auto" />auto</option> -->
           <option value="fast" />reads file (.fastq)</option>
           <option value="tgz_fast" />compressed reads file (.fastq.gz etc...)</option>
           <option value="seq_db_nuc" />nucleotides sequences database (.fas)</option>
