@@ -469,6 +469,13 @@ function checkInput(){
 	alert("You did not specify any analysis steps")
 	return false
     }
+    // if no adapters but cutadapt activated:
+    if ($("#adapters").is(':checked')){
+	if ($("#cutadapt_option1").val() == '' || $("#cutadapt_option2").val() == '' ){
+	alert("You have selected Cutadapt but did not specify two adapter sequences: please input the sequences in Cutadapt options")
+	}
+	return false
+    }
     return true
 }
 
