@@ -23,6 +23,10 @@ function showError( msg ){
     }
 }
 
+function jumpTop(){
+    $('html, body').animate( {scrollTop: '0px'}, 200 );
+}
+
 /* = USER NAME = ============================================================== */
 !function ($) {
     "use strict"; // jshint ;_;
