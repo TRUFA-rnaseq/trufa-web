@@ -23,6 +23,7 @@ urls = (
     '/', 'Home',
     '/howto','Howto',
     '/run_job',"RunJob",
+    '/faq','Faq',
     '/about', 'About',
     '/login', 'Login',
     '/setup', 'Setup',
@@ -81,6 +82,11 @@ class RunJob:
     def GET( self ):
         return get_render().run_job()
 
+#-------------------------------------------------------------------------------
+class Faq:
+    def GET ( self ):
+        return get_render().faq()
+        
 #-------------------------------------------------------------------------------
 class About:
     def GET( self ):
