@@ -377,10 +377,10 @@ function refreshFileList(){
     $('#jobstart').click( function(){
         var xhr = new XMLHttpRequest();
 
-	// Cancel Job if not correct input
-	if ( ! checkInput()){
-	    return;
-	}
+	    // Cancel Job if not correct input
+	    if ( ! checkJobInput()){
+	        return;
+	    }
 
         xhr.onreadystatechange = function( e ){
             if( 4 == this.readyState ){
@@ -405,7 +405,7 @@ function refreshFileList(){
 
 }(window.jQuery);
 
-function checkInput(){
+function checkJobInput(){
     // if no input type is selected:
     if ( ! $("input[name=input_type]").is(':checked') ){
 	alert("You have to select a type of input at the top of the page before submitting the job")
