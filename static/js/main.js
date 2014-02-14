@@ -390,7 +390,6 @@ function refreshFileList(){
                 }else{
                     alert( "Job sent: Go to 'Home' to check its status" );
                 }
-                refreshJobList();
             }
         };
 
