@@ -354,40 +354,38 @@ function setupMappingSteps(){
 function summarizeForm(){
 
     $('#jobform :input').change(function(){
-	$("#formsum").empty()
+	$("#formsum_clean").empty()
+	$("#formsum_ass").empty()
+	$("#formsum_identification").empty()
+	$("#formsum_expr").empty()
 
-	$("#formsum").append("<h4>Summary of the selected steps:")
-	$("#formsum").append("<h5>Cleaning step:")
+	$("#formsum_clean").append("<h5>Cleaning step:")
 	$(".cleaning_steps").each(function(){
  	     if ( $(this).is(':checked')) {
-		var val = $(this).val()
 		var name = $(this).attr('name')
-		$("#formsum").append("<li>" + name + ":" + val + "</li>")
+		$("#formsum_clean").append("<li>" + name + "</li>")
 	    }
 	});
 
-	$("#formsum").append("<h5>Assembly/Mapping step:")	
+	$("#formsum_ass").append("<h5>Assembly/Mapping step:")	
 	$(".assembly_steps, .assembly_qc_steps, .mapping_steps").each(function(){
 	    if ( $(this).is(':checked')) {
-		var val = $(this).val()
 		var name = $(this).attr('name')
-		$("#formsum").append("<li>" + name + ":" + val + "</li>")
+		$("#formsum_ass").append("<li>" + name + "</li>")
 	    }
 	});
-	$("#formsum").append("<h5>Identification step:")	
+	$("#formsum_identification").append("<h5>Identification step:")	
 	$(".identification_steps").each(function(){
 	    if ( $(this).is(':checked')) {
-		var val = $(this).val()
 		var name = $(this).attr('name')
-		$("#formsum").append("<li>" + name + ":" + val + "</li>")
+		$("#formsum_identification").append("<li>" + name + "</li>")
 	    }
 	});
-	$("#formsum").append("<h5>Expression step:")	
+	$("#formsum_expr").append("<h5>Expression step:")	
 	$(".expression_steps").each(function(){
 	    if ( $(this).is(':checked')) {
-		var val = $(this).val()
 		var name = $(this).attr('name')
-		$("#formsum").append("<li>" + name + ":" + val + "</li>")
+		$("#formsum_expr").append("<li>" + name + "</li>")
 	    }
 	});
     });
