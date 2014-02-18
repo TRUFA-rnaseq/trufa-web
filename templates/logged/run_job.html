@@ -76,8 +76,14 @@
 
       <h2>RNA-seq steps:</h2>
 
+      <div class="alert alert-info">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	You can perform RNA-seq steps independently or sequencially depending on the boxes you check in each step tabs:
+      </div>
+
+
       <ul class="nav nav-tabs">
-	<li><a href="#cleaning" data-toggle="tab">Reads cleaning</a></li>
+	<li class="active"><a href="#cleaning" data-toggle="tab">Reads cleaning</a></li>
 	<li><a href="#assembly" data-toggle="tab">Reads assembly and Mapping</a></li>
 	<li><a href="#identification" data-toggle="tab">Contigs identification</a></li>
 	<li><a href="#expression" data-toggle="tab">Expression quantification</a></li>
@@ -85,11 +91,11 @@
       <div class="tab-content">
 	<div class="tab-pane active" id="cleaning">
 
-	  <h3>Cleaning steps:</h3>
+	  <h3>Cleaning step:</h3>
 	  <div class="alert alert-error" id="no_reads_alert" hide>
 	    <span class="label label-important">Warning</span>
-	    <p><b> Cleaning option are currently disabled.</b></p>
-	    <p><b>If you want to perform reads cleaning, you need to specify a type of input with reads files in.</b></p>
+	    <p><b> The Cleaning step is currently disabled.</b></p>
+	    <p>If you want to perform reads cleaning, you need to specify a type of input with reads files in.</p>
 	  </div>	  
 	  <h4>Prinseq:</h4>
 	  <label class="checkbox">
@@ -321,12 +327,12 @@
 	</div> <!-- end of Cleaning pane -->
 
 	<div class="tab-pane" id="assembly">
-	  <h3>Assembly and Mapping steps:</h3>
+	  <h3>Assembly and Mapping step:</h3>
 
 	  <div class="alert alert-error" id="no_reads_alert2" hide>
 	    <span class="label label-important">Warning</span>
 	    <p><b> Assembling options are currently disabled.</b></p>
-	    <p><b>If you want to perform an assembly, you need to specify reads files and solely reads files as input (single or paired reads)</b></p>
+	    <p>If you want to perform an assembly, you need to specify reads files and solely reads files as input (single or paired reads)</p>
 	  </div>	  
 
 	  <label class="checkbox">
@@ -334,7 +340,7 @@
 	    Assemble with Trinity
 	  </label>
 	  <label class="checkbox">
-	    <input type="checkbox" id="assembly_qual" name="ASSEMBLY_QUAL" class="identification_steps" disabled>
+	    <input type="checkbox" id="assembly_qual" name="ASSEMBLY_QUAL" class="assembly_qc_steps" disabled>
 	    Assembly quality checks
 	  </label>
 	  <label class="checkbox hidden">
@@ -602,10 +608,11 @@
 	</div> <!-- end of Assembly/mapping pane -->
 
 	<div class="tab-pane" id="identification">
-	  <h3>Identification steps:</h3>
+	  <h3>Identification step:</h3>
 	  <div class="alert alert-error" id="no_assembly_alert" hide>
 	    <span class="label label-important">Warning</span>
-	    <p><b> You have to produce an assembly or input a fasta file with the assembly to perform the following steps </b></p>
+	    <p><b> The Identification step is currently disabled.</b></p>
+	    <p> You have to produce an assembly or upload a fasta file with the assembly to perform the following steps </p>
 	  </div>
 	  <h4> Classic Blat searches:</h4>
 	  <label class="checkbox">
@@ -689,7 +696,13 @@
 	</div> <!-- end of Identification tab --> 
 
 	<div class="tab-pane" id="expression">
-	  <h3> Expression quantification steps:</h3>
+	  <h3> Expression quantification step:</h3>
+	  <div class="alert alert-error" id="no_reads_and_ass_alert" hide>
+	    <span class="label label-important">Warning</span>
+	    <p><b> Expression step is currently disabled.</b></p>
+	    <p>If you want to perform expression quantification, you need to specify reads as input and have an assembly file (uploaded or created during assembly/mapping step).</p>
+	  </div>	  
+
 	  <label class="checkbox hidden">
 	    <input type="checkbox" id="tophat" name="TOPHAT" class="" disabled>
 	    Tophat
@@ -717,12 +730,18 @@ WARNING !!!!!!!! >>> this is not completely correct, since RSEM will be checkabl
 
     <div class="well well-large">
       <h2>Launching the analysis</h2>
+
       <div class="control-group">
 	<div class="controls">
 	  <a id="jobstart" class="btn btn-primary" >
 	    <i class="icon-play icon-white"></i> Start</a>
 	</div>
       </div>  
+
+      <div id="FormSummary">
+      <span id="formsum"></span>
+      </div>
+      
     </div>
   </form>
 </div>
