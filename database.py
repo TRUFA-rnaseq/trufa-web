@@ -320,10 +320,10 @@ def getUserJobs( user ):
     c.execute( 'SELECT uid FROM user WHERE name=?', (user,) )
     uid = c.fetchone()
     if uid is not None:
-        c.execute( 'SELECT jid FROM job WHERE uid=?', (uid[0],) )
+        c.execute( 'SELECT jid,juid FROM job WHERE uid=?', (uid[0],) )
         dbjobs = c.fetchall()
         for j in dbjobs:
-            jobs.append( {'id': j[0]} )
+            jobs.append( {'id': j[0],'juid': j[1]} )
 
     conn.close()
 
