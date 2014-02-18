@@ -17,6 +17,7 @@
 
     initNumberAndTypeJobInput()
     setupMappingSteps()
+    summarizeForm()
 
     $('#jobstart').click( function(){
         var xhr = new XMLHttpRequest();
@@ -207,6 +208,7 @@ function initNumberAndTypeJobInput(){
         // unchecking all boxes
         $('.cleaning_steps').attr('checked', false)
         $('.assembly_steps').attr('checked', false)
+        $('.assembly_qc_steps').attr('checked', false)
         $('.mapping_steps').attr('checked', false)
         $('.identification_steps').attr('checked', false)
         $('.expression_steps').attr('checked', false)
@@ -221,6 +223,7 @@ function initNumberAndTypeJobInput(){
         var warn_read = $('div[id=no_reads_alert]')
         var warn_read2 = $('div[id=no_reads_alert2]')
         var warn_ass = $('div[id=no_assembly_alert]')
+	var warn_exp = $('div[id=no_reads_and_ass_alert]')
 
         switch(in_type){
         case "single":
@@ -235,10 +238,12 @@ function initNumberAndTypeJobInput(){
             $('.assembly_steps').attr('disabled', false);
             warn_read.hide()
             warn_read2.hide()
+            $('.assembly_qc_steps').attr('disabled', true);
             $('.mapping_steps').attr('disabled', true);
             $('.identification_steps').attr('disabled', true);
             warn_ass.show()
             $('.expression_steps').attr('disabled', true)
+	    warn_exp.show()
             break;
         case "paired":
             $('#jobfile').removeAttr('disabled')
@@ -252,10 +257,12 @@ function initNumberAndTypeJobInput(){
             $('.assembly_steps').attr('disabled', false);
             warn_read.hide()
             warn_read2.hide()
+            $('.assembly_qc_steps').attr('disabled', true);
             $('.mapping_steps').attr('disabled', true);
             $('.identification_steps').attr('disabled', true);
             warn_ass.show()
             $('.expression_steps').attr('disabled', true)
+	    warn_exp.show()
             break;
         case "contigs":
             $('#jobfile3').removeAttr('disabled')
@@ -268,10 +275,12 @@ function initNumberAndTypeJobInput(){
             $('.assembly_steps').attr('disabled', true);
             warn_read.show()
             warn_read2.show()
+            $('.assembly_qc_steps').attr('disabled', false);
             $('.mapping_steps').attr('disabled', true);
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
             $('.expression_steps').attr('disabled', true)
+	    warn_exp.show()
             break;
         case "contigs_with_single":
             $('#jobfile').removeAttr('disabled')
@@ -285,10 +294,12 @@ function initNumberAndTypeJobInput(){
             $('.assembly_steps').attr('disabled', true);
             warn_read.hide()
             warn_read2.show()
+            $('.assembly_qc_steps').attr('disabled', false);
             $('.mapping_steps').attr('disabled', false);
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
             $('.expression_steps').attr('disabled', false)
+	    warn_exp.hide()
             break;
         case "contigs_with_paired":
             $('#jobfile').removeAttr('disabled')
@@ -302,10 +313,12 @@ function initNumberAndTypeJobInput(){
             $('.assembly_steps').attr('disabled', true);
             warn_read.hide()
             warn_read2.show()
+            $('.assembly_qc_steps').attr('disabled', false);
             $('.mapping_steps').attr('disabled', false);
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
             $('.expression_steps').attr('disabled', false)
+	    warn_exp.hide()
             break;
         }
     });
@@ -316,21 +329,66 @@ function setupMappingSteps(){
     // activate/desactivate mapping/identification steps
     var trin_check = $("input[id=trinity]")
     var warn_ass = $('div[id=no_assembly_alert]')
+    var warn_exp = $('div[id=no_reads_and_ass_alert]')
 
     trin_check.change(function(){
         if (trin_check.is(':checked')){
             $('.mapping_steps').attr('disabled', false);
+            $('.assembly_qc_steps').attr('disabled', false);
             $('.identification_steps').attr('disabled', false);
             $('.expression_steps').attr('disabled', false);
             warn_ass.hide()
+	    warn_exp.hide()
         }else{
             $('.mapping_steps').attr({'disabled': true, 'checked': false});
+            $('.assembly_qc_steps').attr({'disabled': true, 'checked': false});
             $('.identification_steps').attr({'disabled': true, 'checked': false});
             $('.expression_steps').attr({'disabled': true, 'checked': false});
             warn_ass.show()
+	    warn_exp.show()
         }
 
     });
 }
-
 // -----------------------------------------------------------------------------
+function summarizeForm(){
+
+    $('#jobform :input').change(function(){
+	$("#formsum").empty()
+
+	$("#formsum").append("<h4>Summary of the selected steps:")
+	$("#formsum").append("<h5>Cleaning step:")
+	$(".cleaning_steps").each(function(){
+ 	     if ( $(this).is(':checked')) {
+		var val = $(this).val()
+		var name = $(this).attr('name')
+		$("#formsum").append("<li>" + name + ":" + val + "</li>")
+	    }
+	});
+
+	$("#formsum").append("<h5>Assembly/Mapping step:")	
+	$(".assembly_steps, .assembly_qc_steps, .mapping_steps").each(function(){
+	    if ( $(this).is(':checked')) {
+		var val = $(this).val()
+		var name = $(this).attr('name')
+		$("#formsum").append("<li>" + name + ":" + val + "</li>")
+	    }
+	});
+	$("#formsum").append("<h5>Identification step:")	
+	$(".identification_steps").each(function(){
+	    if ( $(this).is(':checked')) {
+		var val = $(this).val()
+		var name = $(this).attr('name')
+		$("#formsum").append("<li>" + name + ":" + val + "</li>")
+	    }
+	});
+	$("#formsum").append("<h5>Expression step:")	
+	$(".expression_steps").each(function(){
+	    if ( $(this).is(':checked')) {
+		var val = $(this).val()
+		var name = $(this).attr('name')
+		$("#formsum").append("<li>" + name + ":" + val + "</li>")
+	    }
+	});
+    });
+}
