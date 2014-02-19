@@ -34,7 +34,7 @@ def mkEmptyDatabase( dbname ):
 
     conn = sqlite3.connect( dbname )
     c = conn.cursor()
-    c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, passwd text, email text, UNIQUE(name))" )
+    c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, passwd text, email text, enabled INTEGER NOT NULL DEFAULT 1, UNIQUE(name))" )
 
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
@@ -98,6 +98,21 @@ def fixdbJobUID():
     conn.close()
 
 #-------------------------------------------------------------------------------
+def fixdbUserEnabled():
+    column_name = 'enabled'
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    # add new column if needed
+    try:
+        c.execute( 'SELECT %s FROM user' % (column_name,))
+    except sqlite3.OperationalError, e:
+        print "Adding new Column ", column_name
+        c.execute( 'ALTER TABLE user ADD COLUMN %s INTEGER NOT NULL DEFAULT 1' % (column_name,))
+        conn.commit()
+
+    conn.close()
+
+#-------------------------------------------------------------------------------
 def insertUser( name, passwd, email ):
     checkedName, checkedEmail = parseaddr( email )
     if len( checkedEmail ) == 0 or not EMAIL_REGEX.match( checkedEmail):
@@ -145,12 +160,15 @@ def changeUserPassword( name, newpass ):
 #-------------------------------------------------------------------------------
 def checkUser( name, passwd ):
     conn = sqlite3.connect( database )
-    c = conn.cursor()
-    c.execute( 'SELECT passwd FROM user WHERE name=?', (name,) )
-    val = c.fetchone()
-    conn.close()
-    if val is not None:
-        return bcrypt.hashpw( passwd, val[0] ) == val[0]
+    try:
+        with conn:
+            c = conn.cursor()
+            c.execute( 'SELECT passwd FROM user WHERE name=? AND enabled=1', (name,) )
+            val = c.fetchone()
+            if val is not None:
+                return bcrypt.hashpw( passwd, val[0] ) == val[0]
+    except:
+        return False
 
     return False
 
