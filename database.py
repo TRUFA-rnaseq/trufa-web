@@ -173,6 +173,26 @@ def checkUser( name, passwd ):
     return False
 
 #-------------------------------------------------------------------------------
+def enableUser( name ):
+    conn = sqlite3.connect( database )
+    with conn:
+        c = conn.cursor()
+        c.execute( 'SELECT uid FROM user WHERE name=?', (name,) )
+        uidrow = c.fetchone()
+        if uidrow is not None:
+            c.execute( 'UPDATE user SET enabled=1 WHERE uid=?', (uidrow[0],) )
+
+#-------------------------------------------------------------------------------
+def disableUser( name ):
+    conn = sqlite3.connect( database )
+    with conn:
+        c = conn.cursor()
+        c.execute( 'SELECT uid FROM user WHERE name=?', (name,) )
+        uidrow = c.fetchone()
+        if uidrow is not None:
+            c.execute( 'UPDATE user SET enabled=0 WHERE uid=?', (uidrow[0],) )
+
+#-------------------------------------------------------------------------------
 def deleteUser( name ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
