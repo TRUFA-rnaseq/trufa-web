@@ -155,6 +155,39 @@ def checkUser( name, passwd ):
     return False
 
 #-------------------------------------------------------------------------------
+def deleteUser( name ):
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'SELECT uid FROM user WHERE name=?', (name,) )
+    uidrow = c.fetchone()
+    if uidrow is not None:
+        uid = uidrow[0]
+        print "Deleting user ", name, uid
+
+        c.execute( 'SELECT jid FROM job WHERE uid=?', (uid,) )
+        dbjobs = c.fetchall()
+        for jobrow in dbjobs:
+            jid = jobrow[0]
+            print "  Deleting user job ", jid
+            c.execute( 'DELETE FROM jobslurm WHERE jid=?', (jid,) )
+            c.execute( 'DELETE FROM jobfile WHERE jid=?', (jid,) )
+            c.execute( 'DELETE FROM job WHERE jid=?', (jid,) )
+        conn.commit()
+        c.execute( 'SELECT fid FROM file WHERE uid=?', (uid,) )
+        dbfiles = c.fetchall()
+        for filerow in dbfiles:
+            fid = filerow[0]
+            print "  Deleting user file ", fid
+            c.execute( 'DELETE FROM file WHERE fid=?', (fid,) )
+        conn.commit()
+        c.execute( 'DELETE FROM user WHERE uid=?', (uid,) )
+        conn.commit()
+    else:
+        print "Unknown user ", name
+
+    conn.close()
+
+#-------------------------------------------------------------------------------
 def insertFile( user, filename ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
