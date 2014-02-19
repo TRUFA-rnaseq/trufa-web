@@ -183,9 +183,15 @@ def deleteUser( name ):
         c.execute( 'DELETE FROM user WHERE uid=?', (uid,) )
         conn.commit()
     else:
-        print "Unknown user ", name
+        print "ERROR: Unknown user ", name
 
     conn.close()
+
+    try:
+        with htpasswd.Basic( passwdfile ) as userdb:
+            userdb.pop( name )
+    except htpasswd.basic.UserNotExists, e:
+        print "ERROR: User Not Exists ", name, e
 
 #-------------------------------------------------------------------------------
 def insertFile( user, filename ):
