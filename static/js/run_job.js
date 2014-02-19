@@ -189,8 +189,8 @@ function checkJobInput(){
     if ($("#adapters").is(':checked')){
         if ($("#cutadapt_option1").val() == '' || $("#cutadapt_option2").val() == '' ){
             alert("You have selected Cutadapt but did not specify two adapter sequences: please input the sequences in Cutadapt options")
+            return false
         }
-        return false
     }
     return true
 }
