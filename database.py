@@ -34,7 +34,7 @@ def mkEmptyDatabase( dbname ):
 
     conn = sqlite3.connect( dbname )
     c = conn.cursor()
-    c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, passwd text, email text, UNIQUE(name))" )
+    c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, passwd text, email text, enabled INTEGER NOT NULL DEFAULT 1, UNIQUE(name))" )
 
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
@@ -98,6 +98,21 @@ def fixdbJobUID():
     conn.close()
 
 #-------------------------------------------------------------------------------
+def fixdbUserEnabled():
+    column_name = 'enabled'
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    # add new column if needed
+    try:
+        c.execute( 'SELECT %s FROM user' % (column_name,))
+    except sqlite3.OperationalError, e:
+        print "Adding new Column ", column_name
+        c.execute( 'ALTER TABLE user ADD COLUMN %s INTEGER NOT NULL DEFAULT 1' % (column_name,))
+        conn.commit()
+
+    conn.close()
+
+#-------------------------------------------------------------------------------
 def insertUser( name, passwd, email ):
     checkedName, checkedEmail = parseaddr( email )
     if len( checkedEmail ) == 0 or not EMAIL_REGEX.match( checkedEmail):
@@ -145,14 +160,76 @@ def changeUserPassword( name, newpass ):
 #-------------------------------------------------------------------------------
 def checkUser( name, passwd ):
     conn = sqlite3.connect( database )
-    c = conn.cursor()
-    c.execute( 'SELECT passwd FROM user WHERE name=?', (name,) )
-    val = c.fetchone()
-    conn.close()
-    if val is not None:
-        return bcrypt.hashpw( passwd, val[0] ) == val[0]
+    try:
+        with conn:
+            c = conn.cursor()
+            c.execute( 'SELECT passwd FROM user WHERE name=? AND enabled=1', (name,) )
+            val = c.fetchone()
+            if val is not None:
+                return bcrypt.hashpw( passwd, val[0] ) == val[0]
+    except:
+        return False
 
     return False
+
+#-------------------------------------------------------------------------------
+def enableUser( name ):
+    conn = sqlite3.connect( database )
+    with conn:
+        c = conn.cursor()
+        c.execute( 'SELECT uid FROM user WHERE name=?', (name,) )
+        uidrow = c.fetchone()
+        if uidrow is not None:
+            c.execute( 'UPDATE user SET enabled=1 WHERE uid=?', (uidrow[0],) )
+
+#-------------------------------------------------------------------------------
+def disableUser( name ):
+    conn = sqlite3.connect( database )
+    with conn:
+        c = conn.cursor()
+        c.execute( 'SELECT uid FROM user WHERE name=?', (name,) )
+        uidrow = c.fetchone()
+        if uidrow is not None:
+            c.execute( 'UPDATE user SET enabled=0 WHERE uid=?', (uidrow[0],) )
+
+#-------------------------------------------------------------------------------
+def deleteUser( name ):
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'SELECT uid FROM user WHERE name=?', (name,) )
+    uidrow = c.fetchone()
+    if uidrow is not None:
+        uid = uidrow[0]
+        print "Deleting user ", name, uid
+
+        c.execute( 'SELECT jid FROM job WHERE uid=?', (uid,) )
+        dbjobs = c.fetchall()
+        for jobrow in dbjobs:
+            jid = jobrow[0]
+            print "  Deleting user job ", jid
+            c.execute( 'DELETE FROM jobslurm WHERE jid=?', (jid,) )
+            c.execute( 'DELETE FROM jobfile WHERE jid=?', (jid,) )
+            c.execute( 'DELETE FROM job WHERE jid=?', (jid,) )
+        conn.commit()
+        c.execute( 'SELECT fid FROM file WHERE uid=?', (uid,) )
+        dbfiles = c.fetchall()
+        for filerow in dbfiles:
+            fid = filerow[0]
+            print "  Deleting user file ", fid
+            c.execute( 'DELETE FROM file WHERE fid=?', (fid,) )
+        conn.commit()
+        c.execute( 'DELETE FROM user WHERE uid=?', (uid,) )
+        conn.commit()
+    else:
+        print "ERROR: Unknown user ", name
+
+    conn.close()
+
+    try:
+        with htpasswd.Basic( passwdfile ) as userdb:
+            userdb.pop( name )
+    except htpasswd.basic.UserNotExists, e:
+        print "ERROR: User Not Exists ", name, e
 
 #-------------------------------------------------------------------------------
 def insertFile( user, filename ):
