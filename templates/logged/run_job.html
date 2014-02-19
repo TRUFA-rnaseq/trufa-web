@@ -80,7 +80,7 @@
 
       <div class="row">
       <div class="well well-large span6">
-	<h3>Cleaning step:</h3>
+	<h3>1. Cleaning step:</h3>
 	<div class="alert alert-error" id="no_reads_alert" hide>
 	  <span class="label label-important">Warning</span>
 	  <p><b> The Cleaning step is currently disabled.</b></p>
@@ -299,13 +299,13 @@
 		<div class="control-group span12">
 		  <label class="control-label" for="cutadapt_option1">Adapter sequence 1:</label>
 		  <div class="controls">
-		    <input id="cutadapt_option1" type="text" class="input-xxxlarge" placeholder="sequence" name="CUTADAPT_ADAPT1"/>
+		    <input id="cutadapt_option1" type="text" class="input-xxxlarge" placeholder="Type the sequence" name="CUTADAPT_ADAPT1"/>
 		  </div>
 		</div>
 		<div class="control-group span12">
 		  <label class="control-label" for="cutadapt_option2">Adapter sequence 2:</label>
 		  <div class="controls">
-		    <input id="cutadapt_option2" type="text" class="input-xxxlarge" placeholder="sequence" name="CUTADAPT_ADAPT2"/>
+		    <input id="cutadapt_option2" type="text" class="input-xxxlarge" placeholder="Type the sequence" name="CUTADAPT_ADAPT2"/>
 		  </div>
 		</div>
 	      </div>
@@ -317,7 +317,7 @@
       <!-- end of Cleaning pane -->
 
       <div class="well well-large span6">
-	<h3>Assembly and Mapping step:</h3>
+	<h3>2. Assembly and Mapping step:</h3>
 
 	<div class="alert alert-error" id="no_reads_alert2" hide>
 	  <span class="label label-important">Warning</span>
@@ -601,7 +601,7 @@
       
       <div class="row">
       <div class="well well-large span6">
-	<h3>Identification step:</h3>
+	<h3>3. Identification step:</h3>
 	<div class="alert alert-error" id="no_assembly_alert" hide>
 	  <span class="label label-important">Warning</span>
 	  <p><b> The Identification step is currently disabled.</b></p>
@@ -690,7 +690,7 @@
       <!-- end of Identification tab --> 
 
       <div class="well well-large span6">
-	<h3> Expression quantification step:</h3>
+	<h3>4. Expression quantification step:</h3>
 	<div class="alert alert-error" id="no_reads_and_ass_alert" hide>
 	  <span class="label label-important">Warning</span>
 	  <p><b> The Expression step is currently disabled.</b></p>
@@ -723,16 +723,16 @@
       </div>
 
     <div class="well well-large">
-      <h2>Launching the analysis</h2>
+      <h2 align="center">Launching the analysis</h2>
 
-      <div class="control-group">
+      <div class="control-group text-center">
 	<div class="controls">
-	  <a id="jobstart" class="btn btn-primary" >
+	  <a id="jobstart" class="btn btn-primary btn-large" >
 	    <i class="icon-play icon-white"></i> Start</a>
 	</div>
       </div>  
 
-      <div id="FormSummary">
+      <div id="FormSummary" hidden>
 	<h4>Summary of the steps in the analysis:</h4>
 	<span class="span3" id="formsum_clean"></span>
 	<span class="span3" id="formsum_ass"></span>
