@@ -30,7 +30,7 @@
         xhr.onreadystatechange = function( e ){
             if( 4 == this.readyState ){
                 var obj = $.parseJSON( this.responseText )
-                endJobSending( obj )
+                setTimeout( function(){endJobSending( obj )}, 500 )
             }
         };
 
@@ -47,34 +47,36 @@
 
 // -----------------------------------------------------------------------------
 function clearJobForm(){
-    var newDiv = $("<div class='well well-large' />")
-    newDiv.append( "<h2 align='center'>Job Launched</h2>" )
-    var resultDiv = $( "<div id='jobwaitresult' />" )
-    var barDiv = $( "<div class='progress progress-striped active' />" )
-    barDiv.append( "<div class='bar' style='width: 100%;' />" )
-    resultDiv.append( barDiv )
-    newDiv.append( resultDiv )
-    $( "#jobform" ).replaceWith( newDiv )
+    $( '#jobstartbtn' ).addClass( 'hidden' )
+    $( '#jobstarttext' ).html( "Job Launched" )
+    $( '#jobwaitresult' ).removeClass( 'hidden' )
+    $( '#jobwaittext' ).html( "Waiting result ..." )
+    var bar = $( '#jobwaitbar' )
+    bar.addClass( 'active' )
+    bar.addClass( 'progress-striped' )
+    bar.removeClass( 'progress-success' )
+    bar.removeClass( 'progress-danger' )
+    $( 'html, body' ).animate( {scrollTop: $(document).height() }, 100 );
 }
 
 // -----------------------------------------------------------------------------
 function endJobSending( ret ){
-    var resultDiv = $("<div class='well' />")
-    var barDiv = $( "<div class='progress' />" )
-    barDiv.append( "<div class='bar' style='width: 100%' />" )
+    var bar = $( '#jobwaitbar' )
+    bar.removeClass( 'active' )
+    bar.removeClass( 'progress-striped' )
     if( ! ret.ok ){
-        barDiv.addClass( 'progress-danger' )
-        resultDiv.append( barDiv )
-        resultDiv.append( "<h3>Job ERROR: " + ret.msg + "</h3></div>" )
+        bar.addClass( 'progress-danger' )
+        $( '#jobwaittext' ).html( "Job ERROR: " + ret.msg )
     }else{
-        barDiv.addClass( 'progress-success' )
-        resultDiv.append( barDiv )
-        resultDiv.append( "<h3>Job sent: Go to <a class='btn btn-primary' href='/'>Home</a> to check its status</h3>" )
+        bar.addClass( 'progress-success' )
+        $( '#jobwaittext' ).html( "Job sent: Go to <a class='btn btn-primary' href='/'>Home</a> to check its status" )
     }
 
-    $( "#jobwaitresult" ).replaceWith( resultDiv )
+    $( '#jobstarttext' ).html( "Launching the analysis" )
+    $( '#jobstartbtn' ).removeClass( 'hidden' )
+    $( '#jobstartpre' ).removeClass( 'hidden' )
+    $( 'html, body' ).animate( {scrollTop: $(document).height() }, 100 );
 }
-
 
 // -----------------------------------------------------------------------------
 function fillupBlatMenu0(){

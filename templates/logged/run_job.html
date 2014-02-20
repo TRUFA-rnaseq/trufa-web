@@ -10,737 +10,745 @@
       <!-- Other possibily for help messages -->
 
       <!-- <a href="#" class="btn" data-toggle="popover" title="" data-content="Depending on the input you will specify you can perform various steps:<br> -->
-      <!-- 									   - with reads only, you can produce an assembly, then identify and quantify the expression of each contigs<br> -->
-      <!-- 									   - with an assembly, you can go directly to the idenfication steps<br> -->
-      <!-- 									   - with both assembly and reads you can directly identify and quantify the expression." data-original-title="Input" id="example">Help</a> -->
+      <!--                                     - with reads only, you can produce an assembly, then identify and quantify the expression of each contigs<br> -->
+      <!--                                     - with an assembly, you can go directly to the idenfication steps<br> -->
+      <!--                                     - with both assembly and reads you can directly identify and quantify the expression." data-original-title="Input" id="example">Help</a> -->
 
-      
+
       <div class="alert alert-info">
-	<button type="button" class="close" data-dismiss="alert">&times;</button>
-	Depending on the input you will specify you can perform various steps:<br>
-	- with reads only, you can produce an assembly, then identify the contigs and quantify them <br>
-	- with an assembly, you can go directly to the idenfication steps<br>
-	- with both assembly and reads you can directly identify the transcripts and quantify them.
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    Depending on the input you will specify you can perform various steps:<br>
+    - with reads only, you can produce an assembly, then identify the contigs and quantify them <br>
+    - with an assembly, you can go directly to the idenfication steps<br>
+    - with both assembly and reads you can directly identify the transcripts and quantify them.
       </div>
-      
-      <div class="control-group">
-	<div class="controls">
-	  <label class="radio">
-	    <input type="radio" name="input_type" value="single" />
-	    Single reads (1 fastq file)
-	  </label>
-	  <label class="radio">
-	    <input type="radio" name="input_type" value="paired" />
-	    Paired end reads (2 fastq files)
-	  </label>
-	  <label class="radio">
-	    <input type="radio" name="input_type" value="contigs" />
-	    Already assembled contigs (1 fasta file)
-	  </label>
-	  <label class="radio">
-	    <input type="radio" name="input_type" value="contigs_with_single" />
-	    Already assembled contigs and single reads (1 fastq file and 1 fasta file)
-	  </label>
-	  <label class="radio">
-	    <input type="radio" name="input_type" value="contigs_with_paired" />
-	    Already assembled contigs and paired reads (2 fastq file and 1 fasta files)
-	  </label>
 
-	</div>
+      <div class="control-group">
+    <div class="controls">
+      <label class="radio">
+        <input type="radio" name="input_type" value="single" />
+        Single reads (1 fastq file)
+      </label>
+      <label class="radio">
+        <input type="radio" name="input_type" value="paired" />
+        Paired end reads (2 fastq files)
+      </label>
+      <label class="radio">
+        <input type="radio" name="input_type" value="contigs" />
+        Already assembled contigs (1 fasta file)
+      </label>
+      <label class="radio">
+        <input type="radio" name="input_type" value="contigs_with_single" />
+        Already assembled contigs and single reads (1 fastq file and 1 fasta file)
+      </label>
+      <label class="radio">
+        <input type="radio" name="input_type" value="contigs_with_paired" />
+        Already assembled contigs and paired reads (2 fastq file and 1 fasta files)
+      </label>
+
+    </div>
       </div>
-      
+
       <div class="control-group" id="reads_1" hidden>
-	<label class="control-label" for="inputFile1">Single reads file:</label>
-	<div class="controls">
-	  <span id="jobfile" ></span>
-	</div>
+    <label class="control-label" for="inputFile1">Single reads file:</label>
+    <div class="controls">
+      <span id="jobfile" ></span>
+    </div>
       </div>
       <!-- EK edit -->
       <div class="control-group" id="reads_2" hidden>
-      	<label class="control-label" for="inputFile2">Right reads file:</label>
-      	<div class="controls">
-      	  <span id="jobfile2" ></span>
-      	</div>
+        <label class="control-label" for="inputFile2">Right reads file:</label>
+        <div class="controls">
+          <span id="jobfile2" ></span>
+        </div>
       </div>
       <div class="control-group" id="assembly_in" hidden>
-      	<label class="control-label" for="inputFile3">Assembly file:</label>
-      	<div class="controls">
-      	  <span id="jobfile3" ></span>
-      	</div>
+        <label class="control-label" for="inputFile3">Assembly file:</label>
+        <div class="controls">
+          <span id="jobfile3" ></span>
+        </div>
       </div>
-      
+
       <!-- EK edit END-->
     </div>
 
-      <h2>RNA-seq steps:</h2>      
+      <h2>RNA-seq steps:</h2>
       <div class="alert alert-info">
-	<button type="button" class="close" data-dismiss="alert">&times;</button>
-	You can perform RNA-seq steps independently or sequencially depending on the boxes you check in each step tabs:
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    You can perform RNA-seq steps independently or sequencially depending on the boxes you check in each step tabs:
       </div>
 
       <div class="row">
       <div class="well well-large span6">
-	<h3>1. Cleaning step:</h3>
-	<div class="alert alert-error" id="no_reads_alert" hide>
-	  <span class="label label-important">Warning</span>
-	  <p><b> The Cleaning step is currently disabled.</b></p>
-	  <p>If you want to perform reads cleaning, you need to specify a type of input with reads files in.</p>
-	</div>	  
-	<h4>Prinseq:</h4>
-	<label class="checkbox">
-	  <input class="cleaning_steps" type="checkbox" id="duplication" name="DUP" disabled>
-	  Duplicated reads
-	</label>
-	<label class="checkbox">
-	  <input class="cleaning_steps" type="checkbox" id="trimming"  name="TRIM" disabled>
-	  Quality Trimming
-	</label>
+    <h3>1. Cleaning step:</h3>
+    <div class="alert alert-error" id="no_reads_alert" hide>
+      <span class="label label-important">Warning</span>
+      <p><b> The Cleaning step is currently disabled.</b></p>
+      <p>If you want to perform reads cleaning, you need to specify a type of input with reads files in.</p>
+    </div>
+    <h4>Prinseq:</h4>
+    <label class="checkbox">
+      <input class="cleaning_steps" type="checkbox" id="duplication" name="DUP" disabled>
+      Duplicated reads
+    </label>
+    <label class="checkbox">
+      <input class="cleaning_steps" type="checkbox" id="trimming"  name="TRIM" disabled>
+      Quality Trimming
+    </label>
 
-	<h4>Removing adapters:</h4>
-	<label class="checkbox">
-	  <input class="cleaning_steps" type="checkbox" id="adapters"  name="CUTADAPT" disabled>
-	  Cutadapt
-	</label>
-	<h4>BLAT against potential contaminants:</h4>
-	<label class="checkbox">
-	  <input class="cleaning_steps" type="checkbox" id="univec_reads" name="BLAT_UNIVEC" disabled>
-	  Univec hits
-	</label>
-	<label class="checkbox">
-	  <input class="cleaning_steps" type="checkbox" id="Ecoli_reads" name="BLAT_ECOLI" disabled>
-	  E. coli hits
-	</label>
-	<label class="checkbox">
-	  <input class="cleaning_steps" type="checkbox" id="Scere_reads" name="BLAT_SCERE" disabled>
-	  S. cerevisiae hits
-	</label>
-	<ul class="nav nav-pills" id="custom_blat_reads_db">
-	  <li class="dropdown">
-	    <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">Nucleotide db<b class="caret"></b></a>
-	    
-	    <ul id="blat_menu0" class="dropdown-menu" role="menu" aria-labelledby="drop2">
-	    </ul>
-	  </li>
-	</ul>
+    <h4>Removing adapters:</h4>
+    <label class="checkbox">
+      <input class="cleaning_steps" type="checkbox" id="adapters"  name="CUTADAPT" disabled>
+      Cutadapt
+    </label>
+    <h4>BLAT against potential contaminants:</h4>
+    <label class="checkbox">
+      <input class="cleaning_steps" type="checkbox" id="univec_reads" name="BLAT_UNIVEC" disabled>
+      Univec hits
+    </label>
+    <label class="checkbox">
+      <input class="cleaning_steps" type="checkbox" id="Ecoli_reads" name="BLAT_ECOLI" disabled>
+      E. coli hits
+    </label>
+    <label class="checkbox">
+      <input class="cleaning_steps" type="checkbox" id="Scere_reads" name="BLAT_SCERE" disabled>
+      S. cerevisiae hits
+    </label>
+    <ul class="nav nav-pills" id="custom_blat_reads_db">
+      <li class="dropdown">
+        <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">Nucleotide db<b class="caret"></b></a>
 
-	<h4>Post-cleaning quality control:</h4>
-	<label class="checkbox">
-	  <input class="cleaning_steps" type="checkbox" id="fastqc" name="FASTQC" disabled>
-	  FastQC
-	</label>
+        <ul id="blat_menu0" class="dropdown-menu" role="menu" aria-labelledby="drop2">
+        </ul>
+      </li>
+    </ul>
 
-	<!-- end of the cleaning steps --> 
-	<h4>Options:</h4>
-	<div class="accordion" id="accordion1">
-	  <div class="accordion-group">
-	    <div class="accordion-heading">
-	      <a class="accordion-toggle" data-toggle="collapse" href="#collapse1_1">
-		Duplication options
-	      </a>
-	    </div>
-	    <div id="collapse1_1" class="accordion-body collapse">
-	      <div class="accordion-inner">
+    <h4>Post-cleaning quality control:</h4>
+    <label class="checkbox">
+      <input class="cleaning_steps" type="checkbox" id="fastqc" name="FASTQC" disabled>
+      FastQC
+    </label>
 
-		<!-- Duplication options -->
-		
-		<label class="checkbox">
-		  <input type="checkbox" id="duplication_option1" name="DUP_DEREP1" checked>
-		  Exact duplicates
-		</label>
-		<label class="checkbox">
-		  <input type="checkbox" id="duplication_option2" name="DUP_DEREP2">
-		  5' duplicates
-		</label>
-		<label class="checkbox">
-		  <input type="checkbox" id="duplication_option3" name="DUP_DEREP3">
-		  3' duplicates
-		</label>
-		<label class="checkbox">
-		  <input type="checkbox" id="duplication_option4" name="DUP_DEREP4">
-		  Reverse complement exact duplicates
-		</label>
-		<label class="checkbox">
-		  <input type="checkbox" id="duplication_option5" name="DUP_DEREP5">
-		  Reverse complement 5'/3' duplicates
-		</label>
-		Number of allowed duplicates:
-		<input id="duplication_option6" type="number" class="" placeholder="integer" value=2 min="0" name="DUP_NUM"/> <br />
-		<a href="http://prinseq.sourceforge.net/manual.html#OPTIONS" target="_blank">Link to Prinseq manual</a> <br /> 
-	      </div>	<!-- End of  Duplication options -->
-	    </div>
-	  </div>
-	  <div class="accordion-group">
-	    <div class="accordion-heading">
-	      <a class="accordion-toggle" data-toggle="collapse" href="#collapse1_2" id="trimming_option">
-		Trimming options
-	      </a>
-	    </div>
-	    <div id="collapse1_2" class="accordion-body collapse">
-	      <div class="accordion-inner">
-		<!-- Trimming options -->
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option1">Quality threshold:</label>
-		    <div class="controls">
-		      <input id="trimming_option1" type="text" class="" placeholder="integer" name="TRIM_QUAL_THRE"/>
-		    </div>
-		  </div>
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option2">Minimum length in bp:</label>
-		    <div class="controls">
-		      <input id="trimming_option2" type="text" class="" placeholder="integer" name="TRIM_MIN_LGTH" value=40 />       
-		    </div>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option3">Maximum length in bp:</label>
-		    <div class="controls">
-		      <input id="trimming_option3" type="text" class="" placeholder="integer" name="TRIM_MAX_LGTH"/>
-		    </div>
-		  </div>
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option4">Minimum mean quality:</label>
-		    <div class="controls">
-		      <input id="trimming_option4" type="text" class="" placeholder="integer" name="TRIM_MIN_MEAN_QUAL" value=20 />
-		    </div>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option5">Trim quality 5':</label>
-		    <div class="controls">
-		      <input id="trimming_option5" type="text" class="" placeholder="integer" name="TRIM_QUAL_5"/>
-		    </div>
-		  </div>
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option6">Trim quality 3'</label>
-		    <div class="controls">
-		      <input id="trimming_option6" type="text" class="" placeholder="integer" name="TRIM_QUAL_3" value=30 />
-		    </div>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option7">Trim quality window:</label>
-		    <div class="controls">
-		      <input id="trimming_option7" type="text" class="" placeholder="integer" name="TRIM_QUAL_WIN" value=1 />
-		    </div>
-		  </div>
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option8">Trim quality step:</label>
-		    <div class="controls">
-		      <input id="trimming_option8" type="text" class="" placeholder="integer" name="TRIM_QUAL_STEP" value=1 />
-		    </div>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option9">Trim 5' (in bp):</label>
-		    <div class="controls">
-		      <input id="trimming_option9" type="text" class="" placeholder="integer" name="TRIM_5_BP" value=10 />
-		    </div>
-		  </div>
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option10">Trim 3' (in bp):</label>
-		    <div class="controls">
-		      <input id="trimming_option10" type="text" class="" placeholder="integer" name="TRIM_3_BP"/>
-		    </div>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option11">Trim tail 5' (in bp):</label>
-		    <div class="controls">
-		      <input id="trimming_option11" type="text" class="" placeholder="integer" name="TRIM_TAIL_5"/>
-		    </div>
-		  </div>
-		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option12">Trim tail 3' (in bp):</label>
-		    <div class="controls">
-		      <input id="trimming_option12" type="text" class="" placeholder="integer" name="TRIM_TAIL_3" value=6 />
-		    </div>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="TRIM_CPLEX_MET">Low complexity method:</label>
-		    <div class="controls">
-		      <label class="radio">
-			<input type="radio" name="TRIM_CPLEX_MET" value="dust" checked>
-			dust
-		      </label>
-		      <label class="radio">
-			<input type="radio" name="TRIM_CPLEX_MET" value="entropy">
-			entropy</label>
-		    </div>
-		  </div>
+    <!-- end of the cleaning steps -->
+    <h4>Options:</h4>
+    <div class="accordion" id="accordion1">
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" href="#collapse1_1">
+        Duplication options
+          </a>
+        </div>
+        <div id="collapse1_1" class="accordion-body collapse">
+          <div class="accordion-inner">
 
-		  <div class="control-group span6">
-		    <label class="control-label" for="trimming_option14">Low complexity threshold</label>
-		    <div class="controls">
-		      <input id="trimming_option14" type="text" class="" placeholder="integer" name="TRIM_CPLEX_THRE" value=32 />
-		    </div>
-		  </div>
-		</div>
-		<a href="http://prinseq.sourceforge.net/manual.html#OPTIONS" target="_blank">Link to Prinseq manual</a> <br /> 
-	      </div> <!-- end of Trimming options -->
-	    </div>
-	  </div>
-	  <div class="accordion-group">
-	    <div class="accordion-heading">
-	      <a class="accordion-toggle" data-toggle="collapse" href="#collapse1_3" id="cutadapt_option">
-		Cutadapt options
-	      </a>
-	    </div>
-	    <div id="collapse1_3" class="accordion-body collapse">
-	      <div class="accordion-inner">
+        <!-- Duplication options -->
 
-		<div class="control-group span12">
-		  <label class="control-label" for="cutadapt_option1">Adapter sequence 1:</label>
-		  <div class="controls">
-		    <input id="cutadapt_option1" type="text" class="input-xxxlarge" placeholder="Type the sequence" name="CUTADAPT_ADAPT1"/>
-		  </div>
-		</div>
-		<div class="control-group span12">
-		  <label class="control-label" for="cutadapt_option2">Adapter sequence 2:</label>
-		  <div class="controls">
-		    <input id="cutadapt_option2" type="text" class="input-xxxlarge" placeholder="Type the sequence" name="CUTADAPT_ADAPT2"/>
-		  </div>
-		</div>
-	      </div>
-	    </div>
-	  </div>
+        <label class="checkbox">
+          <input type="checkbox" id="duplication_option1" name="DUP_DEREP1" checked>
+          Exact duplicates
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="duplication_option2" name="DUP_DEREP2">
+          5' duplicates
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="duplication_option3" name="DUP_DEREP3">
+          3' duplicates
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="duplication_option4" name="DUP_DEREP4">
+          Reverse complement exact duplicates
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="duplication_option5" name="DUP_DEREP5">
+          Reverse complement 5'/3' duplicates
+        </label>
+        Number of allowed duplicates:
+        <input id="duplication_option6" type="number" class="" placeholder="integer" value=2 min="0" name="DUP_NUM"/> <br />
+        <a href="http://prinseq.sourceforge.net/manual.html#OPTIONS" target="_blank">Link to Prinseq manual</a> <br />
+          </div>	<!-- End of  Duplication options -->
+        </div>
+      </div>
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" href="#collapse1_2" id="trimming_option">
+        Trimming options
+          </a>
+        </div>
+        <div id="collapse1_2" class="accordion-body collapse">
+          <div class="accordion-inner">
+        <!-- Trimming options -->
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option1">Quality threshold:</label>
+            <div class="controls">
+              <input id="trimming_option1" type="text" class="" placeholder="integer" name="TRIM_QUAL_THRE"/>
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option2">Minimum length in bp:</label>
+            <div class="controls">
+              <input id="trimming_option2" type="text" class="" placeholder="integer" name="TRIM_MIN_LGTH" value=40 />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option3">Maximum length in bp:</label>
+            <div class="controls">
+              <input id="trimming_option3" type="text" class="" placeholder="integer" name="TRIM_MAX_LGTH"/>
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option4">Minimum mean quality:</label>
+            <div class="controls">
+              <input id="trimming_option4" type="text" class="" placeholder="integer" name="TRIM_MIN_MEAN_QUAL" value=20 />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option5">Trim quality 5':</label>
+            <div class="controls">
+              <input id="trimming_option5" type="text" class="" placeholder="integer" name="TRIM_QUAL_5"/>
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option6">Trim quality 3'</label>
+            <div class="controls">
+              <input id="trimming_option6" type="text" class="" placeholder="integer" name="TRIM_QUAL_3" value=30 />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option7">Trim quality window:</label>
+            <div class="controls">
+              <input id="trimming_option7" type="text" class="" placeholder="integer" name="TRIM_QUAL_WIN" value=1 />
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option8">Trim quality step:</label>
+            <div class="controls">
+              <input id="trimming_option8" type="text" class="" placeholder="integer" name="TRIM_QUAL_STEP" value=1 />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option9">Trim 5' (in bp):</label>
+            <div class="controls">
+              <input id="trimming_option9" type="text" class="" placeholder="integer" name="TRIM_5_BP" value=10 />
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option10">Trim 3' (in bp):</label>
+            <div class="controls">
+              <input id="trimming_option10" type="text" class="" placeholder="integer" name="TRIM_3_BP"/>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option11">Trim tail 5' (in bp):</label>
+            <div class="controls">
+              <input id="trimming_option11" type="text" class="" placeholder="integer" name="TRIM_TAIL_5"/>
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trimming_option12">Trim tail 3' (in bp):</label>
+            <div class="controls">
+              <input id="trimming_option12" type="text" class="" placeholder="integer" name="TRIM_TAIL_3" value=6 />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="TRIM_CPLEX_MET">Low complexity method:</label>
+            <div class="controls">
+              <label class="radio">
+            <input type="radio" name="TRIM_CPLEX_MET" value="dust" checked>
+            dust
+              </label>
+              <label class="radio">
+            <input type="radio" name="TRIM_CPLEX_MET" value="entropy">
+            entropy</label>
+            </div>
+          </div>
 
-	</div> <!-- end of the Cleaning accordion -->
+          <div class="control-group span6">
+            <label class="control-label" for="trimming_option14">Low complexity threshold</label>
+            <div class="controls">
+              <input id="trimming_option14" type="text" class="" placeholder="integer" name="TRIM_CPLEX_THRE" value=32 />
+            </div>
+          </div>
+        </div>
+        <a href="http://prinseq.sourceforge.net/manual.html#OPTIONS" target="_blank">Link to Prinseq manual</a> <br />
+          </div> <!-- end of Trimming options -->
+        </div>
+      </div>
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" href="#collapse1_3" id="cutadapt_option">
+        Cutadapt options
+          </a>
+        </div>
+        <div id="collapse1_3" class="accordion-body collapse">
+          <div class="accordion-inner">
+
+        <div class="control-group span12">
+          <label class="control-label" for="cutadapt_option1">Adapter sequence 1:</label>
+          <div class="controls">
+            <input id="cutadapt_option1" type="text" class="input-xxxlarge" placeholder="Type the sequence" name="CUTADAPT_ADAPT1"/>
+          </div>
+        </div>
+        <div class="control-group span12">
+          <label class="control-label" for="cutadapt_option2">Adapter sequence 2:</label>
+          <div class="controls">
+            <input id="cutadapt_option2" type="text" class="input-xxxlarge" placeholder="Type the sequence" name="CUTADAPT_ADAPT2"/>
+          </div>
+        </div>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- end of the Cleaning accordion -->
       </div>
       <!-- end of Cleaning pane -->
 
       <div class="well well-large span6">
-	<h3>2. Assembly and Mapping step:</h3>
+    <h3>2. Assembly and Mapping step:</h3>
 
-	<div class="alert alert-error" id="no_reads_alert2" hide>
-	  <span class="label label-important">Warning</span>
-	  <p><b> Assembling with Trinity is currently disabled.</b></p>
-	  <p>If you want to perform an assembly, you need to specify reads files and solely reads files as input (single or paired reads)</p>
-	</div>	  
+    <div class="alert alert-error" id="no_reads_alert2" hide>
+      <span class="label label-important">Warning</span>
+      <p><b> Assembling with Trinity is currently disabled.</b></p>
+      <p>If you want to perform an assembly, you need to specify reads files and solely reads files as input (single or paired reads)</p>
+    </div>
 
-	<label class="checkbox">
-	  <input type="checkbox" id="trinity" name="TRINITY" class="assembly_steps" disabled>
-	  Assemble with Trinity
-	</label>
-	<label class="checkbox">
-	  <input type="checkbox" id="assembly_qual" name="ASSEMBLY_QUAL" class="assembly_qc_steps" disabled>
-	  Assembly quality checks
-	</label>
-	<label class="checkbox hidden">
-	  <input type="checkbox" id="bowtie1" name="BOWTIE1" class="mapping_steps" disabled>
-	  Align reads against contigs (Bowtie1)
-	</label>
-	<label class="checkbox">
-	  <input type="checkbox" id="bowtie2" name="BOWTIE2" class="mapping_steps" disabled>
-	  Align reads against contigs with Bowtie2
-	</label>
-	<!-- <label class="checkbox"> -->
-	<!--   <input type="checkbox" id="cdhitest" name="CDHITEST"> -->
-	<!--   Identify "isoforms" (cd-hit-est) -->
-	<!-- </label> -->
-	<!-- check if this step is actually getting the isoforms, and not just the similar sequences -->
-	<!-- end of assembly/mapping steps -->
-	<h4>Options:</h4>
-	<div class="accordion" id="accordion2">
-	  <div class="accordion-group">
-	    <div class="accordion-heading">
-	      <a class="accordion-toggle" data-toggle="collapse" href="#collapse2_1">
-		Trinity options
-	      </a>
-	    </div>
+    <label class="checkbox">
+      <input type="checkbox" id="trinity" name="TRINITY" class="assembly_steps" disabled>
+      Assemble with Trinity
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" id="assembly_qual" name="ASSEMBLY_QUAL" class="assembly_qc_steps" disabled>
+      Assembly quality checks
+    </label>
+    <label class="checkbox hidden">
+      <input type="checkbox" id="bowtie1" name="BOWTIE1" class="mapping_steps" disabled>
+      Align reads against contigs (Bowtie1)
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" id="bowtie2" name="BOWTIE2" class="mapping_steps" disabled>
+      Align reads against contigs with Bowtie2
+    </label>
+    <!-- <label class="checkbox"> -->
+    <!--   <input type="checkbox" id="cdhitest" name="CDHITEST"> -->
+    <!--   Identify "isoforms" (cd-hit-est) -->
+    <!-- </label> -->
+    <!-- check if this step is actually getting the isoforms, and not just the similar sequences -->
+    <!-- end of assembly/mapping steps -->
+    <h4>Options:</h4>
+    <div class="accordion" id="accordion2">
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" href="#collapse2_1">
+        Trinity options
+          </a>
+        </div>
 
-	    <div id="collapse2_1" class="accordion-body collapse">
-	      <div class="accordion-inner">
+        <div id="collapse2_1" class="accordion-body collapse">
+          <div class="accordion-inner">
 
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="trinity_option1">
-		      Minimum contig length:
-		    </label>
-		    <div class="controls">
-		      <input id="trinity_option1" type="text" class="" placeholder="integer" name="TRIN_MIN_LGTH" value=200 />
-		    </div>
-		  </div>
-		  <div class="control-group span3">
-		    <label class="control-label" for="trinity_option9">
-		      Path reinforcement distance:
-		    </label>
-		    <div class="controls">
-		      <input id="trinity_option9" type="text" class="" placeholder="integer" name="TRIN_REINF_DIST" value=75 /> <br />				 
-		    </div>
-		  </div>
-		</div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="trinity_option1">
+              Minimum contig length:
+            </label>
+            <div class="controls">
+              <input id="trinity_option1" type="text" class="" placeholder="integer" name="TRIN_MIN_LGTH" value=200 />
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trinity_option9">
+              Path reinforcement distance:
+            </label>
+            <div class="controls">
+              <input id="trinity_option9" type="text" class="" placeholder="integer" name="TRIN_REINF_DIST" value=75 /> <br />
+            </div>
+          </div>
+        </div>
 
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="trinity_option3">
-		      Minimum kmer coverage:
-		    </label>
-		    <div class="controls">
-		      <input id="trinity_option3" type="text" class="" placeholder="integer" name="TRIN_MIN_KMER_COV" value=1 />
-		    </div>
-		  </div>
-		  <div class="control-group span3">
-		    <label class="control-label" for="trinity_option4">
-		      Minimum glue:
-		    </label>
-		    <div class="controls">
-		      <input id="trinity_option4" type="text" class="" placeholder="integer" name="TRIN_MIN_GLUE" value=2 />
-		    </div>
-		  </div>
-		</div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="trinity_option3">
+              Minimum kmer coverage:
+            </label>
+            <div class="controls">
+              <input id="trinity_option3" type="text" class="" placeholder="integer" name="TRIN_MIN_KMER_COV" value=1 />
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trinity_option4">
+              Minimum glue:
+            </label>
+            <div class="controls">
+              <input id="trinity_option4" type="text" class="" placeholder="integer" name="TRIN_MIN_GLUE" value=2 />
+            </div>
+          </div>
+        </div>
 
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="trinity_option5">
-		      Minimum iso ratio:
-		    </label>
-		    <div class="controls">
-		      <input id="trinity_option5" type="text" class="" placeholder="float" name="TRIN_MIN_ISO" value=0.05 />			       
-		    </div>
-		  </div>
-		  <div class="control-group span3">
-		    <label class="control-label" for="trinity_option6">
-		      Glue factor:
-		    </label>
-		    <div class="controls">
-		      <input id="trinity_option6" type="text" class="" placeholder="float" name="TRIN_GLUE_FACT" value=0.05 />
-		    </div>
-		  </div>
-		</div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="trinity_option5">
+              Minimum iso ratio:
+            </label>
+            <div class="controls">
+              <input id="trinity_option5" type="text" class="" placeholder="float" name="TRIN_MIN_ISO" value=0.05 />
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trinity_option6">
+              Glue factor:
+            </label>
+            <div class="controls">
+              <input id="trinity_option6" type="text" class="" placeholder="float" name="TRIN_GLUE_FACT" value=0.05 />
+            </div>
+          </div>
+        </div>
 
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="trinity_option7">
-		      Maximum number of paths per node:
-		    </label>
-		    <div class="controls">
-		      <input id="trinity_option7" type="text" class="" placeholder="integer" name="TRIN_MAX_PATH_NODE" value=10 />
-		    </div>
-		  </div>			   
-		  <div class="control-group span3">
-		    <label class="control-label" for="trinity_option8">
-		      Group pairs distance:
-		    </label>
-		    <div class="controls">
-		      <input id="trinity_option8" type="text" class="" placeholder="integer" name="TRIN_GRP_DIST" value=500 /> <br />			       
-		    </div>
-		  </div>
-		</div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="trinity_option7">
+              Maximum number of paths per node:
+            </label>
+            <div class="controls">
+              <input id="trinity_option7" type="text" class="" placeholder="integer" name="TRIN_MAX_PATH_NODE" value=10 />
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trinity_option8">
+              Group pairs distance:
+            </label>
+            <div class="controls">
+              <input id="trinity_option8" type="text" class="" placeholder="integer" name="TRIN_GRP_DIST" value=500 /> <br />
+            </div>
+          </div>
+        </div>
 
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="checkbox">
-		      <div class="controls">
-			<input type="checkbox" id="trinity_option2" name="TRIN_JAC_CLIP">
-			Jaccard clip
-		      </div>
-		    </label>
-		  </div>
-		</div>
-		
-	      </div> <!-- end of Trinity options -->
-	    </div>
-	  </div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="checkbox">
+              <div class="controls">
+            <input type="checkbox" id="trinity_option2" name="TRIN_JAC_CLIP">
+            Jaccard clip
+              </div>
+            </label>
+          </div>
+        </div>
 
-	  <div class="accordion-group" hidden>
-	    <div class="accordion-heading">
-	      <a class="accordion-toggle" data-toggle="collapse" href="#collapse2_2">
-		Bowtie1 options
-	      </a>
-	    </div>
-	    <div id="collapse2_2" class="accordion-body collapse">
-	      <div class="accordion-inner">
+          </div> <!-- end of Trinity options -->
+        </div>
+      </div>
 
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="bowtie1_option1">
-		      Max mismatches in seed:
-		    </label>
-		    <div class="controls">
-		      <input id="bowtie1_option1" type="text" class="" placeholder="integer" name="BOW1_MAX_MIS" value=2 />
-		    </div>
-		  </div>			     
-		  <div class="control-group span3">
-		    <label class="control-label" for="bowtie1_option2">
-		      Max sum of mismatch quals:
-		    </label>
-		    <div class="controls">
-		      <input id="bowtie1_option2" type="text" class="" placeholder="integer" name="BOW1_MAX_SUM" value=70 />
-		    </div>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="bowtie1_option3">
-		      Seed length:
-		    </label>
-		    <div class="controls">
-		      <input id="bowtie1_option3" type="text" class="" placeholder="integer" name="BOW1_SEED_LGTH" value=28 />
-		    </div>
-		  </div>
+      <div class="accordion-group" hidden>
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" href="#collapse2_2">
+        Bowtie1 options
+          </a>
+        </div>
+        <div id="collapse2_2" class="accordion-body collapse">
+          <div class="accordion-inner">
 
-		  <div class="control-group span3">
-		    <label class="control-label" for="bowtie1_option5">
-		      Minimum insert size:
-		    </label>
-		    <div class="controls">
-		      <input id="bowtie1_option5" type="text" class="" placeholder="integer" name="BOW1_MIN_INS" value=0 />
-		    </div>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="control-label" for="bowtie1_option6">
-		      Maximum insert size:
-		    </label>
-		    <div class="controls">
-		      <input id="bowtie1_option6" type="text" class="" placeholder="integer" name="BOW1_MAX_INS" value=250 />
-		    </div>
-		  </div>
-		  <div class="control-group span3">
-		    <label class="control-label" for="bowtie1_option7">
-		      Mates alignment:
-		    </label>
-		    <div class="controls">
-		      <input id="bowtie1_option7" type="text" class="" placeholder="string" name="BOW1_MATES_ALI" value=--fr />
-		    </div>
-		  </div>
-		</div>
-		<div class="row">
-		  <div class="control-group span3">
-		    <label class="checkbox">
-		      <div class="controls">
-			<input type="checkbox" id="bowtie1_option4" name="BOW1_NO_MAQ">
-			No Maq around			
-		      </div>
-		    </label>
-		  </div>
-		  
-		  <div class="control-group span3">
-		    <label class="checkbox">
-		      <div class="controls">
-			<input type="checkbox" id="bowtie1_option8" name="BOW1_TRY_HARD">
-			Try hard option
-		      </div>
-		    </label>
-		  </div>
-		</div>
-		
-	      </div> <!-- end of Bowtie options -->
-	    </div>
-	  </div>
-	  <div class="accordion-group">
-	    <div class="accordion-heading">
-	      <a class="accordion-toggle" data-toggle="collapse" href="#collapse2_3">
-		Bowtie2 options
-	      </a>
-	    </div>
-	    <div id="collapse2_3" class="accordion-body collapse">
-	      <div class="accordion-inner">
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="bowtie1_option1">
+              Max mismatches in seed:
+            </label>
+            <div class="controls">
+              <input id="bowtie1_option1" type="text" class="" placeholder="integer" name="BOW1_MAX_MIS" value=2 />
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="bowtie1_option2">
+              Max sum of mismatch quals:
+            </label>
+            <div class="controls">
+              <input id="bowtie1_option2" type="text" class="" placeholder="integer" name="BOW1_MAX_SUM" value=70 />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="bowtie1_option3">
+              Seed length:
+            </label>
+            <div class="controls">
+              <input id="bowtie1_option3" type="text" class="" placeholder="integer" name="BOW1_SEED_LGTH" value=28 />
+            </div>
+          </div>
 
-		<div class="row">
-		  <div class="span3">
-		    Mode:
-		    <div class="control-group">
-		      <div class="controls">
-			<label class="radio">
-			  <input type="radio" name="BOW2_MODE" value="--end-to-end" checked/>
-			  End to end
-			</label>
-			<label class="radio">
-			  <input type="radio" name="BOW2_MODE" value="--local" />
-			  Local
-			</label>
-		      </div>
-		    </div>
-		  </div>
-		  <div class="span3">
-		    Search type:
-		    <div class="control-group">
-		      <div class="controls">
-			<label class="radio">
-			  <input type="radio" name="BOW2_SPEED" value="--very-fast" />
-			  Very fast		    
-			</label>
-			<label class="radio">
-			  <input type="radio" name="BOW2_SPEED" value="--fast" />
-			  Fast	    
-			</label>
-			<label class="radio">
-			  <input type="radio" name="BOW2_SPEED" value="--sensitive" checked/>
-			  Sensitive
-			</label>
-			<label class="radio">
-			  <input type="radio" name="BOW2_SPEED" value="--very-sensitive" />
-			  Very sensitive
-			  
-			</label>
-		      </div>
-		    </div>
+          <div class="control-group span3">
+            <label class="control-label" for="bowtie1_option5">
+              Minimum insert size:
+            </label>
+            <div class="controls">
+              <input id="bowtie1_option5" type="text" class="" placeholder="integer" name="BOW1_MIN_INS" value=0 />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="bowtie1_option6">
+              Maximum insert size:
+            </label>
+            <div class="controls">
+              <input id="bowtie1_option6" type="text" class="" placeholder="integer" name="BOW1_MAX_INS" value=250 />
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="bowtie1_option7">
+              Mates alignment:
+            </label>
+            <div class="controls">
+              <input id="bowtie1_option7" type="text" class="" placeholder="string" name="BOW1_MATES_ALI" value=--fr />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="control-group span3">
+            <label class="checkbox">
+              <div class="controls">
+            <input type="checkbox" id="bowtie1_option4" name="BOW1_NO_MAQ">
+            No Maq around
+              </div>
+            </label>
+          </div>
+
+          <div class="control-group span3">
+            <label class="checkbox">
+              <div class="controls">
+            <input type="checkbox" id="bowtie1_option8" name="BOW1_TRY_HARD">
+            Try hard option
+              </div>
+            </label>
+          </div>
+        </div>
+
+          </div> <!-- end of Bowtie options -->
+        </div>
+      </div>
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" href="#collapse2_3">
+        Bowtie2 options
+          </a>
+        </div>
+        <div id="collapse2_3" class="accordion-body collapse">
+          <div class="accordion-inner">
+
+        <div class="row">
+          <div class="span3">
+            Mode:
+            <div class="control-group">
+              <div class="controls">
+            <label class="radio">
+              <input type="radio" name="BOW2_MODE" value="--end-to-end" checked/>
+              End to end
+            </label>
+            <label class="radio">
+              <input type="radio" name="BOW2_MODE" value="--local" />
+              Local
+            </label>
+              </div>
+            </div>
+          </div>
+          <div class="span3">
+            Search type:
+            <div class="control-group">
+              <div class="controls">
+            <label class="radio">
+              <input type="radio" name="BOW2_SPEED" value="--very-fast" />
+              Very fast
+            </label>
+            <label class="radio">
+              <input type="radio" name="BOW2_SPEED" value="--fast" />
+              Fast
+            </label>
+            <label class="radio">
+              <input type="radio" name="BOW2_SPEED" value="--sensitive" checked/>
+              Sensitive
+            </label>
+            <label class="radio">
+              <input type="radio" name="BOW2_SPEED" value="--very-sensitive" />
+              Very sensitive
+
+            </label>
+              </div>
+            </div>
 
 
-		  </div>
-		</div>
+          </div>
+        </div>
 
-	      </div> <!-- end of Bowtie2 options -->
-	    </div>
-	  </div>
+          </div> <!-- end of Bowtie2 options -->
+        </div>
+      </div>
 
-	</div> <!-- end of Assembly/mapping accordion -->
+    </div> <!-- end of Assembly/mapping accordion -->
       </div>
       </div>
       <!-- end of Assembly/mapping pane -->
-      
+
       <div class="row">
       <div class="well well-large span6">
-	<h3>3. Identification step:</h3>
-	<div class="alert alert-error" id="no_assembly_alert" hide>
-	  <span class="label label-important">Warning</span>
-	  <p><b> The Identification step is currently disabled.</b></p>
-	  <p> You have to produce an assembly or upload a fasta file with the assembly to perform the following steps </p>
-	</div>
-	<h4> Classic Blat searches:</h4>
-	<label class="checkbox">
-	  <input type="checkbox" id="blat_cegma" name="BLAT_CEGMA" class="identification_steps" disabled>
-	  Cegma 
-	</label>
-	<label class="checkbox">
-	  <input type="checkbox" id="blat_uniref" name="BLAT_UNIREF" class="identification_steps" disabled>
-	  Uniref 
-	</label>
-	<label class="checkbox">
-	  <input type="checkbox" id="blat_nr" name="BLAT_NR" class="identification_steps" disabled>
-	  nr 
-	</label>
+    <h3>3. Identification step:</h3>
+    <div class="alert alert-error" id="no_assembly_alert" hide>
+      <span class="label label-important">Warning</span>
+      <p><b> The Identification step is currently disabled.</b></p>
+      <p> You have to produce an assembly or upload a fasta file with the assembly to perform the following steps </p>
+    </div>
+    <h4> Classic Blat searches:</h4>
+    <label class="checkbox">
+      <input type="checkbox" id="blat_cegma" name="BLAT_CEGMA" class="identification_steps" disabled>
+      Cegma
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" id="blat_uniref" name="BLAT_UNIREF" class="identification_steps" disabled>
+      Uniref
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" id="blat_nr" name="BLAT_NR" class="identification_steps" disabled>
+      nr
+    </label>
 
-	<h4> Custom Blat searches:</h4>
-	Add custom nucleotides or protein sequences databases for the blat search (in fasta format):
-	<div class="bs-docs-example">
-	  <ul class="nav nav-pills">
-	    <li class="dropdown">
-	      <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">Nucleotides db<b class="caret"></b></a>
-	      <ul id="blat_menu1" class="dropdown-menu" role="menu" aria-labelledby="drop3">
-	      </ul>
-	    </li>
-	  </ul>
-	</div> <!-- end contig blat dropdown -->
+    <h4> Custom Blat searches:</h4>
+    Add custom nucleotides or protein sequences databases for the blat search (in fasta format):
+    <div class="bs-docs-example">
+      <ul class="nav nav-pills">
+        <li class="dropdown">
+          <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">Nucleotides db<b class="caret"></b></a>
+          <ul id="blat_menu1" class="dropdown-menu" role="menu" aria-labelledby="drop3">
+          </ul>
+        </li>
+      </ul>
+    </div> <!-- end contig blat dropdown -->
 
-	<div class="bs-docs-example">
-	  <ul class="nav nav-pills">
-	    <li class="dropdown">
-	      <a class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Proteins db<b class="caret"></b></a>
-	      <ul id="blat_menu2" class="dropdown-menu" role="menu" aria-labelledby="drop4">
-	      </ul>
-	    </li>
-	  </ul>
-	</div> <!-- end contig blatx dropdown -->
+    <div class="bs-docs-example">
+      <ul class="nav nav-pills">
+        <li class="dropdown">
+          <a class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Proteins db<b class="caret"></b></a>
+          <ul id="blat_menu2" class="dropdown-menu" role="menu" aria-labelledby="drop4">
+          </ul>
+        </li>
+      </ul>
+    </div> <!-- end contig blatx dropdown -->
 
-	<h4>Classic HMMER searches:</h4>
+    <h4>Classic HMMER searches:</h4>
 
-	<!-- <label class="checkbox"> -->
-	<!--   <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA" class="identification_steps" disabled> -->
-	<!--   Cegma -->
-	<!-- </label> -->
+    <!-- <label class="checkbox"> -->
+    <!--   <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA" class="identification_steps" disabled> -->
+    <!--   Cegma -->
+    <!-- </label> -->
 
-	<label class="checkbox">
-	  <input type="checkbox" id="hmmer_PfamA" name="HMMER_PFAMA" class="identification_steps" disabled>
-	  PfamA
-	</label>
-	<label class="checkbox">
-	  <input type="checkbox" id="hmmer_PfamB" name="HMMER_PFAMB" class="identification_steps" disabled>
-	  PfamB
-	</label>
+    <label class="checkbox">
+      <input type="checkbox" id="hmmer_PfamA" name="HMMER_PFAMA" class="identification_steps" disabled>
+      PfamA
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" id="hmmer_PfamB" name="HMMER_PFAMB" class="identification_steps" disabled>
+      PfamB
+    </label>
 
-	Add custom profiles for the hmmer search: 
-	<div class="bs-docs-example">
-	  <ul class="nav nav-pills">
-	    <li class="dropdown">
-	      <a class="dropdown-toggle" id="drop5" role="button" data-toggle="dropdown" href="#">Databases available for HMMER<b class="caret"></b></a>
-	      <ul id="hmm_menu0" class="dropdown-menu" role="menu" aria-labelledby="drop5">
-	      </ul>
-	    </li>
-	  </ul>
-	</div> <!-- end contig hmmer dropdown -->
+    Add custom profiles for the hmmer search:
+    <div class="bs-docs-example">
+      <ul class="nav nav-pills">
+        <li class="dropdown">
+          <a class="dropdown-toggle" id="drop5" role="button" data-toggle="dropdown" href="#">Databases available for HMMER<b class="caret"></b></a>
+          <ul id="hmm_menu0" class="dropdown-menu" role="menu" aria-labelledby="drop5">
+          </ul>
+        </li>
+      </ul>
+    </div> <!-- end contig hmmer dropdown -->
 
-	<h4>Blast2GO searches:</h4>
-	<label class="checkbox">
-	  <input type="checkbox" id="blast_nr" name="BLAST_NR" class="identification_steps" disabled>
-	  Blast against nr
-	</label>
+    <h4>Blast2GO searches:</h4>
+    <label class="checkbox">
+      <input type="checkbox" id="blast_nr" name="BLAST_NR" class="identification_steps" disabled>
+      Blast against nr
+    </label>
 
-	<!-- <label class="checkbox"> -->
-	<!--   <input type="checkbox" id="interproscan" name="INTERPROSCAN" class="identification_steps" disabled> -->
-	<!--   Interproscan (in dvpt) -->
-	<!-- </label> -->
+    <!-- <label class="checkbox"> -->
+    <!--   <input type="checkbox" id="interproscan" name="INTERPROSCAN" class="identification_steps" disabled> -->
+    <!--   Interproscan (in dvpt) -->
+    <!-- </label> -->
 
-	<label class="checkbox">
-	  <input type="checkbox" id="blast2go" name="BLAST2GO" class="identification_steps" disabled>
-	  Blast2GO
-	</label>
+    <label class="checkbox">
+      <input type="checkbox" id="blast2go" name="BLAST2GO" class="identification_steps" disabled>
+      Blast2GO
+    </label>
       </div>
 
-      <!-- end of Identification tab --> 
+      <!-- end of Identification tab -->
 
       <div class="well well-large span6">
-	<h3>4. Expression quantification step:</h3>
-	<div class="alert alert-error" id="no_reads_and_ass_alert" hide>
-	  <span class="label label-important">Warning</span>
-	  <p><b> The Expression step is currently disabled.</b></p>
-	  <p>If you want to perform expression quantification, you need to specify as input reads file(s) and an assembly file (uploaded or created during assembly/mapping step).</p>
-	</div>	  
-
-	<label class="checkbox hidden">
-	  <input type="checkbox" id="tophat" name="TOPHAT" class="" disabled>
-	  Tophat
-	</label>
-	<label class="checkbox">
-	  <input type="checkbox" id="cufflinks" name="CUFFLINKS" class="expression_steps" disabled>
-	  Cufflinks
-	</label>
-
-	<label class="checkbox">
-	  <input type="checkbox" id="RSEM" name="RSEM" class="expression_steps" disabled>
-	  <!-- The class is identification_steps (and not expression_steps) for RSEM possibility to be activated as soon as an assembly is available (bowtie alignment is embed in the RSEM command)
-
-	       WARNING !!!!!!!! >>> this is not completely correct, since RSEM will be checkable if only an assembly is given (without reads, which is a problem)-->
-	  RSEM
-	</label>
-
-	<label class="checkbox hidden">
-	  <input type="checkbox" id="cuffdiff" name="CUFFDIFF" class="expression_steps" disabled>
-	  Cuffdiff
-	</label>
-	<!-- end of tabs content -->
-      </div>
-      </div>
-
-    <div class="well well-large">
-      <h2 align="center">Launching the analysis</h2>
-
-      <div class="control-group text-center">
-	<div class="controls">
-	  <a id="jobstart" class="btn btn-primary btn-large" >
-	    <i class="icon-play icon-white"></i> Start</a>
-	</div>
-      </div>  
-
-      <div id="FormSummary" hidden>
-	<h4>Summary of the steps in the analysis:</h4>
-	<span class="span3" id="formsum_clean"></span>
-	<span class="span3" id="formsum_ass"></span>
-	<span class="span3" id="formsum_identification"></span>
-	<span class="span3" id="formsum_expr"></span>
-      </div>
-      
+    <h3>4. Expression quantification step:</h3>
+    <div class="alert alert-error" id="no_reads_and_ass_alert" hide>
+      <span class="label label-important">Warning</span>
+      <p><b> The Expression step is currently disabled.</b></p>
+      <p>If you want to perform expression quantification, you need to specify as input reads file(s) and an assembly file (uploaded or created during assembly/mapping step).</p>
     </div>
+
+    <label class="checkbox hidden">
+      <input type="checkbox" id="tophat" name="TOPHAT" class="" disabled>
+      Tophat
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" id="cufflinks" name="CUFFLINKS" class="expression_steps" disabled>
+      Cufflinks
+    </label>
+
+    <label class="checkbox">
+      <input type="checkbox" id="RSEM" name="RSEM" class="expression_steps" disabled>
+      <!-- The class is identification_steps (and not expression_steps) for RSEM possibility to be activated as soon as an assembly is available (bowtie alignment is embed in the RSEM command)
+
+           WARNING !!!!!!!! >>> this is not completely correct, since RSEM will be checkable if only an assembly is given (without reads, which is a problem)-->
+      RSEM
+    </label>
+
+    <label class="checkbox hidden">
+      <input type="checkbox" id="cuffdiff" name="CUFFDIFF" class="expression_steps" disabled>
+      Cuffdiff
+    </label>
+    <!-- end of tabs content -->
+      </div>
+      </div>
+
+      <div class="well well-large">
+        <h2 id="jobstarttext" align="center">Launching the analysis</h2>
+
+        <div id="jobstartbtn" class="control-group text-center">
+          <div class="controls">
+            <h3 ><span id="jobstartpre" class="hidden">Run another job:</span>
+            <a id="jobstart" class="btn btn-primary btn-large" >
+              <i class="icon-play icon-white"></i> Start</a></h3>
+          </div>
+        </div>
+
+        <div id="jobwaitresult" class="well hidden" >
+          <div id="jobwaitbar" class="progress progress-striped active" >
+            <div class="bar" style="width: 100%;" ></div>
+          </div>
+          <h3 id="jobwaittext">Waiting result ...</h3>
+        </div>
+
+        <div id="FormSummary" hidden>
+          <h4>Summary of the steps in the analysis:</h4>
+          <span class="span3" id="formsum_clean"></span>
+          <span class="span3" id="formsum_ass"></span>
+          <span class="span3" id="formsum_identification"></span>
+          <span class="span3" id="formsum_expr"></span>
+        </div>
+
+      </div>
   </form>
 </div>
 
