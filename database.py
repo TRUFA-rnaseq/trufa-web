@@ -2,7 +2,6 @@
 import sqlite3
 import bcrypt
 import os
-import shutil
 import data
 import htpasswd
 import re
@@ -11,7 +10,6 @@ import config
 
 #-------------------------------------------------------------------------------
 BCRYPT_ROUNDS = 5
-template = 'template.db'
 database = config.DB_DATABASE
 passwdfile = config.DB_PASSFILE
 
@@ -51,19 +49,10 @@ def mkEmptyDatabase( dbname ):
     conn.close()
 
 #-------------------------------------------------------------------------------
-def clearDB():
-    mkEmptyDatabase( template )
-    if os.path.isfile( database ):
-        os.remove( database )
-
-#-------------------------------------------------------------------------------
 def init():
     if config.DB_RESET:
-        if not os.path.isfile( template ):
-            clearDB()
-
         if not os.path.isfile( database ):
-            shutil.copy( template, database )
+            mkEmptyDatabase( database )
 
         # create empty password file
         if not os.path.isfile( passwdfile ):
