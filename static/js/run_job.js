@@ -29,12 +29,8 @@
 
         xhr.onreadystatechange = function( e ){
             if( 4 == this.readyState ){
-                var obj = $.parseJSON( this.responseText );
-                if( ! obj.ok ){
-                    alert( "Job ERROR: " + obj.msg );
-                }else{
-                    alert( "Job sent: Go to 'Home' to check its status" );
-                }
+                var obj = $.parseJSON( this.responseText )
+                endJobSending( obj )
             }
         };
 
@@ -43,9 +39,42 @@
         var form = $('#jobform')[0];
         var fd = new FormData( form );
         xhr.send( fd );
+
+        clearJobForm();
     });
 
 }(window.jQuery);
+
+// -----------------------------------------------------------------------------
+function clearJobForm(){
+    var newDiv = $("<div class='well well-large' />")
+    newDiv.append( "<h2 align='center'>Job Launched</h2>" )
+    var resultDiv = $( "<div id='jobwaitresult' />" )
+    var barDiv = $( "<div class='progress progress-striped active' />" )
+    barDiv.append( "<div class='bar' style='width: 100%;' />" )
+    resultDiv.append( barDiv )
+    newDiv.append( resultDiv )
+    $( "#jobform" ).replaceWith( newDiv )
+}
+
+// -----------------------------------------------------------------------------
+function endJobSending( ret ){
+    var resultDiv = $("<div class='well' />")
+    var barDiv = $( "<div class='progress' />" )
+    barDiv.append( "<div class='bar' style='width: 100%' />" )
+    if( ! ret.ok ){
+        barDiv.addClass( 'progress-danger' )
+        resultDiv.append( barDiv )
+        resultDiv.append( "<h3>Job ERROR: " + ret.msg + "</h3></div>" )
+    }else{
+        barDiv.addClass( 'progress-success' )
+        resultDiv.append( barDiv )
+        resultDiv.append( "<h3>Job sent: Go to <a class='btn btn-primary' href='/'>Home</a> to check its status</h3>" )
+    }
+
+    $( "#jobwaitresult" ).replaceWith( resultDiv )
+}
+
 
 // -----------------------------------------------------------------------------
 function fillupBlatMenu0(){
@@ -223,7 +252,7 @@ function initNumberAndTypeJobInput(){
         var warn_read = $('div[id=no_reads_alert]')
         var warn_read2 = $('div[id=no_reads_alert2]')
         var warn_ass = $('div[id=no_assembly_alert]')
-	var warn_exp = $('div[id=no_reads_and_ass_alert]')
+        var warn_exp = $('div[id=no_reads_and_ass_alert]')
 
         switch(in_type){
         case "single":
@@ -243,7 +272,7 @@ function initNumberAndTypeJobInput(){
             $('.identification_steps').attr('disabled', true);
             warn_ass.show()
             $('.expression_steps').attr('disabled', true)
-	    warn_exp.show()
+            warn_exp.show()
             break;
         case "paired":
             $('#jobfile').removeAttr('disabled')
@@ -262,7 +291,7 @@ function initNumberAndTypeJobInput(){
             $('.identification_steps').attr('disabled', true);
             warn_ass.show()
             $('.expression_steps').attr('disabled', true)
-	    warn_exp.show()
+            warn_exp.show()
             break;
         case "contigs":
             $('#jobfile3').removeAttr('disabled')
@@ -280,7 +309,7 @@ function initNumberAndTypeJobInput(){
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
             $('.expression_steps').attr('disabled', true)
-	    warn_exp.show()
+            warn_exp.show()
             break;
         case "contigs_with_single":
             $('#jobfile').removeAttr('disabled')
@@ -299,7 +328,7 @@ function initNumberAndTypeJobInput(){
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
             $('.expression_steps').attr('disabled', false)
-	    warn_exp.hide()
+            warn_exp.hide()
             break;
         case "contigs_with_paired":
             $('#jobfile').removeAttr('disabled')
@@ -318,7 +347,7 @@ function initNumberAndTypeJobInput(){
             $('.identification_steps').attr('disabled', false);
             warn_ass.hide()
             $('.expression_steps').attr('disabled', false)
-	    warn_exp.hide()
+            warn_exp.hide()
             break;
         }
     });
@@ -338,55 +367,56 @@ function setupMappingSteps(){
             $('.identification_steps').attr('disabled', false);
             $('.expression_steps').attr('disabled', false);
             warn_ass.hide()
-	    warn_exp.hide()
+            warn_exp.hide()
         }else{
             $('.mapping_steps').attr({'disabled': true, 'checked': false});
             $('.assembly_qc_steps').attr({'disabled': true, 'checked': false});
             $('.identification_steps').attr({'disabled': true, 'checked': false});
             $('.expression_steps').attr({'disabled': true, 'checked': false});
             warn_ass.show()
-	    warn_exp.show()
+            warn_exp.show()
         }
 
     });
 }
+
 // -----------------------------------------------------------------------------
 function summarizeForm(){
 
     $('#jobform :input').change(function(){
-	$("#formsum_clean").empty()
-	$("#formsum_ass").empty()
-	$("#formsum_identification").empty()
-	$("#formsum_expr").empty()
+        $("#formsum_clean").empty()
+        $("#formsum_ass").empty()
+        $("#formsum_identification").empty()
+        $("#formsum_expr").empty()
 
-	$("#formsum_clean").append("<h5>Cleaning step:")
-	$(".cleaning_steps").each(function(){
- 	     if ( $(this).is(':checked')) {
-		var name = $(this).attr('name')
-		$("#formsum_clean").append("<li>" + name + "</li>")
-	    }
-	});
+        $("#formsum_clean").append("<h5>Cleaning step:")
+        $(".cleaning_steps").each(function(){
+            if ( $(this).is(':checked')) {
+                var name = $(this).attr('name')
+                $("#formsum_clean").append("<li>" + name + "</li>")
+            }
+        });
 
-	$("#formsum_ass").append("<h5>Assembly/Mapping step:")	
-	$(".assembly_steps, .assembly_qc_steps, .mapping_steps").each(function(){
-	    if ( $(this).is(':checked')) {
-		var name = $(this).attr('name')
-		$("#formsum_ass").append("<li>" + name + "</li>")
-	    }
-	});
-	$("#formsum_identification").append("<h5>Identification step:")	
-	$(".identification_steps").each(function(){
-	    if ( $(this).is(':checked')) {
-		var name = $(this).attr('name')
-		$("#formsum_identification").append("<li>" + name + "</li>")
-	    }
-	});
-	$("#formsum_expr").append("<h5>Expression step:")	
-	$(".expression_steps").each(function(){
-	    if ( $(this).is(':checked')) {
-		var name = $(this).attr('name')
-		$("#formsum_expr").append("<li>" + name + "</li>")
-	    }
-	});
+        $("#formsum_ass").append("<h5>Assembly/Mapping step:")
+        $(".assembly_steps, .assembly_qc_steps, .mapping_steps").each(function(){
+            if ( $(this).is(':checked')) {
+                var name = $(this).attr('name')
+                $("#formsum_ass").append("<li>" + name + "</li>")
+            }
+        });
+        $("#formsum_identification").append("<h5>Identification step:")
+        $(".identification_steps").each(function(){
+            if ( $(this).is(':checked')) {
+                var name = $(this).attr('name')
+                $("#formsum_identification").append("<li>" + name + "</li>")
+            }
+        });
+        $("#formsum_expr").append("<h5>Expression step:")
+        $(".expression_steps").each(function(){
+            if ( $(this).is(':checked')) {
+                var name = $(this).attr('name')
+                $("#formsum_expr").append("<li>" + name + "</li>")
+            }
+        });
     });
 }
