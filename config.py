@@ -1,4 +1,4 @@
-VERSION = "0.4.2"
+VERSION = "0.5.0"
 
 REMOTEHOST = "genorama@altamira1.ifca.es"
 
@@ -10,6 +10,7 @@ DATADIR = "/gpfs/res_projects/cvcv/webserver/testing/"
 #REMOTEHOME = "users"
 #DATADIR = "/gpfs/res_projects/cvcv/webserver/users/"
 
+# for testing
 PIPE_LAUNCH = "../server_side/pipe_launcher.py"
 
 # for stable
