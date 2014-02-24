@@ -9,6 +9,7 @@ import json
 import database
 import data
 import pipeline
+import config
 
 #-------------------------------------------------------------------------------
 CherryPyWSGIServer.ssl_certificate = "cert/server.crt"
@@ -22,6 +23,7 @@ urls = (
     '/', 'Home',
     '/howto','Howto',
     '/run_job',"RunJob",
+    '/faq','Faq',
     '/about', 'About',
     '/login', 'Login',
     '/setup', 'Setup',
@@ -42,15 +44,18 @@ store = web.session.DiskStore( 'sessions' )
 session = web.session.Session( app, store, initializer={'login': 0, 'user': None} )
 
 #-------------------------------------------------------------------------------
+globals = {'version': config.VERSION }
+
+#-------------------------------------------------------------------------------
 def logged():
     return (session.login == 1)
 
 #-------------------------------------------------------------------------------
 def get_render():
     if logged():
-        return web.template.render( 'templates/logged', base="layout" )
+        return web.template.render( 'templates/logged', base="layout", globals=globals )
     else:
-        return web.template.render( 'templates/anom', base="layout" )
+        return web.template.render( 'templates/anom', base="layout", globals=globals )
 
 #-------------------------------------------------------------------------------
 def clearSession():
@@ -77,6 +82,11 @@ class RunJob:
     def GET( self ):
         return get_render().run_job()
 
+#-------------------------------------------------------------------------------
+class Faq:
+    def GET ( self ):
+        return get_render().faq()
+        
 #-------------------------------------------------------------------------------
 class About:
     def GET( self ):

@@ -1,0 +1,38 @@
+$def with( content )
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>TRUFA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TRUFA web">
+    <meta name="author" content="Luis Cabellos">
+
+    <!-- Le styles -->
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body { padding-top: 60px; /* space for topbar */ }
+    </style>
+    <link href="../static/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <link rel="shortcut icon" href="/static/favicon.ico">
+  
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">TRUFA</a>
+        </div>
+      </div>
+    </div>
+
+    $:content
+
+    <!-- Le javascript -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+  </body>
+</html>
