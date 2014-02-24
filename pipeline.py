@@ -63,18 +63,22 @@ def runjob( user, jobid, var1):
         
 
         # submit
+
+    jinfo = database.getJobInfo( jobid )
+    juid =  jinfo['juid']
+    
     if var1["input_type"] == "single":
-        command = [ pipe_launch, user, str(var1), remotefile1, str(jobid) ]
+        command = [ pipe_launch, user, str(var1), remotefile1, str(juid) ]
     elif var1["input_type"] == "paired":
-        command = [ pipe_launch, user, str(var1), remotefile1, remotefile2, str(jobid) ]
+        command = [ pipe_launch, user, str(var1), remotefile1, remotefile2, str(juid) ]
     elif var1.input_type =="contigs":
-        command = [ pipe_launch, user, str(var1), remotefile3, str(jobid) ]
+        command = [ pipe_launch, user, str(var1), remotefile3, str(juid) ]
     elif var1.input_type =="contigs_with_single":
         command = [ pipe_launch, user, str(var1), remotefile1, remotefile3,
-                    str(jobid) ]
+                    str(juid) ]
     elif var1.input_type =="contigs_with_paired":
         command = [ pipe_launch, user, str(var1), remotefile1, remotefile2,
-                    remotefile3, str(jobid) ]
+                    remotefile3, str(juid) ]
     print command
 
     for k in var1:
