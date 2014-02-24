@@ -71,6 +71,8 @@ git archive -v -9 --format=tar.gz --prefix release-${VERSION}/ --remote /srv/rep
 #+END_SRC
 ** Change Local confir
 ** Stop current Server
+There is a down.py program that show a simple 'down' page instead of normal page.
+
 ** Update/Copy Database
 The FINAL Database is stored on /var/genorama/web_side/db/ . The web application
 should point to these databases changing the values on ./config.py file.
