@@ -20,6 +20,7 @@ web.config.debug = False
 #-------------------------------------------------------------------------------
 urls = (
     '/favicon.ico', 'Favicon',
+    '/robots.txt', 'Robots',
     '/', 'Home',
     '/howto','Howto',
     '/run_job',"RunJob",
@@ -66,6 +67,11 @@ def clearSession():
 class Favicon:
     def GET( self ):
         raise web.seeother('/static/favicon.ico')
+
+#-------------------------------------------------------------------------------
+class Robots:
+    def GET( self ):
+        raise web.seeother('/static/robots.txt')
 
 #-------------------------------------------------------------------------------
 class Home:
