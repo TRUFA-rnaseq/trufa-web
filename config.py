@@ -20,3 +20,7 @@ PIPE_LAUNCH = "../server_side/pipe_launcher.py"
 DB_RESET = True
 DB_DATABASE = 'database.db'
 DB_PASSFILE = 'htpasswd.db'
+
+USELOGFILE = False
+LOGFILE = "trufa.log"
+#LOGFILE = "/var/genorama/log/trufa.log"

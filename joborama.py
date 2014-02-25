@@ -301,6 +301,11 @@ class Job:
 
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":
+    if config.USELOGFILE:
+        fout = open( config.LOGFILE, 'a' )
+        sys.stdout = fout
+        sys.stderr = fout
+
     database.init()
     p = pipeline.run()
     app.run()
