@@ -20,6 +20,7 @@ web.config.debug = False
 #-------------------------------------------------------------------------------
 urls = (
     '/favicon.ico', 'Favicon',
+    '/robots.txt', 'Robots',
     '/', 'Home',
     '/howto','Howto',
     '/run_job',"RunJob",
@@ -66,6 +67,11 @@ def clearSession():
 class Favicon:
     def GET( self ):
         raise web.seeother('/static/favicon.ico')
+
+#-------------------------------------------------------------------------------
+class Robots:
+    def GET( self ):
+        raise web.seeother('/static/robots.txt')
 
 #-------------------------------------------------------------------------------
 class Home:
@@ -295,6 +301,11 @@ class Job:
 
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":
+    if config.USELOGFILE:
+        fout = open( config.LOGFILE, 'a' )
+        sys.stdout = fout
+        sys.stderr = fout
+
     database.init()
     p = pipeline.run()
     app.run()

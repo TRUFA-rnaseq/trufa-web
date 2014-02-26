@@ -39,6 +39,11 @@ class Home:
 
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":
+    if config.USELOGFILE:
+        fout = open( config.LOGFILE, 'a' )
+        sys.stdout = fout
+        sys.stderr = fout
+
     app.run()
 
 #-------------------------------------------------------------------------------
