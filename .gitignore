@@ -2,5 +2,6 @@
 *~
 /sessions/
 template.db
-database.db
+database*.db
 htpasswd.db
+*.log
