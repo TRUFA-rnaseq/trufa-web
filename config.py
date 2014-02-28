@@ -1,4 +1,4 @@
-VERSION = "0.5.0"
+VERSION = "0.5.2"
 
 REMOTEHOST = "genorama@altamira1.ifca.es"
 
@@ -20,3 +20,7 @@ PIPE_LAUNCH = "../server_side/pipe_launcher.py"
 DB_RESET = True
 DB_DATABASE = 'database.db'
 DB_PASSFILE = 'htpasswd.db'
+
+USELOGFILE = False
+LOGFILE = "trufa.log"
+#LOGFILE = "/var/genorama/log/trufa.log"
