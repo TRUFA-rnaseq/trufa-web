@@ -153,6 +153,19 @@ class Logout:
 class Register:
     def GET( self):
         return get_render().register()
+
+    def POST(self):
+
+        try:
+            name = web.input().user_name
+            passwd = web.input().pwd
+            if database.checkIfUserAvailable( name ):
+                print "User available"
+            else:
+                print "User not available"
+                
+        except:
+            clearSession()
         
 #-------------------------------------------------------------------------------
 class AjaxMe:
