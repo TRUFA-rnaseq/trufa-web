@@ -151,10 +151,11 @@ class Logout:
 
 #-------------------------------------------------------------------------------
 class Register:
+    ##### UNDER DVPT #####
     def GET( self):
         return get_render().register()
 
-    def POST(self):
+    def PUT(self):
 
         try:
             name = web.input().user_name
