@@ -30,6 +30,7 @@ urls = (
     '/setup', 'Setup',
     '/login_error', 'LoginError',
     '/logout', 'Logout',
+    '/register', 'Register',
     '/ajax/me', 'AjaxMe',
     '/ajax/file', 'AjaxFiles',
     '/ajax/filepart', 'AjaxFileParts',
@@ -148,6 +149,11 @@ class Logout:
         session.kill()
         raise web.seeother('/')
 
+#-------------------------------------------------------------------------------
+class Register:
+    def GET( self):
+        return get_render().register()
+        
 #-------------------------------------------------------------------------------
 class AjaxMe:
     def GET( self ):
