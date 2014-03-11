@@ -37,7 +37,7 @@ def mkEmptyDatabase( dbname ):
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
 
-    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, FOREIGN KEY(uid) REFERENCES user(uid) )" )
+    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, name text NOT NULL DEFAULT 'unnamed', FOREIGN KEY(uid) REFERENCES user(uid) )" )
     conn.commit()
 
     c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
@@ -97,6 +97,31 @@ def fixdbUserEnabled():
     except sqlite3.OperationalError, e:
         print "Adding new Column ", column_name
         c.execute( 'ALTER TABLE user ADD COLUMN %s INTEGER NOT NULL DEFAULT 1' % (column_name,))
+        conn.commit()
+
+    conn.close()
+
+#-------------------------------------------------------------------------------
+def fixdbJobName():
+    column_name = 'name'
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    # add new column if needed
+    try:
+        c.execute( 'SELECT %s FROM job' % (column_name,))
+    except sqlite3.OperationalError, e:
+        print "Adding new Column ", column_name
+        c.execute( 'ALTER TABLE job ADD COLUMN %s INTEGER NOT NULL DEFAULT "unnamed"' % (column_name,))
+        conn.commit()
+
+    # fix all jobs
+    c.execute( 'SELECT jid,juid FROM job' )
+    jdata = c.fetchall()
+    for j in jdata:
+        jobname = "job " + str(j[1])
+        print "Set job name ", j[0], "= '", jobname, "'"
+        c.execute( 'UPDATE job SET %s=? WHERE jid=?' % (column_name,),
+                   (jobname, j[0],) )
         conn.commit()
 
     conn.close()
@@ -175,7 +200,7 @@ def checkIfUserAvailable( name ):
         return False
 
     return False
-    
+
 #-------------------------------------------------------------------------------
 def enableUser( name ):
     conn = sqlite3.connect( database )
@@ -382,8 +407,9 @@ def createJob( user ):
         if lastjuid is not None:
             newjuid = lastjuid + 1
 
-        c.execute( 'INSERT INTO job(jid,juid,uid,state) VALUES (null,?,?,0)',
-                   (newjuid,uid[0],) )
+        jobname = 'job ' + str(newjuid)
+        c.execute( 'INSERT INTO job(jid,juid,uid,name,state) VALUES (null,?,?,?,0)',
+                   (newjuid,uid[0],jobname) )
         c.execute( 'SELECT last_insert_rowid() FROM job' )
         jobid = c.fetchone()[0]
         conn.commit()
