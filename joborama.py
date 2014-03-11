@@ -30,6 +30,7 @@ urls = (
     '/setup', 'Setup',
     '/login_error', 'LoginError',
     '/logout', 'Logout',
+    '/register', 'Register',
     '/ajax/me', 'AjaxMe',
     '/ajax/file', 'AjaxFiles',
     '/ajax/filepart', 'AjaxFileParts',
@@ -148,6 +149,25 @@ class Logout:
         session.kill()
         raise web.seeother('/')
 
+#-------------------------------------------------------------------------------
+class Register:
+    ##### UNDER DVPT #####
+    def GET( self):
+        return get_render().register()
+
+    def PUT(self):
+
+        try:
+            name = web.input().user_name
+            passwd = web.input().pwd
+            if database.checkIfUserAvailable( name ):
+                print "User available"
+            else:
+                print "User not available"
+                
+        except:
+            clearSession()
+        
 #-------------------------------------------------------------------------------
 class AjaxMe:
     def GET( self ):
