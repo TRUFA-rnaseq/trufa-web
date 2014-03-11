@@ -34,7 +34,7 @@
             }
         };
 
-        xhr.open( 'POST', '/ajax/job', true );
+        xhr.open( 'POST', '/web/ajax/job', true );
 
         var form = $('#jobform')[0];
         var fd = new FormData( form );
