@@ -162,6 +162,21 @@ def checkUser( name, passwd ):
     return False
 
 #-------------------------------------------------------------------------------
+def checkIfUserAvailable( name ):
+    conn = sqlite3.connect( database )
+    try:
+        with conn:
+            c = conn.cursor()
+            c.execute( 'SELECT * FROM user WHERE name=?', (name,) )
+            val = c.fetchone()
+            if val is None:
+                return True
+    except:
+        return False
+
+    return False
+    
+#-------------------------------------------------------------------------------
 def enableUser( name ):
     conn = sqlite3.connect( database )
     with conn:
