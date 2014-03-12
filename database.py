@@ -37,7 +37,7 @@ def mkEmptyDatabase( dbname ):
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
 
-    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, name text NOT NULL DEFAULT 'unnamed', FOREIGN KEY(uid) REFERENCES user(uid) )" )
+    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, name text NOT NULL DEFAULT 'unnamed', created TEXT NOT NULL DEFAULT '2014-03-01T08:00:00.000000', updated TEXT NOT NULL DEFAULT '2014-03-01T08:00:00.000000', FOREIGN KEY(uid) REFERENCES user(uid) )" )
     conn.commit()
 
     c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
@@ -125,6 +125,27 @@ def fixdbJobName():
         conn.commit()
 
     conn.close()
+
+#-------------------------------------------------------------------------------
+def fixdbJobTimestamp():
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    # add new column if needed
+    column_name = 'created'
+    try:
+        c.execute( 'SELECT %s FROM job' % (column_name,))
+    except sqlite3.OperationalError, e:
+        print "Adding new Column ", column_name
+        c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "2014-03-01T08:00:00.000000"' % (column_name,))
+        conn.commit()
+
+    column_name = 'updated'
+    try:
+        c.execute( 'SELECT %s FROM job' % (column_name,))
+    except sqlite3.OperationalError, e:
+        print "Adding new Column ", column_name
+        c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "2014-03-01T08:00:00.000000"' % (column_name,))
+        conn.commit()
 
 #-------------------------------------------------------------------------------
 def insertUser( name, passwd, email ):
