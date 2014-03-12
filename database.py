@@ -502,7 +502,8 @@ def setJobCompleted( jobid ):
 def getJobInfo( jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute('SELECT state,juid,name FROM job WHERE jid=?', (jobid,) )
+    c.execute( 'SELECT state,juid,name,created,updated FROM job WHERE jid=?',
+               (jobid,) )
     jdata = c.fetchone()
     if jdata is None:
         conn.close()
@@ -530,7 +531,9 @@ def getJobInfo( jobid ):
 
     conn.close()
 
-    return { 'jobid': jobid, 'juid': jdata[1], 'name': jdata[2], 'state': jdata[0], 'slurmids': slurms, 'files': files }
+    return { 'jobid': jobid, 'juid': jdata[1], 'name': jdata[2], 'state': jdata[0],
+             'created': jdata[3], 'updated': jdata[4],
+             'slurmids': slurms, 'files': files }
 
 #-------------------------------------------------------------------------------
 def getJustCreatedJobs():
