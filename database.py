@@ -427,10 +427,10 @@ def getUserJobs( user ):
     c.execute( 'SELECT uid FROM user WHERE name=?', (user,) )
     uid = c.fetchone()
     if uid is not None:
-        c.execute( 'SELECT jid,juid FROM job WHERE uid=?', (uid[0],) )
+        c.execute( 'SELECT jid,juid,name FROM job WHERE uid=?', (uid[0],) )
         dbjobs = c.fetchall()
         for j in dbjobs:
-            jobs.append( {'id': j[0],'juid': j[1]} )
+            jobs.append( {'id': j[0],'juid': j[1], 'name': j[2]} )
 
     conn.close()
 
@@ -481,7 +481,7 @@ def setJobCompleted( jobid ):
 def getJobInfo( jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute('SELECT state,juid FROM job WHERE jid=?', (jobid,) )
+    c.execute('SELECT state,juid,name FROM job WHERE jid=?', (jobid,) )
     jdata = c.fetchone()
     if jdata is None:
         conn.close()
@@ -509,7 +509,7 @@ def getJobInfo( jobid ):
 
     conn.close()
 
-    return { 'jobid': jobid, 'juid': jdata[1], 'state': jdata[0], 'slurmids': slurms, 'files': files }
+    return { 'jobid': jobid, 'juid': jdata[1], 'name': jdata[2], 'state': jdata[0], 'slurmids': slurms, 'files': files }
 
 #-------------------------------------------------------------------------------
 def getJustCreatedJobs():
