@@ -387,7 +387,7 @@ function refreshJobList(){
             var jobs = data['jobs']
 
             $.each( jobs, function( key, val ) {
-                items.push('<li><a href="/job/' + val['id'] + '">Job ' + val['juid']
+                items.push('<li>' + val['juid'] + ': <a href="/job/' + val['id'] + '">' + val['name']
                            + '</a></li>');
             });
 
