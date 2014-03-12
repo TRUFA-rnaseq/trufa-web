@@ -1,4 +1,5 @@
 #-------------------------------------------------------------------------------
+import datetime
 import sqlite3
 import bcrypt
 import os
@@ -37,7 +38,7 @@ def mkEmptyDatabase( dbname ):
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
 
-    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, name text NOT NULL DEFAULT 'unnamed', created TEXT NOT NULL DEFAULT '2014-03-01T08:00:00.000000', updated TEXT NOT NULL DEFAULT '2014-03-01T08:00:00.000000', FOREIGN KEY(uid) REFERENCES user(uid) )" )
+    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, name text NOT NULL DEFAULT 'unnamed', created TEXT NOT NULL DEFAULT '2014-03-01 08:00:00.000000', updated TEXT NOT NULL DEFAULT '2014-03-01 08:00:00.000000', FOREIGN KEY(uid) REFERENCES user(uid) )" )
     conn.commit()
 
     c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
@@ -122,7 +123,7 @@ def fixdbJobName():
         print "Set job name ", j[0], "= '", jobname, "'"
         c.execute( 'UPDATE job SET %s=? WHERE jid=?' % (column_name,),
                    (jobname, j[0],) )
-        conn.commit()
+    conn.commit()
 
     conn.close()
 
@@ -136,7 +137,7 @@ def fixdbJobTimestamp():
         c.execute( 'SELECT %s FROM job' % (column_name,))
     except sqlite3.OperationalError, e:
         print "Adding new Column ", column_name
-        c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "2014-03-01T08:00:00.000000"' % (column_name,))
+        c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "2014-03-01 08:00:00.000000"' % (column_name,))
         conn.commit()
 
     column_name = 'updated'
@@ -144,7 +145,7 @@ def fixdbJobTimestamp():
         c.execute( 'SELECT %s FROM job' % (column_name,))
     except sqlite3.OperationalError, e:
         print "Adding new Column ", column_name
-        c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "2014-03-01T08:00:00.000000"' % (column_name,))
+        c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "2014-03-01 08:00:00.000000"' % (column_name,))
         conn.commit()
 
 #-------------------------------------------------------------------------------
@@ -428,9 +429,11 @@ def createJob( user ):
         if lastjuid is not None:
             newjuid = lastjuid + 1
 
+        now = datetime.datetime.now()
+
         jobname = 'job ' + str(newjuid)
-        c.execute( 'INSERT INTO job(jid,juid,uid,name,state) VALUES (null,?,?,?,0)',
-                   (newjuid,uid[0],jobname) )
+        c.execute( 'INSERT INTO job(jid,juid,uid,name,state,created,updated) VALUES (null,?,?,?,0,?,?)',
+                   (newjuid,uid[0],jobname,now,now) )
         c.execute( 'SELECT last_insert_rowid() FROM job' )
         jobid = c.fetchone()[0]
         conn.commit()
@@ -476,25 +479,28 @@ def addJobSlurmRef( jobid, slurmid ):
 
 #-------------------------------------------------------------------------------
 def setJobSubmitted( jobid ):
+    now = datetime.datetime.now()
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'UPDATE job SET state=1 WHERE jid=?', (jobid,) )
+    c.execute( 'UPDATE job SET state=1,updated=? WHERE jid=?', (now,jobid,) )
     conn.commit()
     conn.close()
 
 #-------------------------------------------------------------------------------
 def setJobRunning( jobid ):
+    now = datetime.datetime.now()
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'UPDATE job SET state=2 WHERE jid=?', (jobid,) )
+    c.execute( 'UPDATE job SET state=2,updated=? WHERE jid=?', (now,jobid,) )
     conn.commit()
     conn.close()
 
 #-------------------------------------------------------------------------------
 def setJobCompleted( jobid ):
+    now = datetime.datetime.now()
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'UPDATE job SET state=3 WHERE jid=?', (jobid,) )
+    c.execute( 'UPDATE job SET state=3,updated=? WHERE jid=?', (now,jobid,) )
     conn.commit()
     conn.close()
 
