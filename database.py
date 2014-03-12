@@ -111,7 +111,7 @@ def fixdbJobName():
         c.execute( 'SELECT %s FROM job' % (column_name,))
     except sqlite3.OperationalError, e:
         print "Adding new Column ", column_name
-        c.execute( 'ALTER TABLE job ADD COLUMN %s INTEGER NOT NULL DEFAULT "unnamed"' % (column_name,))
+        c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "unnamed"' % (column_name,))
         conn.commit()
 
     # fix all jobs
