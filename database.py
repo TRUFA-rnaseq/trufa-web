@@ -509,6 +509,13 @@ def setJobCompleted( jobid ):
     conn.close()
 
 #-------------------------------------------------------------------------------
+def changeJobName( jobid, newname ):
+    conn = sqlite3.connect( database )
+    with conn:
+        conn.execute( 'UPDATE job SET name=? WHERE jid=?',
+                      (newname,jobid) )
+
+#-------------------------------------------------------------------------------
 def getJobInfo( jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
