@@ -2,7 +2,18 @@ $def with( jobinfo )
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span12">
-      <h2>Job $jobinfo['juid'] Info</h2>
+      <form id="jobnameform" class="form-inline">
+        <h2>
+          <strong>Job $jobinfo['juid']: </strong>
+          <span id="jobname">$jobinfo['name']</span>
+          <i class="icon-edit" id="jobnameicon"></i>
+        </h2>
+        <input type="hidden" name="oldname" value="$jobinfo['name']">
+        <input type="hidden" name="jobid" value="$jobinfo['jobid']">
+      </form>
+
+      <div><strong>Job Created:</strong> $jobinfo['created']</div>
+      <div><strong>Job Updated:</strong> $jobinfo['updated']</div>
 
       <h3>Job State:
         $if jobinfo['state'] == 0:
@@ -37,3 +48,4 @@ $def with( jobinfo )
     </div>
   </div>
 </div> <!-- /container -->
+<script src="/static/js/job.js"></script>
