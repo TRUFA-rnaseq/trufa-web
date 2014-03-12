@@ -472,9 +472,13 @@ def addJobFile( jobid, fileid, jftype ):
 #-------------------------------------------------------------------------------
 def addJobSlurmRef( jobid, slurmid ):
     conn = sqlite3.connect( database )
-    c = conn.cursor()
-    c.execute( 'INSERT INTO jobslurm(jid,slurmid) VALUES (?,?)', (jobid,slurmid) )
-    conn.commit()
+    try:
+        with conn:
+            conn.execute( 'INSERT INTO jobslurm(jid,slurmid) VALUES (?,?)',
+                          (jobid,slurmid) )
+    except sqlite3.IntegrityError:
+        print "ERROR: Adding duplicate slurm id", slurmid, "on job", jobid
+
     conn.close()
 
 #-------------------------------------------------------------------------------
