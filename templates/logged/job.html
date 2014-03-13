@@ -24,6 +24,8 @@ $def with( jobinfo )
             <a class="btn btn-large btn-warning disabled"><i class="icon-cog icon-white"></i> Running</a>
         $elif jobinfo['state'] == 3:
             <a class="btn btn-large btn-success disabled"><i class="icon-ok-circle icon-white"></i> Completed</a>
+        $elif jobinfo['state'] == 4:
+            <a class="btn btn-large btn-inverse disabled"><i class="icon-remove-circle icon-white"></i> Canceled</a>
         $else:
             <a class="btn btn-large btn-danger disabled"><i class="icon-warning-sign icon-white"></i> Unknown</a>
       </h3>
