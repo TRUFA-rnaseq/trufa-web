@@ -19,6 +19,7 @@ JOB_CREATED = 0   # Just Created
 JOB_SUBMITTED = 1 # Submitted
 JOB_RUNNING = 2   # Running
 JOB_COMPLETED = 3 # Completed
+JOB_CANCELED = 4 # Canceled
 
 # JOB FILE TYPE
 FILEIN = 0
@@ -505,6 +506,15 @@ def setJobCompleted( jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
     c.execute( 'UPDATE job SET state=3,updated=? WHERE jid=?', (now,jobid,) )
+    conn.commit()
+    conn.close()
+
+#-------------------------------------------------------------------------------
+def setJobCanceled( jobid ):
+    now = datetime.datetime.now()
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'UPDATE job SET state=4,updated=? WHERE jid=?', (now,jobid,) )
     conn.commit()
     conn.close()
 
