@@ -25,7 +25,7 @@
             }
         };
 
-        xhr.open( 'POST', '/ajax/job', true );
+        xhr.open( 'POST', '/web/ajax/job', true );
 	
         var form = $('#jobform')[0];
         var fd = new FormData( form );
@@ -40,13 +40,13 @@
 function refreshJobList(){
     $.ajax({
         dataType: "json",
-        url: '/ajax/job',
+        url: '/web/ajax/job',
         success: function( data ) {
             var items = [];
             var jobs = data['jobs']
 
             $.each( jobs, function( key, val ) {
-                items.push('<li><a href="/job/' + val['id'] + '">Job ' + val['id'] + '</a></li>');
+                items.push('<li><a href="/web/job/' + val['id'] + '">Job ' + val['id'] + '</a></li>');
             });
 
             var newlist = $('<ul/>', {
