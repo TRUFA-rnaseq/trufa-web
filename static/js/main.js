@@ -40,7 +40,7 @@ function jumpTop(){
 function getUserName( f_ok ){
     $.ajax({
         dataType: "json",
-        url: '/ajax/me',
+        url: '/web/ajax/me',
         success: function( data ) { f_ok( data['username'] ) }
     });
 }
@@ -133,7 +133,7 @@ function sendLittleFile(){
         }
     };
 
-    xhr.open( 'PUT', '/ajax/file', true );
+    xhr.open( 'PUT', '/web/ajax/file', true );
 
     var form = $('#fileform')[0];
     var fd = new FormData( form );
@@ -172,7 +172,7 @@ function sendBigFilePart( desc ){
             }
         };
 
-        xhr.open( 'PUT', '/ajax/filepart', true );
+        xhr.open( 'PUT', '/web/ajax/filepart', true );
 
         var fd = new FormData();
         fd.append( 'myfile', blob )
@@ -197,7 +197,7 @@ function sendBigFileEnd( desc ){
         }
     };
 
-    xhr.open( 'PUT', '/ajax/filepart', true )
+    xhr.open( 'PUT', '/web/ajax/filepart', true )
 
     var fd = new FormData()
     fd.append( 'status', 'end' )
@@ -230,7 +230,7 @@ function sendBigFile(){
         }
     };
 
-    xhr.open( 'PUT', '/ajax/filepart', true )
+    xhr.open( 'PUT', '/web/ajax/filepart', true )
 
     var fd = new FormData()
     fd.append( 'status', 'start' )
@@ -252,7 +252,7 @@ function sendBigFile(){
 function getFileList( f_ok ){
     $.ajax({
         dataType: "json",
-        url: '/ajax/file',
+        url: '/web/ajax/file',
         success: function( data ) { f_ok( data['files'] ) }
     });
 }
@@ -263,7 +263,7 @@ function getFileListWithType( ftype, f_ok ){
         $.ajax({
             dataType: "json",
             data: { filetype: ftype },
-            url: '/ajax/file',
+            url: '/web/ajax/file',
             success: function( data ) { f_ok( data['files'] ) }
         });
         return
@@ -284,7 +284,7 @@ function getFileListWithTypes_( items, ftype, f_ok ){
         $.ajax({
             dataType: "json",
             data: { filetype: ftype[0] },
-            url: '/ajax/file',
+            url: '/web/ajax/file',
             success: function( data ) {
                 $.each( data['files'], function(key, val){
                     items.push( val )
@@ -381,13 +381,13 @@ function refreshFileList(){
 function refreshJobList(){
     $.ajax({
         dataType: "json",
-        url: '/ajax/job',
+        url: '/web/ajax/job',
         success: function( data ) {
             var items = [];
             var jobs = data['jobs']
 
             $.each( jobs, function( key, val ) {
-                items.push('<li>' + val['juid'] + ': <a href="/job/' + val['id'] + '">' + val['name']
+                items.push('<li>' + val['juid'] + ': <a href="/web/job/' + val['id'] + '">' + val['name']
                            + '</a></li>');
             });
 
