@@ -148,7 +148,7 @@
     _query: function(type, url, success, error) {
       return $.ajax({
         type: type,
-        url: url + "?q=" + this.word,
+        url: "/web" + url + "?q=" + this.word,
         dataType: "json",
         cache: false,
         contentType: "application/json",

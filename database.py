@@ -1,4 +1,5 @@
 #-------------------------------------------------------------------------------
+import datetime
 import sqlite3
 import bcrypt
 import os
@@ -18,6 +19,7 @@ JOB_CREATED = 0   # Just Created
 JOB_SUBMITTED = 1 # Submitted
 JOB_RUNNING = 2   # Running
 JOB_COMPLETED = 3 # Completed
+JOB_CANCELED = 4 # Canceled
 
 # JOB FILE TYPE
 FILEIN = 0
@@ -37,7 +39,7 @@ def mkEmptyDatabase( dbname ):
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
 
-    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, FOREIGN KEY(uid) REFERENCES user(uid) )" )
+    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, name text NOT NULL DEFAULT 'unnamed', created TEXT NOT NULL DEFAULT '2014-03-01 08:00:00.000000', updated TEXT NOT NULL DEFAULT '2014-03-01 08:00:00.000000', FOREIGN KEY(uid) REFERENCES user(uid) )" )
     conn.commit()
 
     c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
@@ -102,6 +104,52 @@ def fixdbUserEnabled():
     conn.close()
 
 #-------------------------------------------------------------------------------
+def fixdbJobName():
+    column_name = 'name'
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    # add new column if needed
+    try:
+        c.execute( 'SELECT %s FROM job' % (column_name,))
+    except sqlite3.OperationalError, e:
+        print "Adding new Column ", column_name
+        c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "unnamed"' % (column_name,))
+        conn.commit()
+
+    # fix all jobs
+    c.execute( 'SELECT jid,juid FROM job' )
+    jdata = c.fetchall()
+    for j in jdata:
+        jobname = "job " + str(j[1])
+        print "Set job name ", j[0], "= '", jobname, "'"
+        c.execute( 'UPDATE job SET %s=? WHERE jid=?' % (column_name,),
+                   (jobname, j[0],) )
+    conn.commit()
+
+    conn.close()
+
+#-------------------------------------------------------------------------------
+def fixdbJobTimestamp():
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    # add new column if needed
+    column_name = 'created'
+    try:
+        c.execute( 'SELECT %s FROM job' % (column_name,))
+    except sqlite3.OperationalError, e:
+        print "Adding new Column ", column_name
+        c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "2014-03-01 08:00:00.000000"' % (column_name,))
+        conn.commit()
+
+    column_name = 'updated'
+    try:
+        c.execute( 'SELECT %s FROM job' % (column_name,))
+    except sqlite3.OperationalError, e:
+        print "Adding new Column ", column_name
+        c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "2014-03-01 08:00:00.000000"' % (column_name,))
+        conn.commit()
+
+#-------------------------------------------------------------------------------
 def insertUser( name, passwd, email ):
     checkedName, checkedEmail = parseaddr( email )
     if len( checkedEmail ) == 0 or not EMAIL_REGEX.match( checkedEmail):
@@ -156,6 +204,21 @@ def checkUser( name, passwd ):
             val = c.fetchone()
             if val is not None:
                 return bcrypt.hashpw( passwd, val[0] ) == val[0]
+    except:
+        return False
+
+    return False
+
+#-------------------------------------------------------------------------------
+def checkIfUserAvailable( name ):
+    conn = sqlite3.connect( database )
+    try:
+        with conn:
+            c = conn.cursor()
+            c.execute( 'SELECT * FROM user WHERE name=?', (name,) )
+            val = c.fetchone()
+            if val is None:
+                return True
     except:
         return False
 
@@ -367,8 +430,11 @@ def createJob( user ):
         if lastjuid is not None:
             newjuid = lastjuid + 1
 
-        c.execute( 'INSERT INTO job(jid,juid,uid,state) VALUES (null,?,?,0)',
-                   (newjuid,uid[0],) )
+        now = datetime.datetime.now()
+
+        jobname = 'job ' + str(newjuid)
+        c.execute( 'INSERT INTO job(jid,juid,uid,name,state,created,updated) VALUES (null,?,?,?,0,?,?)',
+                   (newjuid,uid[0],jobname,now,now) )
         c.execute( 'SELECT last_insert_rowid() FROM job' )
         jobid = c.fetchone()[0]
         conn.commit()
@@ -386,10 +452,10 @@ def getUserJobs( user ):
     c.execute( 'SELECT uid FROM user WHERE name=?', (user,) )
     uid = c.fetchone()
     if uid is not None:
-        c.execute( 'SELECT jid,juid FROM job WHERE uid=?', (uid[0],) )
+        c.execute( 'SELECT jid,juid,name FROM job WHERE uid=?', (uid[0],) )
         dbjobs = c.fetchall()
         for j in dbjobs:
-            jobs.append( {'id': j[0],'juid': j[1]} )
+            jobs.append( {'id': j[0],'juid': j[1], 'name': j[2]} )
 
     conn.close()
 
@@ -407,40 +473,64 @@ def addJobFile( jobid, fileid, jftype ):
 #-------------------------------------------------------------------------------
 def addJobSlurmRef( jobid, slurmid ):
     conn = sqlite3.connect( database )
-    c = conn.cursor()
-    c.execute( 'INSERT INTO jobslurm(jid,slurmid) VALUES (?,?)', (jobid,slurmid) )
-    conn.commit()
+    try:
+        with conn:
+            conn.execute( 'INSERT INTO jobslurm(jid,slurmid) VALUES (?,?)',
+                          (jobid,slurmid) )
+    except sqlite3.IntegrityError:
+        print "ERROR: Adding duplicate slurm id", slurmid, "on job", jobid
+
     conn.close()
 
 #-------------------------------------------------------------------------------
 def setJobSubmitted( jobid ):
+    now = datetime.datetime.now()
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'UPDATE job SET state=1 WHERE jid=?', (jobid,) )
+    c.execute( 'UPDATE job SET state=1,updated=? WHERE jid=?', (now,jobid,) )
     conn.commit()
     conn.close()
 
 #-------------------------------------------------------------------------------
 def setJobRunning( jobid ):
+    now = datetime.datetime.now()
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'UPDATE job SET state=2 WHERE jid=?', (jobid,) )
+    c.execute( 'UPDATE job SET state=2,updated=? WHERE jid=?', (now,jobid,) )
     conn.commit()
     conn.close()
 
 #-------------------------------------------------------------------------------
 def setJobCompleted( jobid ):
+    now = datetime.datetime.now()
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'UPDATE job SET state=3 WHERE jid=?', (jobid,) )
+    c.execute( 'UPDATE job SET state=3,updated=? WHERE jid=?', (now,jobid,) )
     conn.commit()
     conn.close()
+
+#-------------------------------------------------------------------------------
+def setJobCanceled( jobid ):
+    now = datetime.datetime.now()
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    c.execute( 'UPDATE job SET state=4,updated=? WHERE jid=?', (now,jobid,) )
+    conn.commit()
+    conn.close()
+
+#-------------------------------------------------------------------------------
+def changeJobName( jobid, newname ):
+    conn = sqlite3.connect( database )
+    with conn:
+        conn.execute( 'UPDATE job SET name=? WHERE jid=?',
+                      (newname,jobid) )
 
 #-------------------------------------------------------------------------------
 def getJobInfo( jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute('SELECT state,juid FROM job WHERE jid=?', (jobid,) )
+    c.execute( 'SELECT state,juid,name,created,updated FROM job WHERE jid=?',
+               (jobid,) )
     jdata = c.fetchone()
     if jdata is None:
         conn.close()
@@ -468,7 +558,9 @@ def getJobInfo( jobid ):
 
     conn.close()
 
-    return { 'jobid': jobid, 'juid': jdata[1], 'state': jdata[0], 'slurmids': slurms, 'files': files }
+    return { 'jobid': jobid, 'juid': jdata[1], 'name': jdata[2], 'state': jdata[0],
+             'created': jdata[3], 'updated': jdata[4],
+             'slurmids': slurms, 'files': files }
 
 #-------------------------------------------------------------------------------
 def getJustCreatedJobs():

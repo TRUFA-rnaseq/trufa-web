@@ -6,7 +6,7 @@
 
         $.ajax({
             dataType: "json",
-            url: '/ajax/me',
+            url: '/web/ajax/me',
             type: 'PUT',
             data: formstr,
 

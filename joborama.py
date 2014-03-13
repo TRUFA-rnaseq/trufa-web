@@ -30,10 +30,12 @@ urls = (
     '/setup', 'Setup',
     '/login_error', 'LoginError',
     '/logout', 'Logout',
+    '/register', 'Register',
     '/ajax/me', 'AjaxMe',
     '/ajax/file', 'AjaxFiles',
     '/ajax/filepart', 'AjaxFileParts',
     '/ajax/job', 'AjaxJobs',
+    '/ajax/jobname', 'AjaxJobName',
     '/job/(.*)', 'Job',
     '/file/(.*)/.*', 'File',
     '/manager', 'Manager',
@@ -148,6 +150,25 @@ class Logout:
         session.kill()
         raise web.seeother('/')
 
+#-------------------------------------------------------------------------------
+class Register:
+    ##### UNDER DVPT #####
+    def GET( self):
+        return get_render().register()
+
+    def PUT(self):
+
+        try:
+            name = web.input().user_name
+            passwd = web.input().pwd
+            if database.checkIfUserAvailable( name ):
+                print "User available"
+            else:
+                print "User not available"
+                
+        except:
+            clearSession()
+        
 #-------------------------------------------------------------------------------
 class AjaxMe:
     def GET( self ):
@@ -269,6 +290,25 @@ class AjaxJobs:
                 print sys.exc_info()
                 web.debug( "can't start new job" )
                 return json.dumps( {'ok':False, 'msg':"can't start new job"} )
+
+            return json.dumps( {'ok':True} )
+        else:
+            raise web.seeother('/')
+
+#-------------------------------------------------------------------------------
+class AjaxJobName:
+    def GET( self ):
+        raise web.seeother('/')
+
+    def PUT( self ):
+        if logged():
+            x = web.input()
+            try:
+                database.changeJobName( x['jobid'], x['newname'] )
+            except:
+                print sys.exc_info()
+                web.debug( "can't change job name" )
+                return json.dumps( {'ok':False, 'msg':"can't change job name"} )
 
             return json.dumps( {'ok':True} )
         else:
