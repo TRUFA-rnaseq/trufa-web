@@ -9,14 +9,14 @@ $def with( content )
     <meta name="author" content="Luis Cabellos">
 
     <!-- Le styles -->
-    <link href="../static/css/bootstrap.css" rel="stylesheet">
+    <link href="/web/static/css/bootstrap.css" rel="stylesheet">
     <style>
       body { padding-top: 60px; /* space for topbar */ }
     </style>
-    <link href="../static/css/bootstrap-responsive.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap-dropdown-checkbox.css">  
-    <link rel="stylesheet" type="text/css" href="../static/css/homemade.css">  
-    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link href="/web/static/css/bootstrap-responsive.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/web/static/css/bootstrap-dropdown-checkbox.css">  
+    <link rel="stylesheet" type="text/css" href="/web/static/css/homemade.css">  
+    <link rel="shortcut icon" href="/web/static/favicon.ico">
 
   </head>
 
@@ -25,9 +25,9 @@ $def with( content )
   <body>
 
     <!-- Le javascript -->
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/js/bootstrap-dropdown-checkbox.js"></script>
+    <script src="/web/static/js/jquery.min.js"></script>
+    <script src="/web/static/js/bootstrap.min.js"></script>
+    <script src="/web/static/js/bootstrap-dropdown-checkbox.js"></script>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -35,24 +35,24 @@ $def with( content )
           <a class="brand" href="/">TRUFA $version</a>
           <div>
             <ul class="nav">
-              <li><a href="/">Home</a></li>
-	      <li><a href="/run_job">Start a Job</a></li>
-	      <li><a href="/manager">File Manager</a></li>
-	      <li><a href="/howto">How to</a></li>
-	      <li><a href="/faq">FAQ</a></li>
-              <li><a href="/about">About</a></li>
+              <li><a href="/web">Home</a></li>
+	      <li><a href="/web/run_job">Start a Job</a></li>
+	      <li><a href="/web/manager">File Manager</a></li>
+	      <li><a href="/web/howto">How to</a></li>
+	      <li><a href="/web/faq">FAQ</a></li>
+              <li><a href="/web/about">About</a></li>
 	      <!-- Right now Contact and About are redundant  -->
               <!-- <li><a href="/about#contact">Contact</a></li> -->
-              <li><a href="https://genorama.ifca.es:8083/trufa/login">
+              <li><a href="https://trufa.ifca.es:8083/trufa/login">
                   <i class="icon-pencil icon-white"></i> Bugs
               </a></li>
             </ul>
             <ul class="nav pull-right">
-              <li><a href="/setup">
+              <li><a href="/web/setup">
                   <i class="icon-user icon-white"></i>
                   <span id="navbar-username">User</span>
               </a></li>
-              <li><a href="/logout">
+              <li><a href="/web/logout">
                   <i class="icon-off icon-white"></i> Logout
               </a></li>
             </ul>

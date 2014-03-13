@@ -9,17 +9,22 @@ $def with( content )
     <meta name="author" content="Luis Cabellos">
 
     <!-- Le styles -->
-    <link href="../static/css/bootstrap.css" rel="stylesheet">
+    <link href="/web/static/css/bootstrap.css" rel="stylesheet">
     <style>
       body { padding-top: 60px; /* space for topbar */ }
     </style>
-    <link href="../static/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/web/static/css/bootstrap-responsive.css" rel="stylesheet">
 
-    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link rel="shortcut icon" href="/web/static/favicon.ico">
   
   </head>
 
   <body>
+
+    <!-- Le javascript -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquery.validate.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -27,9 +32,10 @@ $def with( content )
           <a class="brand" href="/">TRUFA</a>
           <div>
             <ul class="nav">
-              <li><a href="/">Home</a></li>
-              <li><a href="/about">About</a></li>
-              <li><a href="/about#contact">Contact</a></li>
+              <li><a href="/web">Home</a></li>
+              <li><a href="/web/about">About</a></li>
+<!-- Right now about and about#contact are redundant -->
+<!--               <li><a href="/web/about#contact">Contact</a></li> -->
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -37,10 +43,6 @@ $def with( content )
     </div>
 
     $:content
-
-    <!-- Le javascript -->
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
 
   </body>
 </html>
