@@ -1,4 +1,18 @@
 $def with( jobinfo )
+
+<div id="cancelmodal" class="modal hide">
+  <div class="modal-header">
+    <h3>Cancel Job</h3>
+  </div>
+  <div class="modal-body">
+    <p>Do you want to cancel Job <strong>"$jobinfo['name']"</strong>?</p>
+  </div>
+  <div class="modal-footer">
+    <a id="canceljobyes" class="btn">Yes</a>
+    <a id="canceljobno" class="btn btn-primary">No</a>
+  </div>
+</div>
+
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span12">
