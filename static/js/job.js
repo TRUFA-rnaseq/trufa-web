@@ -64,10 +64,26 @@ function cancelJob(){
 
 function cancelJobYes(){
     $('#cancelmodal').modal('hide')
-    alert("Cancel YES")
+    if( window.jobid ){
+        joburi = '/web/ajax/job/' + window.jobid
+        $.ajax({
+            dataType: "json",
+            url: joburi,
+            type: 'DELETE',
+            success: function( data ) {
+                showInfo( "Job deleted" )
+            },
+            error: function( data ) {
+                showError( "Can't cancel Job" )
+            }
+        });
+    }
 }
 
 function cancelJobNo(){
     $('#cancelmodal').modal('hide')
-    alert("Cancel NO")
+}
+
+function setJobid( jid ){
+    window.jobid = jid
 }
