@@ -26,7 +26,7 @@
 function editJobName(){
     $('#jobnameicon').addClass('hidden')
     oldname = $('#jobname').text()
-    $('#jobname').replaceWith("<input name='newname' type='text' value='" + 
+    $('#jobname').replaceWith("<input name='newname' type='text' value='" +
                               oldname + "' id='jobnameinput' />")
     $('#jobnameinput').focus()
     $('#jobnameinput').focusout( editJobNameDone )
