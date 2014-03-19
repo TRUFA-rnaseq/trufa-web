@@ -45,7 +45,7 @@ function editJobNameDone(){
             }
         }
 
-        xhr.open( 'PUT', '/ajax/jobname', true );
+        xhr.open( 'PUT', '/web/ajax/jobname', true );
 
         var form = $('#jobnameform')[0];
         var fd = new FormData( form );

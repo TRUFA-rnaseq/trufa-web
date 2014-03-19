@@ -64,46 +64,6 @@ def init():
         insertUser( name, name, "j.smith@example.com" )
 
 #-------------------------------------------------------------------------------
-def fixdbJobUID():
-    column_name = 'juid'
-    conn = sqlite3.connect( database )
-    c = conn.cursor()
-    # add new column if needed
-    try:
-        c.execute( 'SELECT %s FROM job' % (column_name,))
-    except sqlite3.OperationalError, e:
-        print "Adding new Column ", column_name
-        c.execute( 'ALTER TABLE job ADD COLUMN %s INTEGER NOT NULL REFERENCES user(uid) DEFAULT 0' % (column_name,))
-
-    # fix all users
-    c.execute( 'SELECT uid,name FROM user' )
-    udata = c.fetchall()
-    for u in udata:
-        c.execute( 'SELECT jid FROM job WHERE uid=?', (u[0],) )
-        jdata = c.fetchall()
-        print "Enumerating jobs of ", u[1], "=", len( jdata )
-        for i,j in enumerate(jdata, start=1):
-            c.execute( 'UPDATE job SET %s=? WHERE jid=?' % (column_name,), (i,j[0],) )
-        conn.commit()
-
-    conn.close()
-
-#-------------------------------------------------------------------------------
-def fixdbUserEnabled():
-    column_name = 'enabled'
-    conn = sqlite3.connect( database )
-    c = conn.cursor()
-    # add new column if needed
-    try:
-        c.execute( 'SELECT %s FROM user' % (column_name,))
-    except sqlite3.OperationalError, e:
-        print "Adding new Column ", column_name
-        c.execute( 'ALTER TABLE user ADD COLUMN %s INTEGER NOT NULL DEFAULT 1' % (column_name,))
-        conn.commit()
-
-    conn.close()
-
-#-------------------------------------------------------------------------------
 def fixdbJobName():
     column_name = 'name'
     conn = sqlite3.connect( database )
