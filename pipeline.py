@@ -12,6 +12,7 @@ import database
 remotehost = config.REMOTEHOST
 remotehome = config.REMOTEHOME
 pipe_launch = config.PIPE_LAUNCH
+data_dir = config.DATADIR
 
 reSLURMLINE = re.compile(r"slurmids: (?P<slurmids>\d+(,\d+)*)")
 reSLURMID = re.compile(r"\,")
@@ -33,10 +34,24 @@ def cancelJob( user, jobid ):
         print "job", jobid, "already canceled"
         return true
 
+    # Canceling Jobid:
     for slurmid in jobinfo['slurmids']:
         print "canceling slurm job", slurmid
 
-    #database.setJobCanceled( jobid )
+        command = ["ssh", remotehost, "mncancel", slurmid ]
+        proc = subprocess.Popen( command, stdout=subprocess.PIPE )
+        #output = proc.communicate()[0]
+
+    # Removing job folders:
+    jname = jobinfo[ 'name' ]
+    print "Removing outputs from Job named: ", jname
+    command =  [ 'ssh', remotehost,
+                 "cd", data_dir + user,
+                 "rm -r", jname ]
+    proc = subprocess.Popen( command, stdout=subprocess.PIPE )
+    #output = proc.communicate()[0]
+    
+    database.setJobCanceled( jobid )
     return True
 
 #-------------------------------------------------------------------------------
