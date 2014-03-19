@@ -299,8 +299,14 @@ class AjaxJobs:
 #-------------------------------------------------------------------------------
 class AjaxJob:
     def DELETE( self, jobid ):
-        print "deleting job ", jobid
-        return json.dumps( {'ok':True} )
+        try:
+            if pipeline.cancelJob( session.user, jobid ):
+                return json.dumps( {'ok':True} )
+        except:
+            print sys.exc_info()
+
+        web.debug( "can't delete job " + str(jobid) )
+        return json.dumps( {'ok':False, 'msg':"can't delete job"} )
 
 #-------------------------------------------------------------------------------
 class AjaxJobName:

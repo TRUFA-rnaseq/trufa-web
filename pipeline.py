@@ -25,6 +25,21 @@ def startJob( user, var1 ):
     p.start()
 
 #-------------------------------------------------------------------------------
+def cancelJob( user, jobid ):
+    print "CANCELING JOB " + str(jobid)
+    jobinfo = database.getJobInfo( jobid )
+    print jobinfo
+    if jobinfo['state'] == database.JOB_COMPLETED or jobinfo['state'] == database.JOB_CANCELED:
+        print "job", jobid, "already canceled"
+        return true
+
+    for slurmid in jobinfo['slurmids']:
+        print "canceling slurm job", slurmid
+
+    #database.setJobCanceled( jobid )
+    return True
+
+#-------------------------------------------------------------------------------
 def getSlurmIds( output ):
     mm = reSLURMLINE.search( output )
     sids = []
