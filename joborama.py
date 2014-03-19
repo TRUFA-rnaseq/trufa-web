@@ -35,6 +35,7 @@ urls = (
     '/ajax/file', 'AjaxFiles',
     '/ajax/filepart', 'AjaxFileParts',
     '/ajax/job', 'AjaxJobs',
+    '/ajax/job/(.*)', 'AjaxJob',
     '/ajax/jobname', 'AjaxJobName',
     '/job/(.*)', 'Job',
     '/file/(.*)/.*', 'File',
@@ -294,6 +295,12 @@ class AjaxJobs:
             return json.dumps( {'ok':True} )
         else:
             raise web.seeother('/')
+
+#-------------------------------------------------------------------------------
+class AjaxJob:
+    def DELETE( self, jobid ):
+        print "deleting job ", jobid
+        return json.dumps( {'ok':True} )
 
 #-------------------------------------------------------------------------------
 class AjaxJobName:
