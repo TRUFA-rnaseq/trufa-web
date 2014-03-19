@@ -13,6 +13,14 @@
         $('#btncanceljob').click( cancelJob )
     }
 
+    if( $('#canceljobyes').length ){
+        $('#canceljobyes').click( cancelJobYes )
+    }
+
+    if( $('#canceljobno').length ){
+        $('#canceljobno').click( cancelJobNo )
+    }
+
 }(window.jQuery);
 
 function editJobName(){
@@ -51,5 +59,15 @@ function editJobNameDone(){
 }
 
 function cancelJob(){
-    alert( 'cancel job')
+    $('#cancelmodal').modal('show')
+}
+
+function cancelJobYes(){
+    $('#cancelmodal').modal('hide')
+    alert("Cancel YES")
+}
+
+function cancelJobNo(){
+    $('#cancelmodal').modal('hide')
+    alert("Cancel NO")
 }
