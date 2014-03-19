@@ -71,7 +71,14 @@ function cancelJobYes(){
             url: joburi,
             type: 'DELETE',
             success: function( data ) {
-                showInfo( "Job deleted" )
+                if( data['ok'] ){
+                    showOK( "Job deleted" )
+                    $('#btncanceljob').addClass('hide')
+                    $('.jobstate').replaceWith(
+                        '<a class="jobstate btn btn-large btn-inverse disabled"><i class="icon-remove-circle icon-white"></i> Canceled</a>' )
+                }else{
+                    showError( data['msg'] )
+                }
             },
             error: function( data ) {
                 showError( "Can't cancel Job" )
