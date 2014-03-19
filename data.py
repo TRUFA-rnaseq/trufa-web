@@ -42,10 +42,11 @@ fileOptionTable = {
 # 0       Unknown
 # 1       fastq           .fastq or .fq
 # 2       compressed fq   .fastq.tar.gz or .fq.tar.gz
-# 3       seq databases   .fas
-# 4       assemblies      .fas
-# 5       mapped assbl.   .bam or .sam
-# 6       hmm profile     .hmm
+# 3       seq databases nuc   .fas
+# 4       seq db AA       .fas
+# 5       assemblies      .fas
+# 6       mapped assbl.   .bam or .sam
+# 7       hmm profile     .hmm
 
 #-------------------------------------------------------------------------------
 def getUserFilename( username, filename ):
