@@ -9,6 +9,10 @@
         $('#jobnameicon').click( editJobName )
     }
 
+    if( $('#btncanceljob').length ){
+        $('#btncanceljob').click( cancelJob )
+    }
+
 }(window.jQuery);
 
 function editJobName(){
@@ -44,4 +48,8 @@ function editJobNameDone(){
 
         $('#jobname').click( editJobName )
     }
+}
+
+function cancelJob(){
+    alert( 'cancel job')
 }

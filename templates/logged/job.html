@@ -18,10 +18,13 @@ $def with( jobinfo )
       <h3>Job State:
         $if jobinfo['state'] == 0:
             <a class="btn btn-large disabled"><i class="icon-tasks"></i> Just Created</a>
+            <a id="btncanceljob" class="btn btn-large btn-warning"><i class="icon-remove"></i> Cancel Job</a>
         $elif jobinfo['state'] == 1:
             <a class="btn btn-large btn-info disabled"><i class="icon-tasks icon-white"></i> Submitted</a>
+            <a id="btncanceljob" class="btn btn-large btn-warning"><i class="icon-remove"></i> Cancel Job</a>
         $elif jobinfo['state'] == 2:
             <a class="btn btn-large btn-warning disabled"><i class="icon-cog icon-white"></i> Running</a>
+            <a id="btncanceljob" class="btn btn-large btn-warning"><i class="icon-remove"></i> Cancel Job</a>
         $elif jobinfo['state'] == 3:
             <a class="btn btn-large btn-success disabled"><i class="icon-ok-circle icon-white"></i> Completed</a>
         $elif jobinfo['state'] == 4:
