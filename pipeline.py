@@ -30,25 +30,30 @@ def cancelJob( user, jobid ):
     print "CANCELING JOB " + str(jobid)
     jobinfo = database.getJobInfo( jobid )
     print jobinfo
+
     if jobinfo['state'] == database.JOB_COMPLETED or jobinfo['state'] == database.JOB_CANCELED:
         print "job", jobid, "already canceled"
         return true
 
     # Canceling Jobid:
+    print jobinfo['slurmids']
     for slurmid in jobinfo['slurmids']:
-        print "canceling slurm job", slurmid
+        print "canceling slurm job", slurmid["slurmid"]
 
-        command = ["ssh", remotehost, "mncancel", slurmid ]
+        command = ["ssh", remotehost, "mncancel", str(slurmid["slurmid"]) ]
         proc = subprocess.Popen( command, stdout=subprocess.PIPE )
-        #output = proc.communicate()[0]
+        output = proc.communicate()[0]
+        print output
 
     # Removing job folders:
-    jname = jobinfo[ 'name' ]
-    print "Removing outputs from Job named: ", jname
-    command =  [ 'ssh', remotehost,
-                 "cd", data_dir + user,
-                 "rm -r", jname ]
-    proc = subprocess.Popen( command, stdout=subprocess.PIPE )
+        # Web and server job names should be corresponding before activating this
+    # jname = jobinfo[ 'name' ]
+    # print "Removing outputs from Job named: ", jname
+    # command =  [ 'ssh', remotehost,
+    #              'cd', data_dir + user,
+    #              'rm -r', jname,
+    #              'touch', "DONE"]
+    # proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     #output = proc.communicate()[0]
     
     database.setJobCanceled( jobid )
