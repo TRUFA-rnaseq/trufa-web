@@ -1,43 +1,47 @@
 <div class="container">
+  <div class="row-fluid show-grid">
+    <div class="well well-large span8">
+      <h1>FAQ:</h1>
+
+      <h4>What is TRUFA's purpose ?</h4>
+      TRUFA's aim  is to allow you to easily perform RNA-seq analysis such as: Reads cleaning, de novo assembly, reads mapping, transcripts identification and expression quantification.
+
+      <h4>What type of input data can I use ?</h4>  
+
+      <p>The input files can be of multiple sources, depending on the kind of
+	analysis you want to perform and the data you have available. So far
+	the accepted inputs are:</p>
+
+      <ul>
+	<li> 1 or 2 Illumina reads files (i.e. single-end or paired-end reads)
+	  in fastq (.fastq or .fq) or compressed fastq format ( fq.tar.gz or
+	  fq.gz) </li>
+	<li> 1 file with already assembled reads, i.e transcripts in fasta
+	  format </li>
+      </ul>
+
+      <h4>How much can last a submited job to finish ?</h4>
+
+      This is highly dependent on the size of the input files, the
+      complexity of the analysis and the current server load. We hope to
+      be able quickly to provide you statistics on this point.
 
 
-<h1>FAQ:</h1>
+      <h4>How do I get the results of an analysis ?</h4>
 
-<h4>What is TRUFA's purpose ?</h4>
-TRUFA's aim  is to allow you to easily perform RNA-seq analysis such as: Reads cleaning, de novo assembly, reads mapping, transcripts identification and expression quantification.
+      <p>From your "Home" area, by clicking on the corresponding job in your "Jobs" list, you can check the status of this job. Once its status is "Completed", all outputs can be retrieved through the "File Manager". First browse your "jobs" folder and then the job folder of interest.</p>
+      Jobs output is organized in 5 different folders:
+      <ul>
+	<li>CLEANING</li>
+	<li>ASSEMBLY_MAPPING</li>
+	<li>IDENTIFICATION</li>
+	<li>EXPRESSION</li>
+	<li>STAT</li>
+      </ul>
+      More informations about the output can be found in <a target="_blank" href="/web/static/trufa_manual.pdf"> the manual</a> and in the manuals of the respective programs used.
+      
+    </div>
+  </div>
 
-<h4>What type of input data I can use ?</h4>  
-
-<p>The input les can be of multiple sources, depending on the kind of
-analysis you want to perform and the data you have available. So far
-the accepted inputs are:</p>
-
-<ul>
-<li> 1 or 2 Illumina reads files (i.e. single-end or paired-end reads)
-  in fastq (.fastq or .fq) or compressed fastq format ( fq.tar.gz or
-  fq.gz) </li>
-<li> 1 file with already assembled reads, i.e transcripts in fasta
-format </li>
-</ul>
-
-<h4>How long can last a submited job to finish ?</h4>
-
-This is highly dependent on the size of the input files, the
-complexity of the analysis and the current server load. We hope to
-be able quickly to provide you statistics on this point.
-
-
-<h4>How do I get the results of an analysis ?</h4>
-
-<p>From your "Home" area, by clicking on the corresponding job in your "Jobs" list, you can check the status of this job. Once its status is "Completed", all outputs can be retrieved through the "File Manager". First browse your "jobs" folder and then the job folder of interest.</p>
-Jobs output is organized in 5 different folders:
-<ul>
-<li>CLEANING</li>
-<li>ASSEMBLY_MAPPING</li>
-<li>IDENTIFICATION</li>
-<li>EXPRESSION</li>
-<li>STAT</li>
-</ul>
-More informations about the output can be found in <a target="_blank" href="/web/static/trufa_manual.pdf"> the manual</a> and in the manuals of the respective programs used.
 
 </div> <!-- /container -->
