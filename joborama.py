@@ -35,10 +35,20 @@ urls = (
     '/ajax/file', 'AjaxFiles',
     '/ajax/filepart', 'AjaxFileParts',
     '/ajax/job', 'AjaxJobs',
+    '/ajax/job/(.*)', 'AjaxJob',
     '/ajax/jobname', 'AjaxJobName',
     '/job/(.*)', 'Job',
     '/file/(.*)/.*', 'File',
     '/manager', 'Manager',
+    '/web/login', 'Login',
+    '/web/register', 'Register',
+    '/web/ajax/me', 'AjaxMe',
+    '/web/ajax/file', 'AjaxFiles',
+    '/web/ajax/filepart', 'AjaxFileParts',
+    '/web/ajax/job', 'AjaxJobs',
+    '/web/ajax/job/(.*)', 'AjaxJob',
+    '/web/ajax/jobname', 'AjaxJobName',
+    '/web/(.*)', 'WebRedirect',
 )
 
 #-------------------------------------------------------------------------------
@@ -64,6 +74,11 @@ def get_render():
 def clearSession():
     session.login = 0
     session.user = None
+
+#-------------------------------------------------------------------------------
+class WebRedirect():
+    def GET( self, name ):
+        raise web.seeother( '/' + name )
 
 #-------------------------------------------------------------------------------
 class Favicon:
@@ -294,6 +309,18 @@ class AjaxJobs:
             return json.dumps( {'ok':True} )
         else:
             raise web.seeother('/')
+
+#-------------------------------------------------------------------------------
+class AjaxJob:
+    def DELETE( self, jobid ):
+        try:
+            if pipeline.cancelJob( session.user, jobid ):
+                return json.dumps( {'ok':True} )
+        except:
+            print sys.exc_info()
+
+        web.debug( "can't delete job " + str(jobid) )
+        return json.dumps( {'ok':False, 'msg':"can't delete job"} )
 
 #-------------------------------------------------------------------------------
 class AjaxJobName:

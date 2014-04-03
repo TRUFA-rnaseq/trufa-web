@@ -1,4 +1,18 @@
 $def with( jobinfo )
+
+<div id="cancelmodal" class="modal hide">
+  <div class="modal-header">
+    <h3>Cancel Job</h3>
+  </div>
+  <div class="modal-body">
+    <p>Do you want to cancel Job <strong>"$jobinfo['name']"</strong>?</p>
+  </div>
+  <div class="modal-footer">
+    <a id="canceljobyes" class="btn">Yes</a>
+    <a id="canceljobno" class="btn btn-primary">No</a>
+  </div>
+</div>
+
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span12">
@@ -17,17 +31,20 @@ $def with( jobinfo )
 
       <h3>Job State:
         $if jobinfo['state'] == 0:
-            <a class="btn btn-large disabled"><i class="icon-tasks"></i> Just Created</a>
+            <a class="jobstate btn btn-large disabled"><i class="icon-tasks"></i> Pending</a>
+            <a id="btncanceljob" class="btn btn-large btn-warning"><i class="icon-remove"></i> Cancel Job</a>
         $elif jobinfo['state'] == 1:
-            <a class="btn btn-large btn-info disabled"><i class="icon-tasks icon-white"></i> Submitted</a>
+            <a class="jobstate btn btn-large btn-info disabled"><i class="icon-tasks icon-white"></i> Submitted</a>
+            <a id="btncanceljob" class="btn btn-large btn-warning"><i class="icon-remove"></i> Cancel Job</a>
         $elif jobinfo['state'] == 2:
-            <a class="btn btn-large btn-warning disabled"><i class="icon-cog icon-white"></i> Running</a>
+            <a class="jobstate btn btn-large btn-warning disabled"><i class="icon-cog icon-white"></i> Running</a>
+            <a id="btncanceljob" class="btn btn-large btn-warning"><i class="icon-remove"></i> Cancel Job</a>
         $elif jobinfo['state'] == 3:
-            <a class="btn btn-large btn-success disabled"><i class="icon-ok-circle icon-white"></i> Completed</a>
+            <a class="jobstate btn btn-large btn-success disabled"><i class="icon-ok-circle icon-white"></i> Completed</a>
         $elif jobinfo['state'] == 4:
-            <a class="btn btn-large btn-inverse disabled"><i class="icon-remove-circle icon-white"></i> Canceled</a>
+            <a class="jobstate btn btn-large btn-inverse disabled"><i class="icon-remove-circle icon-white"></i> Canceled</a>
         $else:
-            <a class="btn btn-large btn-danger disabled"><i class="icon-warning-sign icon-white"></i> Unknown</a>
+            <a class="jobstate btn btn-large btn-danger disabled"><i class="icon-warning-sign icon-white"></i> Unknown</a>
       </h3>
       <div class="row-fluid">
         <div class="span6">
@@ -50,4 +67,8 @@ $def with( jobinfo )
     </div>
   </div>
 </div> <!-- /container -->
+<script src="/web/static/js/main.js"></script>
 <script src="/web/static/js/job.js"></script>
+<script>
+  setJobid( $jobinfo['jobid']  )
+</script>

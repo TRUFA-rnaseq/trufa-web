@@ -12,6 +12,7 @@ import database
 remotehost = config.REMOTEHOST
 remotehome = config.REMOTEHOME
 pipe_launch = config.PIPE_LAUNCH
+data_dir = config.DATADIR
 
 reSLURMLINE = re.compile(r"slurmids: (?P<slurmids>\d+(,\d+)*)")
 reSLURMID = re.compile(r"\,")
@@ -23,6 +24,40 @@ def startJob( user, var1 ):
     p = multiprocessing.Process( target=runjob, args=(user, jobid, var1) )
     print var1
     p.start()
+
+#-------------------------------------------------------------------------------
+def cancelJob( user, jobid ):
+    print "CANCELING JOB " + str(jobid)
+    jobinfo = database.getJobInfo( jobid )
+    print jobinfo
+
+    if jobinfo['state'] == database.JOB_COMPLETED or jobinfo['state'] == database.JOB_CANCELED:
+        print "job", jobid, "already canceled"
+        return true
+
+    # Canceling Jobid:
+    print jobinfo['slurmids']
+    for slurmid in jobinfo['slurmids']:
+        print "canceling slurm job", slurmid["slurmid"]
+
+        command = ["ssh", remotehost, "mncancel", str(slurmid["slurmid"]) ]
+        proc = subprocess.Popen( command, stdout=subprocess.PIPE )
+        output = proc.communicate()[0]
+        print output
+
+    # Removing job folders:
+        # Web and server job names should be corresponding before activating this
+    # jname = jobinfo[ 'name' ]
+    # print "Removing outputs from Job named: ", jname
+    # command =  [ 'ssh', remotehost,
+    #              'cd', data_dir + user,
+    #              'rm -r', jname,
+    #              'touch', "DONE"]
+    # proc = subprocess.Popen( command, stdout=subprocess.PIPE )
+    #output = proc.communicate()[0]
+    
+    database.setJobCanceled( jobid )
+    return True
 
 #-------------------------------------------------------------------------------
 def getSlurmIds( output ):

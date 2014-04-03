@@ -9,12 +9,24 @@
         $('#jobnameicon').click( editJobName )
     }
 
+    if( $('#btncanceljob').length ){
+        $('#btncanceljob').click( cancelJob )
+    }
+
+    if( $('#canceljobyes').length ){
+        $('#canceljobyes').click( cancelJobYes )
+    }
+
+    if( $('#canceljobno').length ){
+        $('#canceljobno').click( cancelJobNo )
+    }
+
 }(window.jQuery);
 
 function editJobName(){
     $('#jobnameicon').addClass('hidden')
     oldname = $('#jobname').text()
-    $('#jobname').replaceWith("<input name='newname' type='text' value='" + 
+    $('#jobname').replaceWith("<input name='newname' type='text' value='" +
                               oldname + "' id='jobnameinput' />")
     $('#jobnameinput').focus()
     $('#jobnameinput').focusout( editJobNameDone )
@@ -44,4 +56,41 @@ function editJobNameDone(){
 
         $('#jobname').click( editJobName )
     }
+}
+
+function cancelJob(){
+    $('#cancelmodal').modal('show')
+}
+
+function cancelJobYes(){
+    $('#cancelmodal').modal('hide')
+    if( window.jobid ){
+        joburi = '/web/ajax/job/' + window.jobid
+        $.ajax({
+            dataType: "json",
+            url: joburi,
+            type: 'DELETE',
+            success: function( data ) {
+                if( data['ok'] ){
+                    showOK( "Job deleted" )
+                    $('#btncanceljob').addClass('hide')
+                    $('.jobstate').replaceWith(
+                        '<a class="jobstate btn btn-large btn-inverse disabled"><i class="icon-remove-circle icon-white"></i> Canceled</a>' )
+                }else{
+                    showError( data['msg'] )
+                }
+            },
+            error: function( data ) {
+                showError( "Can't cancel Job" )
+            }
+        });
+    }
+}
+
+function cancelJobNo(){
+    $('#cancelmodal').modal('hide')
+}
+
+function setJobid( jid ){
+    window.jobid = jid
 }

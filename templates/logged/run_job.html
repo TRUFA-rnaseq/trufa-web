@@ -86,6 +86,16 @@
       <p><b> The Cleaning step is currently disabled.</b></p>
       <p>If you want to perform reads cleaning, you need to specify a type of input with reads files in.</p>
     </div>
+    <h4>Pre-cleaning quality control:</h4>
+    <label class="checkbox">
+      <input class="cleaning_steps" type="checkbox" id="fastqc1" name="FASTQC1" disabled>
+      FastQC
+    </label>
+    <h4>Removing adapters:</h4>
+    <label class="checkbox">
+      <input class="cleaning_steps" type="checkbox" id="adapters"  name="CUTADAPT" disabled>
+      Cutadapt
+    </label>
     <h4>Prinseq:</h4>
     <label class="checkbox">
       <input class="cleaning_steps" type="checkbox" id="duplication" name="DUP" disabled>
@@ -96,11 +106,6 @@
       Quality Trimming
     </label>
 
-    <h4>Removing adapters:</h4>
-    <label class="checkbox">
-      <input class="cleaning_steps" type="checkbox" id="adapters"  name="CUTADAPT" disabled>
-      Cutadapt
-    </label>
     <h4>BLAT against potential contaminants:</h4>
     <label class="checkbox">
       <input class="cleaning_steps" type="checkbox" id="univec_reads" name="BLAT_UNIVEC" disabled>
@@ -125,7 +130,7 @@
 
     <h4>Post-cleaning quality control:</h4>
     <label class="checkbox">
-      <input class="cleaning_steps" type="checkbox" id="fastqc" name="FASTQC" disabled>
+      <input class="cleaning_steps" type="checkbox" id="fastqc2" name="FASTQC2" disabled>
       FastQC
     </label>
 
