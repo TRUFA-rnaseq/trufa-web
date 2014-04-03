@@ -71,26 +71,64 @@ function refreshNavbarUserName(){
     $('#filesend').click( function(){
         var input = document.getElementById('filesel')
         var size = getFileSize( input )
+	var filechk = checkFile( input )
 
-    /* EK trial
-    if( size >= 512*1024*1024 ){
-            sendBigFile()
-        }else if( size > 0 ){
-            sendLittleFile()
-        }
-    */
-    if ( size <= 0 ){
-        showError( "No file has been uploaded")}
-        else if( size < 512*1024*1024 ){
-            sendLittleFile()
-        }else{
+	if ( size <= 0 || ! filechk ){
+            showError( "No file has been uploaded")}
+    	else if ( size < 512*1024*1024 ){
+	    sendLittleFile()
+	}else{
             sendBigFile()
         }
     });
 
 }(window.jQuery);
 
+function checkFile( input ){
+
+    var ext_dict = {
+	"fast" : ["fastq","fq"],
+	"tgz_fast" : ["gz"],
+	"assem" : ["fas","fasta","fa"],
+	"seq_db_nuc" : ["fas","fasta","fa"],
+	"seq_db_aa" : ["fas","fasta","fa"],
+	"map_assem" : ["bam"],
+	"hmm_profile" : ["hmm"]
+    };
+
+    var filetype = $("#filetype").val()
+    var filename = input.files[0].name
+    var extension = filename.split(".").pop()
+
+    var filelist = []
+    $('#filelist li').each(function(){
+	filelist.push($(this).text())
+    });
+    
+    // check if duplicate
+    if( $.inArray( filename, filelist ) != -1 ){
+	showError( "A file with the name " + filename + " is already in your file list. If this is a different file, please rename it before uploading.")
+	
+	// check if filetype specified
+    }else if($("#filetype").val() == "undef"){
+	showError("Please choose a format for the input before clicking 'Upload'");
+
+	// check if correct extension
+    }else if( $.inArray( extension, ext_dict[ filetype ]) == -1 ){
+	
+    	showError("The extension of your file is " 
+		  + "." + extension
+		  + " while the allowed extension(s) for the file format "
+		  + "you have selected is(are) only: "
+		  + "." + ext_dict[ filetype ].join(" or ."))
+    }else{
+	return true
+    }
+    return false
+}
+
 function getFileSize( input ){
+
     if( ! window.FileReader) {
         showError( "The file API isn't supported on this browser yet." );
     }else if( ! input ){
@@ -99,13 +137,10 @@ function getFileSize( input ){
         showError( "This browser doesn't support the `files` property of file inputs.");
     }else if( ! input.files[0] ){
         showError( "Please select a file before clicking 'Upload'" );
-    }else if($("#filetype").val() == "undef"){
-    showError("Please choose a format for the input before clicking 'Upload'");
     }else{
         var file = input.files[0];
         return file.size;
     }
-
     return -1;
 }
 
