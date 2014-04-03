@@ -31,7 +31,7 @@ $def with( jobinfo )
 
       <h3>Job State:
         $if jobinfo['state'] == 0:
-            <a class="jobstate btn btn-large disabled"><i class="icon-tasks"></i> Just Created</a>
+            <a class="jobstate btn btn-large disabled"><i class="icon-tasks"></i> Pending</a>
             <a id="btncanceljob" class="btn btn-large btn-warning"><i class="icon-remove"></i> Cancel Job</a>
         $elif jobinfo['state'] == 1:
             <a class="jobstate btn btn-large btn-info disabled"><i class="icon-tasks icon-white"></i> Submitted</a>
