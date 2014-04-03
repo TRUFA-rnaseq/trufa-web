@@ -1,10 +1,10 @@
-VERSION = "0.6.2"
+VERSION = "0.7.0"
 
 REMOTEHOST = "genorama@altamira1.ifca.es"
 
 # for testing
 REMOTEHOME = "testing"
-DATADIR = "/gpfs/res_projects/cvcv/webserver/testing/"
+DATADIR = "testing"
 
 # for stable
 #REMOTEHOME = "users"
