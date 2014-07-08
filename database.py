@@ -51,8 +51,8 @@ def mkEmptyDatabase( dbname ):
     conn.close()
 
 #-------------------------------------------------------------------------------
-def dropJobTables( dbname ):
-    conn = sqlite3.connect( dbname )
+def dropJobTables():
+    conn = sqlite3.connect( database )
     c = conn.cursor()
 
     c.execute( "DROP TABLE IF EXISTS jobfile" )
