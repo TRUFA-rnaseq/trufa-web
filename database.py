@@ -51,6 +51,29 @@ def mkEmptyDatabase( dbname ):
     conn.close()
 
 #-------------------------------------------------------------------------------
+def dropJobTables( dbname ):
+    conn = sqlite3.connect( dbname )
+    c = conn.cursor()
+
+    c.execute( "DROP TABLE IF EXISTS jobfile" )
+    conn.commit()
+    c.execute( "DROP TABLE IF EXISTS jobslurm" )
+    conn.commit()
+    c.execute( "DROP TABLE IF EXISTS job" )
+    conn.commit()
+
+    c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, name text NOT NULL DEFAULT 'unnamed', created TEXT NOT NULL DEFAULT '2014-03-01 08:00:00.000000', updated TEXT NOT NULL DEFAULT '2014-03-01 08:00:00.000000', FOREIGN KEY(uid) REFERENCES user(uid) )" )
+    conn.commit()
+
+    c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
+    conn.commit()
+
+    c.execute( "CREATE TABLE jobfile (jid INTEGER, fid INTEGER, jobfiletype INTEGER, PRIMARY KEY(jid, fid) )" )
+    conn.commit()
+
+    conn.close()
+
+#-------------------------------------------------------------------------------
 def init():
     if config.DB_RESET:
         if not os.path.isfile( database ):
