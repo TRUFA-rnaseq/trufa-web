@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 #-------------------------------------------------------------------------------
+import logging
+import logging.handlers
 import web
 from web.wsgiserver import CherryPyWSGIServer
 import os.path
@@ -109,7 +111,7 @@ class RunJob:
 class Faq:
     def GET ( self ):
         return get_render().faq()
-        
+
 #-------------------------------------------------------------------------------
 class About:
     def GET( self ):
@@ -180,10 +182,10 @@ class Register:
                 print "User available"
             else:
                 print "User not available"
-                
+
         except:
             clearSession()
-        
+
 #-------------------------------------------------------------------------------
 class AjaxMe:
     def GET( self ):
@@ -367,11 +369,42 @@ class Job:
             raise web.seeother('/')
 
 #-------------------------------------------------------------------------------
-if __name__ == "__main__":
+def configureLogging():
+    # create logger
+    logger = logging.getLogger( config.PROJECT_NAME )
+    logger.setLevel( logging.DEBUG )
+
+    ch = None
+
     if config.USELOGFILE:
-        fout = open( config.LOGFILE, 'a' )
-        sys.stdout = fout
-        sys.stderr = fout
+        # create file handler
+        ch = logging.handlers.RotatingFileHandler(
+            config.LOGFILE, mode='a', maxBytes=config.LOGFILEBYTES, backupCount=5 )
+    else:
+        # create console handler and set level to debug
+        ch = logging.StreamHandler()
+
+    ch.setLevel(logging.DEBUG)
+
+    # create formatter
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    # add formatter to ch
+    ch.setFormatter( formatter )
+
+    # add ch to logger
+    logger.addHandler( ch )
+
+    logging.captureWarnings( True )
+
+    if config.USEWLOGFILE:
+         fout = open( config.WLOGFILE, 'a' )
+         sys.stdout = fout
+         sys.stderr = fout
+
+#-------------------------------------------------------------------------------
+if __name__ == "__main__":
+    configureLogging()
 
     database.init()
     p = pipeline.run()
