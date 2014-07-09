@@ -371,8 +371,7 @@ class Job:
 #-------------------------------------------------------------------------------
 def configureLogging():
     # create logger
-    logger = logging.getLogger( config.PROJECT_NAME )
-    logger.setLevel( logging.DEBUG )
+    logger = logging.getLogger()
 
     ch = None
 
@@ -384,7 +383,7 @@ def configureLogging():
         # create console handler and set level to debug
         ch = logging.StreamHandler()
 
-    ch.setLevel(logging.DEBUG)
+    ch.setLevel( logging.DEBUG )
 
     # create formatter
     formatter = logging.Formatter(
