@@ -179,9 +179,9 @@ class Register:
             name = web.input().user_name
             passwd = web.input().pwd
             if database.checkIfUserAvailable( name ):
-                print "User available"
+                logging.warning( "User available" )
             else:
-                print "User not available"
+                logging.warning( "User not available" )
 
         except:
             clearSession()
@@ -213,7 +213,7 @@ class AjaxMe:
                     return json.dumps( {'ok':False, 'msg': "password change error" } )
 
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 return json.dumps( {'ok':False, 'msg':"can't update user"} )
 
             return json.dumps( {'ok':False, 'msg':"unknown error"} )
@@ -236,7 +236,7 @@ class AjaxFiles:
 
                 return json.dumps( {'files': files} )
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 web.debug( "can't get filelist" )
 
         else:
@@ -251,7 +251,7 @@ class AjaxFiles:
                 data.saveFile( filename, x['myfile'].file )
                 database.insertFileWithType( session.user, x['myfile'].filename, filetype )
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 web.debug( "can't save file" )
 
             return "OK"
@@ -278,7 +278,7 @@ class AjaxFileParts:
                     data.saveFilePart( filename, x['myfile'].file )
 
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 web.debug( "can't save file" )
 
             return "OK"
@@ -299,12 +299,12 @@ class AjaxJobs:
     def POST( self ):
         if logged():
             x = web.input()
-            print x
+            logging.info( str(x) )
             try:
                 pipeline.startJob( session.user, x )
 
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 web.debug( "can't start new job" )
                 return json.dumps( {'ok':False, 'msg':"can't start new job"} )
 
@@ -319,7 +319,7 @@ class AjaxJob:
             if pipeline.cancelJob( session.user, jobid ):
                 return json.dumps( {'ok':True} )
         except:
-            print sys.exc_info()
+            logging.error( str(sys.exc_info()) )
 
         web.debug( "can't delete job " + str(jobid) )
         return json.dumps( {'ok':False, 'msg':"can't delete job"} )
@@ -335,7 +335,7 @@ class AjaxJobName:
             try:
                 database.changeJobName( x['jobid'], x['newname'] )
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 web.debug( "can't change job name" )
                 return json.dumps( {'ok':False, 'msg':"can't change job name"} )
 
