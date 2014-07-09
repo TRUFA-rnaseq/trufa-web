@@ -1,4 +1,5 @@
 #-------------------------------------------------------------------------------
+import logging
 import datetime
 import sqlite3
 import bcrypt
@@ -95,7 +96,7 @@ def fixdbJobName():
     try:
         c.execute( 'SELECT %s FROM job' % (column_name,))
     except sqlite3.OperationalError, e:
-        print "Adding new Column ", column_name
+        logging.info( "Adding new Column %", column_name )
         c.execute( 'ALTER TABLE job ADD COLUMN %s TEXT NOT NULL DEFAULT "unnamed"' % (column_name,))
         conn.commit()
 
@@ -104,7 +105,7 @@ def fixdbJobName():
     jdata = c.fetchall()
     for j in jdata:
         jobname = "job " + str(j[1])
-        print "Set job name ", j[0], "= '", jobname, "'"
+        logging.info( "Set job name %d = '%s'", j[0], jobname )
         c.execute( 'UPDATE job SET %s=? WHERE jid=?' % (column_name,),
                    (jobname, j[0],) )
     conn.commit()
@@ -115,7 +116,7 @@ def fixdbJobName():
 def insertUser( name, passwd, email ):
     checkedName, checkedEmail = parseaddr( email )
     if len( checkedEmail ) == 0 or not EMAIL_REGEX.match( checkedEmail):
-        print "ERROR: Invalid email ", email
+        logging.error( "Invalid email %s", email )
         return
 
     h = bcrypt.hashpw( passwd, bcrypt.gensalt(BCRYPT_ROUNDS) )
@@ -126,14 +127,14 @@ def insertUser( name, passwd, email ):
             conn.execute( 'INSERT INTO user(uid,name,passwd,email) VALUES (null,?,?,?)',
                           (name,h,checkedEmail) )
     except sqlite3.IntegrityError:
-        print "ERROR: User Already Exists ", name
+        logging.error( "User '%s' Already Exists", name )
         return
 
     try:
         with htpasswd.Basic( passwdfile ) as userdb:
             userdb.add( name, passwd )
     except htpasswd.basic.UserExists, e:
-        print "ERROR: User Already Exists ", name, e
+        logging.error( "User '%s' Already Exists [%s]", name, str(e) )
 
 #-------------------------------------------------------------------------------
 def changeUserPassword( name, newpass ):
@@ -141,7 +142,7 @@ def changeUserPassword( name, newpass ):
         with htpasswd.Basic( passwdfile ) as userdb:
             userdb.change_password( name, newpass )
     except htpasswd.basic.UserNotExists, e:
-        print "ERROR: User Not Exists ", name, e
+        logging.error( "User Not Exists %s [%s]", name, str(e) )
         return False
 
     h = bcrypt.hashpw( newpass, bcrypt.gensalt(BCRYPT_ROUNDS) )
@@ -151,7 +152,7 @@ def changeUserPassword( name, newpass ):
         with conn:
             conn.execute( 'UPDATE user SET passwd=? WHERE name=?', (h,name) )
     except:
-        print "ERROR: changing password ", name
+        logging.error( "changing password %s", name )
         return False
 
     return True
@@ -214,13 +215,13 @@ def deleteUser( name ):
     uidrow = c.fetchone()
     if uidrow is not None:
         uid = uidrow[0]
-        print "Deleting user ", name, uid
+        logging.info( "Deleting user %s %d", name, uid )
 
         c.execute( 'SELECT jid FROM job WHERE uid=?', (uid,) )
         dbjobs = c.fetchall()
         for jobrow in dbjobs:
             jid = jobrow[0]
-            print "  Deleting user job ", jid
+            logging.info( "Deleting user job %d", jid )
             c.execute( 'DELETE FROM jobslurm WHERE jid=?', (jid,) )
             c.execute( 'DELETE FROM jobfile WHERE jid=?', (jid,) )
             c.execute( 'DELETE FROM job WHERE jid=?', (jid,) )
@@ -229,13 +230,13 @@ def deleteUser( name ):
         dbfiles = c.fetchall()
         for filerow in dbfiles:
             fid = filerow[0]
-            print "  Deleting user file ", fid
+            logging.info( "Deleting user file %d", fid )
             c.execute( 'DELETE FROM file WHERE fid=?', (fid,) )
         conn.commit()
         c.execute( 'DELETE FROM user WHERE uid=?', (uid,) )
         conn.commit()
     else:
-        print "ERROR: Unknown user ", name
+        logging.error( "Unknown user %s", name )
 
     conn.close()
 
@@ -243,7 +244,7 @@ def deleteUser( name ):
         with htpasswd.Basic( passwdfile ) as userdb:
             userdb.pop( name )
     except htpasswd.basic.UserNotExists, e:
-        print "ERROR: User Not Exists ", name, e
+        logging.error( "User Not Exists %s [%s]", name, str(e) )
 
 #-------------------------------------------------------------------------------
 def insertFile( user, filename ):
@@ -440,7 +441,7 @@ def addJobSlurmRef( jobid, slurmid ):
             conn.execute( 'INSERT INTO jobslurm(jid,slurmid) VALUES (?,?)',
                           (jobid,slurmid) )
     except sqlite3.IntegrityError:
-        print "ERROR: Adding duplicate slurm id", slurmid, "on job", jobid
+        logging.error( "Adding duplicate slurm id %d on job %d", slurmid, jobid )
 
     conn.close()
 
