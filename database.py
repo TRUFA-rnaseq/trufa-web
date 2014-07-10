@@ -482,6 +482,16 @@ def setJobCanceled( jobid ):
     conn.close()
 
 #-------------------------------------------------------------------------------
+def deleteJob( jobid ):
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+    logging.info( "Deleting job %d", jobid )
+    c.execute( 'DELETE FROM jobslurm WHERE jid=?', (jobid,) )
+    c.execute( 'DELETE FROM jobfile WHERE jid=?', (jobid,) )
+    c.execute( 'DELETE FROM job WHERE jid=?', (jobid,) )
+    conn.commit()
+
+#-------------------------------------------------------------------------------
 def changeJobName( jobid, newname ):
     conn = sqlite3.connect( database )
     with conn:
