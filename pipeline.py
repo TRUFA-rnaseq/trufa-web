@@ -1,4 +1,5 @@
 #-------------------------------------------------------------------------------
+import logging
 import multiprocessing
 import os
 from os import path
@@ -22,28 +23,28 @@ def startJob( user, var1 ):
     jobid = database.createJob( user )
 
     p = multiprocessing.Process( target=runjob, args=(user, jobid, var1) )
-    print var1
+    logging.debug( str(var1) )
     p.start()
 
 #-------------------------------------------------------------------------------
 def cancelJob( user, jobid ):
-    print "CANCELING JOB " + str(jobid)
+    logging.info( "CANCELING JOB %d", jobid )
     jobinfo = database.getJobInfo( jobid )
-    print jobinfo
+    logging.debug( str(jobinfo) )
 
     if jobinfo['state'] == database.JOB_COMPLETED or jobinfo['state'] == database.JOB_CANCELED:
-        print "job", jobid, "already canceled"
+        logging.warning( "job %d already canceled", jobid )
         return true
 
     # Canceling Jobid:
-    print jobinfo['slurmids']
+    logging.info( str(jobinfo['slurmids']) )
     for slurmid in jobinfo['slurmids']:
-        print "canceling slurm job", slurmid["slurmid"]
+        logging.info( "canceling slurm job %d", slurmid["slurmid"] )
 
         command = ["ssh", remotehost, "mncancel", str(slurmid["slurmid"]) ]
         proc = subprocess.Popen( command, stdout=subprocess.PIPE )
         output = proc.communicate()[0]
-        print output
+        logging.info( str(output) )
 
     # Removing job folders:
         # Web and server job names should be corresponding before activating this
@@ -72,7 +73,7 @@ def getSlurmIds( output ):
 
 #-------------------------------------------------------------------------------
 def runjob( user, jobid, var1):
-    print "RUNNING JOB " + str(jobid)
+    logging.info( "RUNNING JOB %d", jobid )
 
 # stagein
     if "file" in var1:
@@ -114,10 +115,9 @@ def runjob( user, jobid, var1):
     elif var1.input_type =="contigs_with_paired":
         command = [ pipe_launch, user, str(var1), remotefile1, remotefile2,
                     remotefile3, str(juid) ]
-    print command
 
-    for k in var1:
-        print k + " : " + var1[k]
+    logging.debug( str(command) )
+    logging.debug( str(var1) )
 
     proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     output = proc.communicate()[0]
@@ -126,7 +126,7 @@ def runjob( user, jobid, var1):
     if len(slurmids) > 0:
         database.setJobSubmitted( jobid )
     else:
-        print "WARNING : task without slurm ids"
+        logging.warning( "Task without slurm ids" )
 
     for si in slurmids:
         database.addJobSlurmRef( jobid, si )
@@ -157,24 +157,24 @@ def checkSlurmJob( slurmids ):
 #-------------------------------------------------------------------------------
 def pipelineLoop():
     try:
-        print "start pipeline loop"
+        logging.info( "Start pipeline loop" )
         while (1 == 1):
             time.sleep( 60 )
             # check
             zjobs = database.getJustCreatedJobs()
             if len(zjobs) > 0:
-                zjobids = map( lambda js: js['jid'], zjobs )
-                print "Warning: " + str(len(zjobs)) + " zombie jobs : " + str(zjobids)
+                zjids = map( lambda js: js['jid'], zjobs )
+                logging.warning( "%d zombie jobs: %s", len(zjobs), str(zjids) )
 
             jobs = database.getActiveJobs()
             if len(jobs) > 0:
-                print "Checking " + str(len(jobs)) + " job/s"
+                logging.info( "Checking %d job/s", len(jobs) )
 
             for job in jobs:
                 jobid = job['jid']
                 newstate = checkSlurmJob( job['slurmids'] )
                 if newstate == database.JOB_RUNNING and job['state'] != database.JOB_RUNNING:
-                    print "Job " + str(jobid) + " start RUNNING"
+                    logging.info( "Job %d start RUNNING", jobid )
                     database.setJobRunning( jobid )
 
                 if newstate == database.JOB_COMPLETED:
@@ -191,10 +191,10 @@ def pipelineLoop():
             #             remotefile = os.path.join( remotehome, localfile )
             #             os.system('scp "%s:%s" "%s"' % (remotehost, remotefile, localfile) )
 
-                    print "Job " + str(jobid) + " COMPLETED"
+                    logging.info( "Job %d COMPLETED", jobid )
                     database.setJobCompleted( jobid )
 
     except KeyboardInterrupt:
-        print "ending pipeline loop"
+        logging.info( "Ending pipeline loop" )
 
 #-------------------------------------------------------------------------------

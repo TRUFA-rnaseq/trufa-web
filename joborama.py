@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 #-------------------------------------------------------------------------------
+import logging
+import logging.handlers
 import web
 from web.wsgiserver import CherryPyWSGIServer
 import os.path
@@ -109,7 +111,7 @@ class RunJob:
 class Faq:
     def GET ( self ):
         return get_render().faq()
-        
+
 #-------------------------------------------------------------------------------
 class About:
     def GET( self ):
@@ -177,13 +179,13 @@ class Register:
             name = web.input().user_name
             passwd = web.input().pwd
             if database.checkIfUserAvailable( name ):
-                print "User available"
+                logging.warning( "User available" )
             else:
-                print "User not available"
-                
+                logging.warning( "User not available" )
+
         except:
             clearSession()
-        
+
 #-------------------------------------------------------------------------------
 class AjaxMe:
     def GET( self ):
@@ -211,7 +213,7 @@ class AjaxMe:
                     return json.dumps( {'ok':False, 'msg': "password change error" } )
 
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 return json.dumps( {'ok':False, 'msg':"can't update user"} )
 
             return json.dumps( {'ok':False, 'msg':"unknown error"} )
@@ -234,7 +236,7 @@ class AjaxFiles:
 
                 return json.dumps( {'files': files} )
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 web.debug( "can't get filelist" )
 
         else:
@@ -249,7 +251,7 @@ class AjaxFiles:
                 data.saveFile( filename, x['myfile'].file )
                 database.insertFileWithType( session.user, x['myfile'].filename, filetype )
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 web.debug( "can't save file" )
 
             return "OK"
@@ -276,7 +278,7 @@ class AjaxFileParts:
                     data.saveFilePart( filename, x['myfile'].file )
 
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 web.debug( "can't save file" )
 
             return "OK"
@@ -297,12 +299,12 @@ class AjaxJobs:
     def POST( self ):
         if logged():
             x = web.input()
-            print x
+            logging.info( str(x) )
             try:
                 pipeline.startJob( session.user, x )
 
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 web.debug( "can't start new job" )
                 return json.dumps( {'ok':False, 'msg':"can't start new job"} )
 
@@ -317,7 +319,7 @@ class AjaxJob:
             if pipeline.cancelJob( session.user, jobid ):
                 return json.dumps( {'ok':True} )
         except:
-            print sys.exc_info()
+            logging.error( str(sys.exc_info()) )
 
         web.debug( "can't delete job " + str(jobid) )
         return json.dumps( {'ok':False, 'msg':"can't delete job"} )
@@ -333,7 +335,7 @@ class AjaxJobName:
             try:
                 database.changeJobName( x['jobid'], x['newname'] )
             except:
-                print sys.exc_info()
+                logging.error( str(sys.exc_info()) )
                 web.debug( "can't change job name" )
                 return json.dumps( {'ok':False, 'msg':"can't change job name"} )
 
@@ -367,11 +369,43 @@ class Job:
             raise web.seeother('/')
 
 #-------------------------------------------------------------------------------
-if __name__ == "__main__":
+def configureLogging():
+    # create logger
+    logger = logging.getLogger()
+
+    ch = None
+
     if config.USELOGFILE:
-        fout = open( config.LOGFILE, 'a' )
-        sys.stdout = fout
-        sys.stderr = fout
+        # create file handler
+        ch = logging.handlers.RotatingFileHandler(
+            config.LOGFILE, mode='a', maxBytes=config.LOGFILEBYTES, backupCount=5 )
+    else:
+        # create console handler and set level to debug
+        ch = logging.StreamHandler()
+
+    ch.setLevel( logging.DEBUG )
+
+    # create formatter
+    formatter = logging.Formatter(
+        fmt='%(asctime)s -%(levelname)s- %(message)s',
+        datefmt='%Y%m%d %H:%M:%S' )
+
+    # add formatter to ch
+    ch.setFormatter( formatter )
+
+    # add ch to logger
+    logger.addHandler( ch )
+
+    logging.captureWarnings( True )
+
+    if config.USEWLOGFILE:
+         fout = open( config.WLOGFILE, 'a' )
+         sys.stdout = fout
+         sys.stderr = fout
+
+#-------------------------------------------------------------------------------
+if __name__ == "__main__":
+    configureLogging()
 
     database.init()
     p = pipeline.run()
