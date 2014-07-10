@@ -1,5 +1,5 @@
 PROJECT_NAME = "trufa"
-VERSION = "0.8.0"
+VERSION = "0.8.1"
 
 REMOTEHOST = "genorama@altamira1.ifca.es"
 
