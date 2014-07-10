@@ -56,7 +56,7 @@ def cancelJob( user, jobid ):
     #              'touch', "DONE"]
     # proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     #output = proc.communicate()[0]
-    
+
     database.setJobCanceled( jobid )
     return True
 
@@ -96,13 +96,13 @@ def runjob( user, jobid, var1):
         remotefile3 = os.path.join( remotehome, localfile3 )
         database.addJobFile( jobid, fileid3, database.FILEIN )
         var1['file_ass'] = remotefile3
-        
+
 
         # submit
 
     jinfo = database.getJobInfo( jobid )
     juid =  jinfo['juid']
-    
+
     if var1["input_type"] == "single":
         command = [ pipe_launch, user, str(var1), remotefile1, str(juid) ]
     elif var1["input_type"] == "paired":
@@ -119,8 +119,13 @@ def runjob( user, jobid, var1):
     logging.debug( str(command) )
     logging.debug( str(var1) )
 
-    proc = subprocess.Popen( command, stdout=subprocess.PIPE )
+    proc = subprocess.Popen( command, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE )
     output = proc.communicate()[0]
+    error = proc.communicate()[1]
+    if len(error) > 0:
+        logging.error( "job output: %s", error )
+
     slurmids = getSlurmIds( output )
 
     if len(slurmids) > 0:
