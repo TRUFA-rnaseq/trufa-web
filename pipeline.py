@@ -123,8 +123,7 @@ def runjob( user, jobid, var1):
                              stderr=subprocess.PIPE )
     output = proc.communicate()[0]
     error = proc.communicate()[1]
-    if len(error) > 0:
-        logging.error( "job output: %s", error )
+    logging.error( "Task error: %s", error )
 
     slurmids = getSlurmIds( output )
 
