@@ -119,11 +119,8 @@ def runjob( user, jobid, var1):
     logging.debug( str(command) )
     logging.debug( str(var1) )
 
-    proc = subprocess.Popen( command, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE )
+    proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     output = proc.communicate()[0]
-    error = proc.communicate()[1]
-    logging.error( "Task error: %s", error )
 
     slurmids = getSlurmIds( output )
 
