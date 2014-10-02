@@ -338,6 +338,10 @@
       <input type="checkbox" id="assembly_qual" name="ASSEMBLY_QUAL" class="assembly_qc_steps" disabled>
       Assembly quality checks
     </label>
+    <label class="checkbox">
+      <input type="checkbox" id="cdhitest" name="CDHITEST" class="assembly_qc_steps" disabled>
+      Cluster similar sequences with cd-hit-est
+    </label>
     <label class="checkbox hidden">
       <input type="checkbox" id="bowtie1" name="BOWTIE1" class="mapping_steps" disabled>
       Align reads against contigs (Bowtie1)
@@ -346,12 +350,6 @@
       <input type="checkbox" id="bowtie2" name="BOWTIE2" class="mapping_steps" disabled>
       Align reads against contigs with Bowtie2
     </label>
-    <!-- <label class="checkbox"> -->
-    <!--   <input type="checkbox" id="cdhitest" name="CDHITEST"> -->
-    <!--   Identify "isoforms" (cd-hit-est) -->
-    <!-- </label> -->
-    <!-- check if this step is actually getting the isoforms, and not just the similar sequences -->
-    <!-- end of assembly/mapping steps -->
     <h4>Options:</h4>
     <div class="accordion" id="accordion2">
       <div class="accordion-group">
@@ -640,8 +638,8 @@
       <p><b> The Identification step is currently disabled.</b></p>
       <p> You have to produce an assembly or upload a fasta file with the assembly to perform the following steps </p>
     </div>
-    <h4> Classic Blat searches:</h4>
-    <label class="checkbox">
+    <h4> Blat searches:</h4>
+    <label class="checkbox hidden">
       <input type="checkbox" id="blat_cegma" name="BLAT_CEGMA" class="identification_steps" disabled>
       Cegma
     </label>
@@ -654,7 +652,6 @@
       nr
     </label>
 
-    <h4> Custom Blat searches:</h4>
     Add custom nucleotides or protein sequences databases for the blat search (in fasta format):
     <div class="bs-docs-example">
       <ul class="nav nav-pills">
@@ -676,7 +673,7 @@
       </ul>
     </div> <!-- end contig blatx dropdown -->
 
-    <h4>Classic HMMER searches:</h4>
+    <h4>HMMER searches:</h4>
 
     <!-- <label class="checkbox"> -->
     <!--   <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA" class="identification_steps" disabled> -->
@@ -687,7 +684,7 @@
       <input type="checkbox" id="hmmer_PfamA" name="HMMER_PFAMA" class="identification_steps" disabled>
       PfamA
     </label>
-    <label class="checkbox">
+    <label class="checkbox hidden">
       <input type="checkbox" id="hmmer_PfamB" name="HMMER_PFAMB" class="identification_steps" disabled>
       PfamB
     </label>
@@ -704,13 +701,13 @@
     </div> <!-- end contig hmmer dropdown -->
 
     <h4>Blast2GO searches:</h4>
-    <label class="checkbox">
+    <label class="checkbox hidden">
       <input type="checkbox" id="blast_nr" name="BLAST_NR" class="identification_steps" disabled>
       MPI-Blast against nr
     </label>
 
     <label class="checkbox">
-      <input type="checkbox" id="blastplus_nr" name="BLASTPLUS_NR" class="identification_steps">
+      <input type="checkbox" id="blastplus_nr" name="BLASTPLUS_NR" class="identification_steps" disabled>
       Blast+ against nr
     </label>
 
@@ -739,11 +736,14 @@
       <input type="checkbox" id="tophat" name="TOPHAT" class="" disabled>
       Tophat
     </label>
-    <label class="checkbox">
+    <label class="checkbox hidden">
       <input type="checkbox" id="cufflinks" name="CUFFLINKS" class="expression_steps" disabled>
       Cufflinks
     </label>
-
+    <label class="checkbox">
+      <input type="checkbox" id="express" name="EXPRESS" class="expression_steps" disabled>
+      eXpress
+    </label>
     <label class="checkbox">
       <input type="checkbox" id="RSEM" name="RSEM" class="expression_steps" disabled>
       <!-- The class is identification_steps (and not expression_steps) for RSEM possibility to be activated as soon as an assembly is available (bowtie alignment is embed in the RSEM command)
