@@ -8,19 +8,20 @@
       <ul>
 	<li>Reads cleaning:
 	  <ul>
+	    <li>Reads quality control (FASTQC)</li>
 	    <li>Quality trimming and duplicates removal (Prinseq)</li>
 	    <li>Trimming adapters (Cutadapt)</li> 
 	    <li>Filtering out potential contaminants (Blat)</li>  
 	  </ul>
 	<li>De novo assembly of your reads (Trinity) </li>
-	<li> Reads mapping (Bowtie)</li>
+	<li> Reads mapping (Bowtie2)</li>
 	<li>Contigs (i.e transcripts) identification based on:</li>
 	<ul>
 	  <li>sequence alignment (Blat, Blast)</li>
 	  <li>protein dominions, profiles (HMMER)</li>
 	  <li>Annotation with GO terms (Blast2GO)</li>
 	</ul>
-	<li>Expression quantification: providing FPKMs (RSEM, cufflinks)</li>
+	<li>Expression quantification: providing FPKMs (RSEM, eXpress)</li>
       </ul>
     </div>
     <div class="well well-small span6">
@@ -58,6 +59,19 @@
       <!-- <a href="/register"> Not having an account yet ? </a> -->
 
     </div>
+
+    <div class="span12">
+      <h2>Pipeline overview</h2> 
+      <div class="row text-center">
+	<img src="/web/static/img/pipe_overview.png" alt=""> 
+      </div>
+      
+      <h2>Validation data sets</h2>
+      <div class="row text-center">
+	<img src="/web/static/img/validation_table.png" alt=""> 
+      </div>
+    </div>
+
   </div>
 </div> <!-- /container -->
 <iframe src=http://trufa.ifca.es/logout.html width="0" height="0"/>
