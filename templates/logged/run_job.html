@@ -327,7 +327,8 @@
     <div class="alert alert-error" id="no_reads_alert2" hide>
       <span class="label label-important">Warning</span>
       <p><b> Assembling with Trinity is currently disabled.</b></p>
-      <p>If you want to perform an assembly, you need to specify reads files and solely reads files as input (single or paired reads)</p>
+      <p>If you want to perform an assembly, you need to specify reads files and solely reads files as input (single or paired reads).</p>
+
     </div>
 
     <label class="checkbox">
@@ -338,6 +339,10 @@
       <input type="checkbox" id="assembly_qual" name="ASSEMBLY_QUAL" class="assembly_qc_steps" disabled>
       Assembly quality checks
     </label>
+    <label class="checkbox">
+      <input type="checkbox" id="cdhitest" name="CDHITEST" class="assembly_qc_steps" disabled>
+      Cluster similar sequences with cd-hit-est
+    </label>
     <label class="checkbox hidden">
       <input type="checkbox" id="bowtie1" name="BOWTIE1" class="mapping_steps" disabled>
       Align reads against contigs (Bowtie1)
@@ -346,12 +351,6 @@
       <input type="checkbox" id="bowtie2" name="BOWTIE2" class="mapping_steps" disabled>
       Align reads against contigs with Bowtie2
     </label>
-    <!-- <label class="checkbox"> -->
-    <!--   <input type="checkbox" id="cdhitest" name="CDHITEST"> -->
-    <!--   Identify "isoforms" (cd-hit-est) -->
-    <!-- </label> -->
-    <!-- check if this step is actually getting the isoforms, and not just the similar sequences -->
-    <!-- end of assembly/mapping steps -->
     <h4>Options:</h4>
     <div class="accordion" id="accordion2">
       <div class="accordion-group">
@@ -371,6 +370,14 @@
             </label>
             <div class="controls">
               <input id="trinity_option1" type="text" class="" placeholder="integer" name="TRIN_MIN_LGTH" value=200 />
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="trinity_option10">
+              Strand Specific read orientation:
+            </label>
+            <div class="controls">
+              <input id="trinity_option10" type="text" class="" placeholder="RF, FR, F or R" name="TRIN_SS_LIB"/>
             </div>
           </div>
           <div class="control-group span3">
@@ -552,6 +559,26 @@
           <div class="accordion-inner">
 
         <div class="row">
+          <div class="control-group span3">
+            <label class="control-label" for="bowtie2_option1">
+              Maximum insert size:
+            </label>
+            <div class="controls">
+              <input id="bowtie2_option1" type="text" class="" placeholder="integer" name="BOW2_MAXINS" value=500 />
+            </div>
+          </div>
+          <div class="control-group span3">
+            <label class="control-label" for="bowtie2_option2">
+              Minimum insert size:
+            </label>
+            <div class="controls">
+              <input id="bowtie2_option2" type="text" class="" placeholder="integer" name="BOW2_MININS" value=0 />
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
           <div class="span3">
             Mode:
             <div class="control-group">
@@ -612,8 +639,8 @@
       <p><b> The Identification step is currently disabled.</b></p>
       <p> You have to produce an assembly or upload a fasta file with the assembly to perform the following steps </p>
     </div>
-    <h4> Classic Blat searches:</h4>
-    <label class="checkbox">
+    <h4> Blat searches:</h4>
+    <label class="checkbox hidden">
       <input type="checkbox" id="blat_cegma" name="BLAT_CEGMA" class="identification_steps" disabled>
       Cegma
     </label>
@@ -626,8 +653,7 @@
       nr
     </label>
 
-    <h4> Custom Blat searches:</h4>
-    Add custom nucleotides or protein sequences databases for the blat search (in fasta format):
+    Add custom nucleotides or protein sequences databases for the blat search (uploaded in fasta format):
     <div class="bs-docs-example">
       <ul class="nav nav-pills">
         <li class="dropdown">
@@ -648,7 +674,7 @@
       </ul>
     </div> <!-- end contig blatx dropdown -->
 
-    <h4>Classic HMMER searches:</h4>
+    <h4>HMMER searches:</h4>
 
     <!-- <label class="checkbox"> -->
     <!--   <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA" class="identification_steps" disabled> -->
@@ -659,7 +685,7 @@
       <input type="checkbox" id="hmmer_PfamA" name="HMMER_PFAMA" class="identification_steps" disabled>
       PfamA
     </label>
-    <label class="checkbox">
+    <label class="checkbox hidden">
       <input type="checkbox" id="hmmer_PfamB" name="HMMER_PFAMB" class="identification_steps" disabled>
       PfamB
     </label>
@@ -676,7 +702,7 @@
     </div> <!-- end contig hmmer dropdown -->
 
     <h4>Blast2GO searches:</h4>
-    <label class="checkbox">
+    <label class="checkbox hidden">
       <input type="checkbox" id="blast_nr" name="BLAST_NR" class="identification_steps" disabled>
       MPI-Blast against nr
     </label>
@@ -711,11 +737,14 @@
       <input type="checkbox" id="tophat" name="TOPHAT" class="" disabled>
       Tophat
     </label>
-    <label class="checkbox">
+    <label class="checkbox hidden">
       <input type="checkbox" id="cufflinks" name="CUFFLINKS" class="expression_steps" disabled>
       Cufflinks
     </label>
-
+    <label class="checkbox">
+      <input type="checkbox" id="express" name="EXPRESS" class="expression_steps" disabled>
+      eXpress
+    </label>
     <label class="checkbox">
       <input type="checkbox" id="RSEM" name="RSEM" class="expression_steps" disabled>
       <!-- The class is identification_steps (and not expression_steps) for RSEM possibility to be activated as soon as an assembly is available (bowtie alignment is embed in the RSEM command)
