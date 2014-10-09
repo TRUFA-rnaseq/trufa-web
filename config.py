@@ -5,7 +5,7 @@ REMOTEHOST = "genorama@altamira1.ifca.es"
 
 # for testing
 REMOTEHOME = "testing"
-DATADIR = "testing"
+DATADIR = "/gpfs/res_projects/cvcv/webserver/testing/"
 
 # for stable
 #REMOTEHOME = "users"
