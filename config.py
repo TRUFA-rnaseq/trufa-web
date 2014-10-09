@@ -22,6 +22,10 @@ DB_RESET = True
 DB_DATABASE = 'database.db'
 DB_PASSFILE = 'htpasswd.db'
 
+# Demo datasets
+DEMO_DIR = "/gpfs/res_projects/cvcv/webserver/demo_data/"
+DEMO_INFILES = [ "Spombe_left.fq", "Spombe_right.fq"]
+
 USELOGFILE = False
 LOGFILE = "trufa.log"
 #LOGFILE = "/var/genorama/log/trufa.log"

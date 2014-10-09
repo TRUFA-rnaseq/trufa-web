@@ -136,6 +136,19 @@ def insertUser( name, passwd, email ):
     except htpasswd.basic.UserExists, e:
         logging.error( "User '%s' Already Exists [%s]", name, str(e) )
 
+    insertDemoData( name )
+        
+#-------------------------------------------------------------------------------
+def insertDemoData( name ):
+    for demo_f in config.DEMO_INFILES:
+
+        # Now only work for fastq files (f_type is set to 1)
+        insertFileWithType(name, demo_f, 1)
+        lpath = os.path.join( config.DATADIR, name, "data", demo_f )
+        fpath = os.path.join( config.DEMO_DIR, demo_f )
+
+        os.symlink( fpath, lpath )
+    
 #-------------------------------------------------------------------------------
 def changeUserPassword( name, newpass ):
     try:
