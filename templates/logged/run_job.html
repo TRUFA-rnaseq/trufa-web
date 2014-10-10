@@ -169,7 +169,7 @@
 		  Reverse complement 5'/3' duplicates
 		</label>
 		Number of allowed duplicates:
-		<input id="duplication_option6" type="number" class="" placeholder="integer" value=2 min="0" name="DUP_NUM"/> <br />
+		<input id="duplication_option6" type="number" min=2 step=1 class="" placeholder="integer" value=2 name="DUP_NUM"/> <br />
 		<a href="http://prinseq.sourceforge.net/manual.html#OPTIONS" target="_blank">Link to Prinseq manual</a> <br />
               </div>	<!-- End of  Duplication options -->
             </div>
@@ -185,15 +185,15 @@
 		<!-- Trimming options -->
 		<div class="row">
 		  <div class="control-group span3">
-		    <label class="control-label" for="trimming_option1">Quality threshold:</label>
+		    <label class="control-label" for="trimming_option1">Minimum quality score:</label>
 		    <div class="controls">
-		      <input id="trimming_option1" type="text" class="" placeholder="integer" name="TRIM_QUAL_THRE"/>
+		      <input id="trimming_option1" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_QUAL_THRE"/>
 		    </div>
 		  </div>
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option2">Minimum length in bp:</label>
 		    <div class="controls">
-		      <input id="trimming_option2" type="text" class="" placeholder="integer" name="TRIM_MIN_LGTH" value=40 />
+		      <input id="trimming_option2" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_MIN_LGTH" value=40 />
 		    </div>
 		  </div>
 		</div>
@@ -201,13 +201,13 @@
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option3">Maximum length in bp:</label>
 		    <div class="controls">
-		      <input id="trimming_option3" type="text" class="" placeholder="integer" name="TRIM_MAX_LGTH"/>
+		      <input id="trimming_option3" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_MAX_LGTH"/>
 		    </div>
 		  </div>
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option4">Minimum mean quality:</label>
 		    <div class="controls">
-		      <input id="trimming_option4" type="text" class="" placeholder="integer" name="TRIM_MIN_MEAN_QUAL" value=20 />
+		      <input id="trimming_option4" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_MIN_MEAN_QUAL" value=20 />
 		    </div>
 		  </div>
 		</div>
@@ -215,13 +215,13 @@
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option5">Trim quality 5':</label>
 		    <div class="controls">
-		      <input id="trimming_option5" type="text" class="" placeholder="integer" name="TRIM_QUAL_5"/>
+		      <input id="trimming_option5" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_QUAL_5"/>
 		    </div>
 		  </div>
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option6">Trim quality 3'</label>
 		    <div class="controls">
-		      <input id="trimming_option6" type="text" class="" placeholder="integer" name="TRIM_QUAL_3" value=30 />
+		      <input id="trimming_option6" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_QUAL_3" value=30 />
 		    </div>
 		  </div>
 		</div>
@@ -229,13 +229,13 @@
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option7">Trim quality window:</label>
 		    <div class="controls">
-		      <input id="trimming_option7" type="text" class="" placeholder="integer" name="TRIM_QUAL_WIN" value=1 />
+		      <input id="trimming_option7" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_QUAL_WIN" value=1 />
 		    </div>
 		  </div>
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option8">Trim quality step:</label>
 		    <div class="controls">
-		      <input id="trimming_option8" type="text" class="" placeholder="integer" name="TRIM_QUAL_STEP" value=1 />
+		      <input id="trimming_option8" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_QUAL_STEP" value=1 />
 		    </div>
 		  </div>
 		</div>
@@ -243,13 +243,13 @@
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option9">Trim 5' (in bp):</label>
 		    <div class="controls">
-		      <input id="trimming_option9" type="text" class="" placeholder="integer" name="TRIM_5_BP" value=10 />
+		      <input id="trimming_option9" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_5_BP" value=10 />
 		    </div>
 		  </div>
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option10">Trim 3' (in bp):</label>
 		    <div class="controls">
-		      <input id="trimming_option10" type="text" class="" placeholder="integer" name="TRIM_3_BP"/>
+		      <input id="trimming_option10" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_3_BP"/>
 		    </div>
 		  </div>
 		</div>
@@ -257,13 +257,13 @@
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option11">Trim tail 5' (in bp):</label>
 		    <div class="controls">
-		      <input id="trimming_option11" type="text" class="" placeholder="integer" name="TRIM_TAIL_5"/>
+		      <input id="trimming_option11" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_TAIL_5"/>
 		    </div>
 		  </div>
 		  <div class="control-group span3">
 		    <label class="control-label" for="trimming_option12">Trim tail 3' (in bp):</label>
 		    <div class="controls">
-		      <input id="trimming_option12" type="text" class="" placeholder="integer" name="TRIM_TAIL_3" value=6 />
+		      <input id="trimming_option12" type="number" min=0 step=1 class="" placeholder="integer" name="TRIM_TAIL_3" value=6 />
 		    </div>
 		  </div>
 		</div>
@@ -284,7 +284,7 @@
 		  <div class="control-group span6">
 		    <label class="control-label" for="trimming_option14">Low complexity threshold</label>
 		    <div class="controls">
-		      <input id="trimming_option14" type="text" class="" placeholder="integer" name="TRIM_CPLEX_THRE" value=32 />
+		      <input id="trimming_option14" type="number" min=0 max=100 step=1 class="" placeholder="integer" name="TRIM_CPLEX_THRE" value=32 />
 		    </div>
 		  </div>
 		</div>
@@ -304,13 +304,13 @@
 		<div class="control-group span12">
 		  <label class="control-label" for="cutadapt_option1">Adapter sequence 1:</label>
 		  <div class="controls">
-		    <input id="cutadapt_option1" type="text" class="input-xxxlarge" placeholder="Type the sequence" name="CUTADAPT_ADAPT1"/>
+		    <input id="cutadapt_option1" type="text" pattern="[ATGCatgc]+" class="input-xxxlarge" placeholder="Type the sequence" name="CUTADAPT_ADAPT1"/>
 		  </div>
 		</div>
 		<div class="control-group span12">
 		  <label class="control-label" for="cutadapt_option2">Adapter sequence 2:</label>
 		  <div class="controls">
-		    <input id="cutadapt_option2" type="text" class="input-xxxlarge" placeholder="Type the sequence" name="CUTADAPT_ADAPT2"/>
+		    <input id="cutadapt_option2" type="text" pattern="[ATGCatgc]+" class="input-xxxlarge" placeholder="Type the sequence" name="CUTADAPT_ADAPT2"/>
 		  </div>
 		</div>
               </div>
@@ -369,7 +369,7 @@
 		      Minimum contig length:
 		    </label>
 		    <div class="controls">
-		      <input id="trinity_option1" type="text" class="" placeholder="integer" name="TRIN_MIN_LGTH" value=200 />
+		      <input id="trinity_option1" type="number" min=0 step=1 class="" placeholder="integer" name="TRIN_MIN_LGTH" value=200 />
 		    </div>
 		  </div>
 		  <div class="control-group span3">
@@ -377,7 +377,7 @@
 		      Strand Specific read orientation:
 		    </label>
 		    <div class="controls">
-		      <input id="trinity_option10" type="text" class="" placeholder="RF, FR, F or R" name="TRIN_SS_LIB"/>
+		      <input id="trinity_option10" type="text" pattern="RF|FR|F|R|rf|fr|f|r" class="" placeholder="RF, FR, F or R" name="TRIN_SS_LIB"/>
 		    </div>
 		  </div>
 		  <div class="control-group span3">
@@ -385,7 +385,7 @@
 		      Path reinforcement distance:
 		    </label>
 		    <div class="controls">
-		      <input id="trinity_option9" type="text" class="" placeholder="integer" name="TRIN_REINF_DIST" value=75 /> <br />
+		      <input id="trinity_option9" type="number" step=1 min=1 class="" placeholder="integer" name="TRIN_REINF_DIST" value=75 /> <br />
 		    </div>
 		  </div>
 		</div>
@@ -396,7 +396,7 @@
 		      Minimum kmer coverage:
 		    </label>
 		    <div class="controls">
-		      <input id="trinity_option3" type="text" class="" placeholder="integer" name="TRIN_MIN_KMER_COV" value=1 />
+		      <input id="trinity_option3" type="number" step=1 min=1 class="" placeholder="integer" name="TRIN_MIN_KMER_COV" value=1 />
 		    </div>
 		  </div>
 		  <div class="control-group span3">
@@ -404,18 +404,18 @@
 		      Minimum glue:
 		    </label>
 		    <div class="controls">
-		      <input id="trinity_option4" type="text" class="" placeholder="integer" name="TRIN_MIN_GLUE" value=2 />
+		      <input id="trinity_option4" type="number" step=1 min=1 class="" placeholder="integer" name="TRIN_MIN_GLUE" value=2 />
 		    </div>
 		  </div>
 		</div>
-
-		<div class="row">
+		<!-- Iso ratio, Glue factor and path per nodes seem to be obsolete in the next version of Trinity  -->
+		<div class="row" hidden>
 		  <div class="control-group span3">
 		    <label class="control-label" for="trinity_option5">
 		      Minimum iso ratio:
 		    </label>
 		    <div class="controls">
-		      <input id="trinity_option5" type="text" class="" placeholder="float" name="TRIN_MIN_ISO" value=0.05 />
+		      <input id="trinity_option5" type="number" step=0.05 max=1 class="" placeholder="float" name="TRIN_MIN_ISO" value=0.05 />
 		    </div>
 		  </div>
 		  <div class="control-group span3">
@@ -423,18 +423,18 @@
 		      Glue factor:
 		    </label>
 		    <div class="controls">
-		      <input id="trinity_option6" type="text" class="" placeholder="float" name="TRIN_GLUE_FACT" value=0.05 />
+		      <input id="trinity_option6" type="number" step=0.05 max=1 class="" placeholder="float" name="TRIN_GLUE_FACT" value=0.05 />
 		    </div>
 		  </div>
 		</div>
 
 		<div class="row">
-		  <div class="control-group span3">
+		  <div class="control-group span3" hidden>
 		    <label class="control-label" for="trinity_option7">
 		      Maximum number of paths per node:
 		    </label>
 		    <div class="controls">
-		      <input id="trinity_option7" type="text" class="" placeholder="integer" name="TRIN_MAX_PATH_NODE" value=10 />
+		      <input id="trinity_option7" type="number" class="" placeholder="integer" name="TRIN_MAX_PATH_NODE" value=10 />
 		    </div>
 		  </div>
 		  <div class="control-group span3">
@@ -442,7 +442,7 @@
 		      Group pairs distance:
 		    </label>
 		    <div class="controls">
-		      <input id="trinity_option8" type="text" class="" placeholder="integer" name="TRIN_GRP_DIST" value=500 /> <br />
+		      <input id="trinity_option8" type="number" min=0 step=10 class="" placeholder="integer" name="TRIN_GRP_DIST" value=500 /> <br />
 		    </div>
 		  </div>
 		</div>
@@ -584,7 +584,7 @@
 		      Maximum insert size:
 		    </label>
 		    <div class="controls">
-		      <input id="bowtie2_option1" type="text" class="" placeholder="integer" name="BOW2_MAXINS" value=500 />
+		      <input id="bowtie2_option1" type="number" min=0 step=10 class="" placeholder="integer" name="BOW2_MAXINS" value=500 />
 		    </div>
 		  </div>
 		  <div class="control-group span3">
@@ -592,7 +592,7 @@
 		      Minimum insert size:
 		    </label>
 		    <div class="controls">
-		      <input id="bowtie2_option2" type="text" class="" placeholder="integer" name="BOW2_MININS" value=0 />
+		      <input id="bowtie2_option2" type="number" min=0 step=10 class="" placeholder="integer" name="BOW2_MININS" value=0 />
 		    </div>
 		  </div>
 		</div>
