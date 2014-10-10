@@ -337,7 +337,7 @@
 	</label>
 	<label class="checkbox">
 	  <input type="checkbox" id="cdhitest" name="CDHITEST" class="assembly_qc_steps" disabled>
-	  Cluster similar sequences with cd-hit-est
+	  Cluster similar sequences with CD-HIT-EST
 	</label>
 	<label class="checkbox">
 	  <input type="checkbox" id="assembly_qual" name="ASSEMBLY_QUAL" class="assembly_qc_steps" disabled>
@@ -461,14 +461,34 @@
               </div> <!-- end of Trinity options -->
             </div>
 	  </div>
-
-	  <div class="accordion-group" hidden>
+	  <div class="accordion-group">
             <div class="accordion-heading">
               <a class="accordion-toggle" data-toggle="collapse" href="#collapse2_2">
-		Bowtie1 options
+		CD-HIT-EST options
               </a>
             </div>
             <div id="collapse2_2" class="accordion-body collapse">
+              <div class="accordion-inner">
+		<div class="row">
+		  <div class="control-group span3">
+		    <label class="control-label" for="cdhitest_option1">
+		      Sequence identity threshold
+		    </label>
+		    <div class="controls">
+		      <input id="cdhitest_option1" type="number" class="" placeholder="" step=0.01 min=0 max=1 name="CDHITEST_IDT" value=0.95 />
+		    </div>
+		  </div>
+		</div>
+              </div> <!-- end of CDHITEST options -->
+            </div>
+	  </div>
+	  <div class="accordion-group" hidden>
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse" href="#collapse2_3">
+		Bowtie1 options
+              </a>
+            </div>
+            <div id="collapse2_3" class="accordion-body collapse">
               <div class="accordion-inner">
 
 		<div class="row">
@@ -551,11 +571,11 @@
 	  </div>
 	  <div class="accordion-group">
             <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse" href="#collapse2_3">
+              <a class="accordion-toggle" data-toggle="collapse" href="#collapse2_4">
 		Bowtie2 options
               </a>
             </div>
-            <div id="collapse2_3" class="accordion-body collapse">
+            <div id="collapse2_4" class="accordion-body collapse">
               <div class="accordion-inner">
 
 		<div class="row">
