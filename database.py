@@ -144,11 +144,8 @@ def insertDemoData( name ):
 
         # Now only work for fastq files (f_type is set to 1)
         insertFileWithType(name, demo_f, 1)
-        lpath = os.path.join( config.DATADIR, name, "data", demo_f )
-        fpath = os.path.join( config.DEMO_DIR, demo_f )
+        data.linkDemoFile(name, demo_f)
 
-        os.symlink( fpath, lpath )
-    
 #-------------------------------------------------------------------------------
 def changeUserPassword( name, newpass ):
     try:
