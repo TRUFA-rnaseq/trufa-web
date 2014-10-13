@@ -147,6 +147,18 @@ def insertDemoData( name ):
         data.linkDemoFile(name, demo_f)
 
 #-------------------------------------------------------------------------------
+def getUserEmail( uid ):
+    conn = sqlite3.connect( database )
+    try:
+        with conn:
+            c = conn.cursor()
+            c.execute( 'SELECT email FROM user WHERE uid=?', (uid,) )
+            val = c.fetchone()
+            return val[0]
+    except:
+        logging.error("Unable to get user with uid:'%s' email", uid )
+        
+#-------------------------------------------------------------------------------
 def changeUserPassword( name, newpass ):
     try:
         with htpasswd.Basic( passwdfile ) as userdb:
