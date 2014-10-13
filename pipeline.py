@@ -8,6 +8,8 @@ import re
 import time
 import config
 import database
+import smtplib
+from email.mime.text import MIMEText
 
 #-------------------------------------------------------------------------------
 remotehost = config.REMOTEHOST
@@ -156,6 +158,22 @@ def checkSlurmJob( slurmids ):
     return database.JOB_SUBMITTED
 
 #-------------------------------------------------------------------------------
+def sendJobCompletedEmail(jobid, uid):
+
+    usermail = database.getUserEmail(uid)
+    jdata = database.getJobInfo(jobid)
+    
+    msg = MIMEText('Your analysis named "{0}" (appearing as "Job {1}" in the file manager) has just finished. You can connect and browse the output files at https://trufa.ifca.es/web/manager.\n\nThanks for using TRUFA !'.format(jdata['name'], jdata['juid']))
+
+    msg['Subject'] = 'TRUFA: Your analysis "{}" all done !'.format(jdata['name'])
+    msg['From'] = "kornobis@trufa.ifca.es"
+    msg['To'] = usermail
+
+    s = smtplib.SMTP('localhost')
+    s.sendmail("kornobis@trufa.ifca.es", usermail, msg.as_string())
+    s.quit()
+
+#-------------------------------------------------------------------------------
 def pipelineLoop():
     try:
         logging.info( "Start pipeline loop" )
@@ -194,6 +212,8 @@ def pipelineLoop():
 
                     logging.info( "Job %d COMPLETED", jobid )
                     database.setJobCompleted( jobid )
+
+                    sendJobCompletedEmail(job['jid'], job['uid'])
 
     except KeyboardInterrupt:
         logging.info( "Ending pipeline loop" )
