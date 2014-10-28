@@ -49,6 +49,7 @@ Using VERSION as the new release number:
 #+BEGIN_SRC bash
 VERSION=0.A.B
 git checkout develop
+git pull origin develop
 sed -i "s/VERSION = \".*\"/VERSION = \"${VERSION}\"/g" config.py
 git commit -a -m"Advance version number ${VERSION}"
 git checkout master
