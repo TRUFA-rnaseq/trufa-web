@@ -64,6 +64,20 @@ def saveFile( filename, filedata ):
         shutil.copyfileobj( filedata, f )
 
 #-------------------------------------------------------------------------------
+def linkDemoFile(username, demo_f):
+    # Now only work for fastq files (f_type is set to 1)
+
+    dir = os.path.join(config.DATADIR, username, "data")
+    if not os.path.isdir( dir ):
+        os.makedirs( dir )
+
+    lpath = os.path.join( dir , demo_f )
+    fpath = os.path.join( config.DEMO_DIR, demo_f )
+
+    if not os.path.islink(lpath):
+        os.symlink( fpath, lpath )
+
+#-------------------------------------------------------------------------------
 def clearFilePart( filename ):
     if os.path.isfile( filename + '.part' ):
         os.remove( filename + '.part' )
