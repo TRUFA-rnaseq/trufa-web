@@ -5,7 +5,7 @@ REMOTEHOST = "genorama@altamira1.ifca.es"
 
 # for testing
 REMOTEHOME = "testing"
-DATADIR = "testing"
+DATADIR = "/gpfs/res_projects/cvcv/webserver/testing/"
 
 # for stable
 #REMOTEHOME = "users"
@@ -21,6 +21,10 @@ PIPE_LAUNCH = "../server_side/pipe_launcher.py"
 DB_RESET = True
 DB_DATABASE = 'database.db'
 DB_PASSFILE = 'htpasswd.db'
+
+# Demo datasets
+DEMO_DIR = "/gpfs/res_projects/cvcv/webserver/demo_data/"
+DEMO_INFILES = [ "Spombe_left.fq", "Spombe_right.fq"]
 
 USELOGFILE = False
 LOGFILE = "trufa.log"
