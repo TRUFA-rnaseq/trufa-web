@@ -213,7 +213,7 @@ def pipelineLoop():
                     logging.info( "Job %d COMPLETED", jobid )
                     database.setJobCompleted( jobid )
 
-                    sendJobCompletedEmail(job['jid'], job['uid'])
+                    #sendJobCompletedEmail(job['jid'], job['uid'])
 
     except KeyboardInterrupt:
         logging.info( "Ending pipeline loop" )
