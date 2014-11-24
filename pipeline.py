@@ -1,5 +1,6 @@
 #-------------------------------------------------------------------------------
 import logging
+import sys
 import multiprocessing
 import os
 from os import path
@@ -10,6 +11,15 @@ import config
 import database
 import smtplib
 from email.mime.text import MIMEText
+
+sys.path.append(config.LAUNCHER_PATH)
+
+try:
+    import launcher
+except ImportError:
+    print "Error loading Launcher library"
+    print "Check LAUNCHER_PATH at config file"
+    exit(-1)
 
 #-------------------------------------------------------------------------------
 remotehost = config.REMOTEHOST
