@@ -11,11 +11,14 @@ DATADIR = "/gpfs/res_projects/cvcv/webserver/testing/"
 #REMOTEHOME = "users"
 #DATADIR = "/gpfs/res_projects/cvcv/webserver/users/"
 
+## Launcher library
 # for testing
 PIPE_LAUNCH = "../server_side/pipe_launcher.py"
+LAUNCHER_PATH = '../server_side/lib'
 
 # for stable
 #PIPE_LAUNCH = "../../server_side/stable/pipe_launcher.py"
+#LAUNCHER_PATH = '/var/genorama/server_side/stable/lib'
 
 ## Database Configurations
 DB_RESET = True
