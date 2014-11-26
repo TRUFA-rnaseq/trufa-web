@@ -9,12 +9,19 @@ import config
 DATADIR = config.DATADIR
 
 FT_UNKNOWN = 0
+# Read file (fastq, fq)
 FT_FAST = 1
+# Compressed Read file (fastq.gz ...)
 FT_TGZ_FAST = 2
+# Nucleotide seqs database (.fas)
 FT_SEQ_DB_NUC = 3
+# Amino acids seqs database (.fas)
 FT_SEQ_DB_AA = 4
+# Assembled transcripts (.fas)
 FT_ASSEM = 5
+# Mapped transcripts (.bam )
 FT_MAP_ASSEM = 6
+# Protein hmm for hmmer (.hmm)
 FT_HMM = 7
 
 fileExtTable = {
