@@ -2,7 +2,7 @@
   <div class="row-fluid">
     <div class="span6">
       <h1>Welcome to TRUFA</h1>
-      <p>TRUFA (Transcriptomes User-Friendly Analysis) is a free webserver designed to help you perform RNA-seq analysis.</p>  
+      <p>TRUFA (Transcriptomes User-Friendly Analysis) is a free webserver designed to help you perform RNA-seq analysis.</p>
       <p>So far, TRUFA is allowing you to execute the following steps
 	(programs used are specified in the parentheses):</p>
       <ul>
@@ -10,19 +10,22 @@
 	  <ul>
 	    <li>Reads quality control (FASTQC)</li>
 	    <li>Quality trimming and duplicates removal (Prinseq)</li>
-	    <li>Trimming adapters (Cutadapt)</li> 
-	    <li>Filtering out potential contaminants (Blat)</li>  
+	    <li>Trimming adapters (Cutadapt)</li>
+	    <li>Filtering out potential contaminants (Blat)</li>
 	  </ul>
-	<li>De novo assembly of your reads (Trinity) </li>
-	<li> Reads mapping (Bowtie2)</li>
-	<li>Contigs (i.e transcripts) identification based on:</li>
-	<ul>
-	  <li>sequence alignment (Blat, Blast)</li>
-	  <li>protein dominions, profiles (HMMER)</li>
-	  <li>Annotation with GO terms (Blast2GO)</li>
-	</ul>
-	<li>Expression quantification: providing FPKMs (RSEM, eXpress)</li>
+	  <li>De novo assembly of your reads (Trinity) </li>
+	  <li> Reads mapping (Bowtie2)</li>
+	  <li>Contigs (i.e transcripts) identification based on:</li>
+	  <ul>
+	    <li>sequence alignment (Blat, Blast)</li>
+	    <li>protein dominions, profiles (HMMER)</li>
+	    <li>Annotation with GO terms (Blast2GO)</li>
+	  </ul>
+	  <li>Expression quantification: providing FPKMs (RSEM, eXpress)</li>
       </ul>
+    <p> Discover TRUFA with tutorial videos <a target="_blank" href="/web/howto"> HERE</a></p>
+    <p> For more information, check
+      out <a target="_blank" href="/web/static/trufa_manual.pdf"> the manual</a>. </p>
     </div>
     <div class="well well-small span6">
       <form class="form-horizontal" action="/web/login" method="POST">
@@ -61,14 +64,14 @@
     </div>
 
     <div class="span12">
-      <h2>Pipeline overview</h2> 
+      <h2>Pipeline overview</h2>
       <div class="row text-center">
-	<img src="/web/static/img/pipe_overview.png" alt=""> 
+	<img src="/web/static/img/pipe_overview.png" alt="">
       </div>
-      
+
       <h2>Validation data sets</h2>
       <div class="row text-center">
-	<img src="/web/static/img/validation_table.png" alt=""> 
+	<img src="/web/static/img/validation_table.png" alt="">
       </div>
     </div>
 
