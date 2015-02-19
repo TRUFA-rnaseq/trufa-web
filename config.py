@@ -39,12 +39,12 @@ DATADIR = "/gpfs/res_projects/cvcv/webserver/testing/"
 
 ## Launcher library
 # for testing
-PIPE_LAUNCH = "../server_side/pipe_launcher.py"
-LAUNCHER_PATH = '../server_side/lib'
+LAUNCHER_TOOL = "../server_side/pipe_launcher.py"
+LAUNCHER_LIB = '../server_side/lib'
 
 # for stable
-#PIPE_LAUNCH = "../../server_side/stable/pipe_launcher.py"
-#LAUNCHER_PATH = '/var/genorama/server_side/stable/lib'
+#LAUNCHER_TOOL = "../../server_side/stable/pipe_launcher.py"
+#LAUNCHER_LIB = '/var/genorama/server_side/stable/lib'
 
 # Demo datasets
 DEMO_DIR = "/gpfs/res_projects/cvcv/webserver/demo_data/"

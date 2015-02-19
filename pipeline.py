@@ -12,19 +12,19 @@ import database
 import smtplib
 from email.mime.text import MIMEText
 
-sys.path.append(config.LAUNCHER_PATH)
+sys.path.append(config.LAUNCHER_LIB)
 
 try:
     import launcher
 except ImportError:
     print "Error loading Launcher library"
-    print "Check LAUNCHER_PATH at config file"
+    print "Check LAUNCHER_LIB at config file"
     exit(-1)
 
 #-------------------------------------------------------------------------------
 remotehost = config.REMOTEHOST
 remotehome = config.REMOTEHOME
-pipe_launch = config.PIPE_LAUNCH
+pipe_launch = config.LAUNCHER_TOOL
 data_dir = config.DATADIR
 
 reSLURMLINE = re.compile(r"slurmids: (?P<slurmids>\d+(,\d+)*)")
