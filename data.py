@@ -56,10 +56,12 @@ fileOptionTable = {
 # 7       hmm profile     .hmm
 
 #-------------------------------------------------------------------------------
+IO_FOLDER = "data"
+PARTIAL_SUFFIX = ".part"
+
+#-------------------------------------------------------------------------------
 def getUserFilename( username, filename ):
-    # NOTE EK: NOT SURE THIS IS CORRECT TO CHANGE PATH FOR DATA LIKE THIS
-    # BEFORE WAS:     return os.path.join( DATADIR, username, filename )
-    return os.path.join( DATADIR, username, "data", filename )
+    return os.path.join( DATADIR, username, IO_FOLDER, filename )
 
 #-------------------------------------------------------------------------------
 def saveFile( filename, filedata ):
@@ -74,7 +76,7 @@ def saveFile( filename, filedata ):
 def linkDemoFile(username, demo_f):
     # Now only work for fastq files (f_type is set to 1)
 
-    dir = os.path.join(config.DATADIR, username, "data")
+    dir = os.path.join( config.DATADIR, username, IO_FOLDER )
     if not os.path.isdir( dir ):
         os.makedirs( dir )
 
@@ -86,8 +88,8 @@ def linkDemoFile(username, demo_f):
 
 #-------------------------------------------------------------------------------
 def clearFilePart( filename ):
-    if os.path.isfile( filename + '.part' ):
-        os.remove( filename + '.part' )
+    if os.path.isfile( filename + PARTIAL_SUFFIX ):
+        os.remove( filename + PARTIAL_SUFFIX )
 
 #-------------------------------------------------------------------------------
 def saveFilePart( filename, filedata ):
@@ -95,13 +97,13 @@ def saveFilePart( filename, filedata ):
     if not os.path.isdir( dir ):
         os.makedirs( dir )
 
-    with open( filename + '.part', 'a' ) as f:
+    with open( filename + PARTIAL_SUFFIX, 'a' ) as f:
         shutil.copyfileobj( filedata, f )
 
 #-------------------------------------------------------------------------------
 def endFilePart( filename ):
-    if os.path.isfile( filename + '.part' ):
-        shutil.move( filename + '.part', filename )
+    if os.path.isfile( filename + PARTIAL_SUFFIX ):
+        shutil.move( filename + PARTIAL_SUFFIX, filename )
 
 #-------------------------------------------------------------------------------
 def getFileType( filename, option ):
