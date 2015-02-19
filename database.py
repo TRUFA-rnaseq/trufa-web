@@ -84,8 +84,7 @@ def init():
         if not os.path.isfile( passwdfile ):
             open( passwdfile, 'w' ).close()
 
-        name = 'admin' # same name and passwd
-        insertUser( name, name, "j.smith@example.com" )
+        insertUser( config.DB_TEST_USER, config.DB_TEST_PASS, config.DB_TEST_EMAIL )
 
 #-------------------------------------------------------------------------------
 def fixdbJobName():
