@@ -1,0 +1,6 @@
+Your analysis named "{0}" (appearing as "Job {1}" in the file manager) has just finished. 
+
+You can connect and browse the output files at 
+https://trufa.ifca.es/web/manager.
+
+Thanks for using TRUFA !
