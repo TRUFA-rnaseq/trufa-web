@@ -14,10 +14,10 @@ import pipeline
 import config
 
 #-------------------------------------------------------------------------------
-CherryPyWSGIServer.ssl_certificate = "cert/server.crt"
-CherryPyWSGIServer.ssl_private_key = "cert/server.key"
+CherryPyWSGIServer.ssl_certificate = config.SERVER_CRT
+CherryPyWSGIServer.ssl_private_key = config.SERVER_KEY
 
-web.config.debug = False
+web.config.debug = config.WEB_DEBUG
 
 #-------------------------------------------------------------------------------
 urls = (
