@@ -42,7 +42,7 @@ DB_TEST_EMAIL = "j.smith@example.com"
 ### Job/runner configuration ###
 
 # external server that respond to the job submission
-REMOTEHOST = "genorama@altamira1.ifca.es"
+REMOTEHOST = "fakeuser@job_server.example.com"
 
 # folder at the cluster where the users data is located
 REMOTEHOME = "testing"
@@ -51,12 +51,12 @@ REMOTEHOME = "testing"
 DATADIR = "/srv/share/testing"
 
 # path of the command tool used to submit jobs
-LAUNCHER_TOOL = "/opt/server_side/pipe_launcher.py"
+LAUNCHER_TOOL = "/opt/submit_library/pipe_launcher.py"
 # path of the python library used to submit jobs
-LAUNCHER_LIB = "/opt/server_side/lib"
+LAUNCHER_LIB = "/opt/submit_library/lib"
 
 # path to the demo data
-DEMO_DIR = "/gpfs/res_projects/cvcv/webserver/demo_data/"
+DEMO_DIR = "/srv/share/testing/demo_data/"
 # files used as demo data in the web service
 DEMO_INFILES = [ "Spombe_left.fq", "Spombe_right.fq"]
 
