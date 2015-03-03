@@ -778,6 +778,100 @@
 	  Cuffdiff
 	</label>
 	<!-- end of tabs content -->
+
+	<h4>Options:</h4>
+	<div class="accordion-group">
+	  <div class="accordion-heading">
+	    <a class="accordion-toggle" data-toggle="collapse" href="#collapse4_1">
+	      EXPRESS options
+	    </a>
+	  </div>
+	  <div id="collapse4_1" class="accordion-body collapse">
+	    <div class="accordion-inner">
+	      <div class="row">
+		<div class="control-group span3">
+		  <label class="control-label" for="EXPRESS_option1">
+		    Fragment length mean:
+		  </label>
+		  <div class="controls">
+		    <input id="EXPRESS_option1" type="number" value="200" min="0" max="" step="1" class="" placeholder="" name="EXPR_FRAG_LEN_MEAN"/>
+		  </div>
+		</div>
+	      </div>
+	      <div class="row">
+		<div class="control-group span3">
+		  <label class="control-label" for="EXPRESS_option2">
+		    Fragment length standard deviation:
+		  </label>
+		  <div class="controls">
+		    <input id="EXPRESS_option2" type="number" value="60" min="0" max="" step="1" class="" placeholder="" name="EXPR_FRAG_LEN_SD"/>
+		  </div>
+		</div>
+	      </div>
+
+	      <div class="row">
+		<div class="control-group span3">
+		  Strand orientation:
+		  <div class="controls">
+		    <label class="radio">
+		      <input type="radio" name="EXPR_STRD" value=""/>
+		      NA
+		    </label>
+		    <label class="radio">
+		      <input type="radio" name="EXPR_STRD" value="--fr-stranded"/>
+		      --fr-stranded
+		    </label>
+		    <label class="radio">
+		      <input type="radio" name="EXPR_STRD" value="--rf-stranded"/>
+		      --rf-stranded
+		    </label>
+		    <label class="radio">
+		      <input type="radio" name="EXPR_STRD" value="--f-stranded"/>
+		      --f-stranded
+		    </label>
+		    <label class="radio">
+		      <input type="radio" name="EXPR_STRD" value="--r-stranded"/>
+		      --r-stranded
+		    </label>
+		  </div>
+		</div>
+	      </div>
+
+	      <div class="row">
+		<div class="control-group span3">
+		  <label class="control-label" for="EXPRESS_option7">
+		    Library size:
+		  </label>
+		  <div class="controls">
+		    <input id="EXPRESS_option7" type="number" value="" min="0" max="" step="1" class="" placeholder="" name="EXPR_LIB_SIZE"/>
+		  </div>
+		</div>
+	      </div>
+	      <div class="row">
+		<div class="control-group span3">
+		  <label class="control-label" for="EXPRESS_option8">
+		    Max indel size:
+		  </label>
+		  <div class="controls">
+		    <input id="EXPRESS_option8" type="number" value="10" min="0" max="" step="1" class="" placeholder="" name="EXPR_MAX_INDEL"/>
+		  </div>
+		</div>
+	      </div>
+	      <div class="row">
+		<div class="control-group span3">
+		  <label class="checkbox">
+		    <div class="controls">
+		      <input type="checkbox" id="EXPRESS_option9" name="EXPR_CALC_COV">
+		      Calculates covariance
+		    </div>
+		  </label>
+		</div>
+	      </div>
+	      <a href="http://bio.math.berkeley.edu/eXpress/manual.html" target="_blank">Link to eXpress manual</a>
+	    </div> <!-- end of EXPRESS options -->
+	  </div>
+	</div>
+
       </div>
     </div>
 
