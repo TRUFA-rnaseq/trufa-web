@@ -59,7 +59,7 @@ store = web.session.DiskStore( 'sessions' )
 session = web.session.Session( app, store, initializer={'login': 0, 'user': None} )
 
 #-------------------------------------------------------------------------------
-globals = {'version': config.VERSION }
+globals = {'version': config.VERSION, 'release_date' : config.RELEASE_DATE }
 
 #-------------------------------------------------------------------------------
 def logged():
