@@ -11,6 +11,9 @@ Joint work done by:
 
 * Fast Install
 
+  *PREREQUISITES*: You need to have installed Python with modules /webpy/,
+  /bcrypt/, /pysqlite2/ and /htpasswd/.
+
   Copy the file /config.py.example/ to /config.py/. This file should be edited
   to setup the web server.
 
