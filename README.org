@@ -17,43 +17,9 @@ Joint work done by:
   Copy the file /config.py.example/ to /config.py/. This file should be edited
   to setup the web server.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-** Query the Database from the command line
-
-   Example: How to get the tables in the database and get the users:
-
-   #+begin_src bash
-   sqlite3 database.db
-   sqlite> .tables
-   file     job      jobfile  user
-   sqlite> .header ON
-   sqlite> .mode column
-   sqlite> select * from user;
-   uid         name        passwd
-   ----------  ----------  ------------------------------------------------------------
-   1           admin       $2a$05$LsPocRuTdKMH3UMtNQOjxOq9IXTqIAPC6y0toXHC6QDyG6.YNJfXq
-   #+end_src
-
-   Also it's posible to use the Sqliteman Graphical Interface to work with the database:
-
-   #+begin_src bash
-   sqliteman database.db
-   #+end_src
-
-   The database location should be configurate in the config.py file.
-
-** Moreover
-=======
   #+begin_src bash
   cp config.py.example config.py
   #+end_src
->>>>>>> 2ef9feaece40ffc5e073f191cb0ff4804fcb9c8c
-=======
-  #+begin_src bash
-  cp config.py.example config.py
-  #+end_src
->>>>>>> 94d82511ed7c31fe860de0b7f7e8491baabaa2e5
 
   Edit the file /config.py/ and set the variables ~LAUNCHER_TOOL~ and
   ~LAUNCHER_LIB~ to point to the TRUFA server side package. This package has the
