@@ -84,8 +84,7 @@ def init():
         if not os.path.isfile( passwdfile ):
             open( passwdfile, 'w' ).close()
 
-        name = 'admin' # same name and passwd
-        insertUser( name, name, "j.smith@example.com" )
+        insertUser( config.DB_TEST_USER, config.DB_TEST_PASS, config.DB_TEST_EMAIL )
 
 #-------------------------------------------------------------------------------
 def fixdbJobName():
@@ -136,6 +135,28 @@ def insertUser( name, passwd, email ):
     except htpasswd.basic.UserExists, e:
         logging.error( "User '%s' Already Exists [%s]", name, str(e) )
 
+    insertDemoData( name )
+        
+#-------------------------------------------------------------------------------
+def insertDemoData( name ):
+    for demo_f in config.DEMO_INFILES:
+
+        # Now only work for fastq files (f_type is set to 1)
+        insertFileWithType(name, demo_f, 1)
+        data.linkDemoFile(name, demo_f)
+
+#-------------------------------------------------------------------------------
+def getUserEmail( uid ):
+    conn = sqlite3.connect( database )
+    try:
+        with conn:
+            c = conn.cursor()
+            c.execute( 'SELECT email FROM user WHERE uid=?', (uid,) )
+            val = c.fetchone()
+            return val[0]
+    except:
+        logging.error("Unable to get user with uid:'%s' email", uid )
+        
 #-------------------------------------------------------------------------------
 def changeUserPassword( name, newpass ):
     try:

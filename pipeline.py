@@ -1,5 +1,6 @@
 #-------------------------------------------------------------------------------
 import logging
+import sys
 import multiprocessing
 import os
 from os import path
@@ -8,11 +9,22 @@ import re
 import time
 import config
 import database
+import smtplib
+from email.mime.text import MIMEText
+
+sys.path.append(config.LAUNCHER_LIB)
+
+try:
+    import launcher
+except ImportError:
+    print "Error loading Launcher library"
+    print "Check LAUNCHER_LIB at config file"
+    exit(-1)
 
 #-------------------------------------------------------------------------------
 remotehost = config.REMOTEHOST
 remotehome = config.REMOTEHOME
-pipe_launch = config.PIPE_LAUNCH
+pipe_launch = config.LAUNCHER_TOOL
 data_dir = config.DATADIR
 
 reSLURMLINE = re.compile(r"slurmids: (?P<slurmids>\d+(,\d+)*)")
@@ -156,6 +168,28 @@ def checkSlurmJob( slurmids ):
     return database.JOB_SUBMITTED
 
 #-------------------------------------------------------------------------------
+def sendJobCompletedEmail(jobid, uid):
+
+    usermail = database.getUserEmail(uid)
+    jdata = database.getJobInfo(jobid)
+
+    body = ""
+    with open( config.EMAIL_JOB_COMPLETE, 'r' ) as f:
+        body = f.read()
+
+    msg = MIMEText( body.format(jdata['name'], jdata['juid']))
+
+    msg['Subject'] = config.EMAIL_JOB_COMPLETE_SUBJECT.format(jdata['name'])
+    msg['From'] = config.EMAIL_SENDER
+    msg['To'] = usermail
+
+    print msg
+
+    s = smtplib.SMTP( config.EMAIL_SMTP )
+    s.sendmail( config.EMAIL_SENDER, usermail, msg.as_string())
+    s.quit()
+
+#-------------------------------------------------------------------------------
 def pipelineLoop():
     try:
         logging.info( "Start pipeline loop" )
@@ -194,6 +228,8 @@ def pipelineLoop():
 
                     logging.info( "Job %d COMPLETED", jobid )
                     database.setJobCompleted( jobid )
+
+                    #sendJobCompletedEmail(job['jid'], job['uid'])
 
     except KeyboardInterrupt:
         logging.info( "Ending pipeline loop" )

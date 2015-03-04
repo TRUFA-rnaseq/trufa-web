@@ -210,7 +210,7 @@ function checkJobInput(){
     }
 
     // if no analysis steps checked
-    var steps = $(".cleaning_steps, .assembly_steps, .identification_steps, .mapping_steps, .expression_steps")
+    var steps = $(".cleaning_steps, .assembly_steps, .assembly_qc_steps, .identification_steps, .mapping_steps, .expression_steps")
 
     if ( ! steps.is(":checked")){
         alert("You did not specify any analysis steps")
