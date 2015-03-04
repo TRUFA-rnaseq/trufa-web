@@ -12,19 +12,19 @@ import database
 import smtplib
 from email.mime.text import MIMEText
 
-sys.path.append(config.LAUNCHER_PATH)
+sys.path.append(config.LAUNCHER_LIB)
 
 try:
     import launcher
 except ImportError:
     print "Error loading Launcher library"
-    print "Check LAUNCHER_PATH at config file"
+    print "Check LAUNCHER_LIB at config file"
     exit(-1)
 
 #-------------------------------------------------------------------------------
 remotehost = config.REMOTEHOST
 remotehome = config.REMOTEHOME
-pipe_launch = config.PIPE_LAUNCH
+pipe_launch = config.LAUNCHER_TOOL
 data_dir = config.DATADIR
 
 reSLURMLINE = re.compile(r"slurmids: (?P<slurmids>\d+(,\d+)*)")
@@ -172,15 +172,21 @@ def sendJobCompletedEmail(jobid, uid):
 
     usermail = database.getUserEmail(uid)
     jdata = database.getJobInfo(jobid)
-    
-    msg = MIMEText('Your analysis named "{0}" (appearing as "Job {1}" in the file manager) has just finished. You can connect and browse the output files at https://trufa.ifca.es/web/manager.\n\nThanks for using TRUFA !'.format(jdata['name'], jdata['juid']))
 
-    msg['Subject'] = 'TRUFA: Your analysis "{}" all done !'.format(jdata['name'])
-    msg['From'] = "kornobis@trufa.ifca.es"
+    body = ""
+    with open( config.EMAIL_JOB_COMPLETE, 'r' ) as f:
+        body = f.read()
+
+    msg = MIMEText( body.format(jdata['name'], jdata['juid']))
+
+    msg['Subject'] = config.EMAIL_JOB_COMPLETE_SUBJECT.format(jdata['name'])
+    msg['From'] = config.EMAIL_SENDER
     msg['To'] = usermail
 
-    s = smtplib.SMTP('localhost')
-    s.sendmail("kornobis@trufa.ifca.es", usermail, msg.as_string())
+    print msg
+
+    s = smtplib.SMTP( config.EMAIL_SMTP )
+    s.sendmail( config.EMAIL_SENDER, usermail, msg.as_string())
     s.quit()
 
 #-------------------------------------------------------------------------------

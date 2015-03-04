@@ -1,0 +1,82 @@
+######################################################################
+PROJECT_NAME = "trufa"
+VERSION = "0.13.0"
+
+######################################################################
+### Web Configurations ###
+
+# path to the location of a SSL Certificate
+SERVER_CRT = "fake_server.crt"
+# path to the location of a SSL Private Key
+SERVER_KEY = "fake_server.key"
+# flag to indicate if Web.py should log debug messages
+WEB_DEBUG = False
+
+# path to the file for email body when a job is complete
+EMAIL_JOB_COMPLETE = "mail/job_complete.txt"
+# path to the file for email subject when a job is complete
+EMAIL_JOB_COMPLETE_SUBJECT = 'TRUFA: Your analysis "{}" all done !'
+# email sender/reply_to field
+EMAIL_SENDER = "j.smith@example.com"
+# location of the SMTP service to send mails
+EMAIL_SMTP = "smtp.example.com"
+
+######################################################################
+### Database configuracion ###
+
+# True if webservice should try to create a initial database
+DB_RESET = True
+# path to the sqlite3 database
+DB_DATABASE = 'database.db'
+# path to the htpasswd file with web passwords
+DB_PASSFILE = 'htpasswd.db'
+
+# initial user to put on the database, valid only whern DB_RESET==True
+DB_TEST_USER = "admin"
+# initial user password, valid only whern DB_RESET==True
+DB_TEST_PASS = "admin"
+# initial user email, valid only whern DB_RESET==True
+DB_TEST_EMAIL = "j.smith@example.com"
+
+######################################################################
+### Job/runner configuration ###
+
+# external server that respond to the job submission
+REMOTEHOST = "fakeuser@job_server.example.com"
+
+# folder at the cluster where the users data is located
+REMOTEHOME = "testing"
+# folder at the web service where the users data is located.  It should be a
+# distributed Filesystem linked with REMOTEHOME
+DATADIR = "/srv/share/testing"
+
+# path of the command tool used to submit jobs
+LAUNCHER_TOOL = "/opt/submit_library/pipe_launcher.py"
+# path of the python library used to submit jobs
+LAUNCHER_LIB = "/opt/submit_library/lib"
+
+# path to the demo data
+DEMO_DIR = "/srv/share/testing/demo_data/"
+# files used as demo data in the web service
+DEMO_INFILES = [ "Spombe_left.fq", "Spombe_right.fq"]
+
+######################################################################
+### Log/debug configuration ###
+
+# flag to indicate if python should log to a file or log to stdin
+USELOGFILE = False
+# path to the log file
+LOGFILE = "trufa.log"
+# size of the log file. It's a rotating log file
+LOGFILEBYTES = 500*1024
+
+# flag to indicate if web should log to a file or log to stdin
+USEWLOGFILE = True
+# path to the web log file
+WLOGFILE = "trufa_web.log"
+
+######################################################################
+import logging
+logging.getLogger().setLevel( logging.DEBUG )
+
+######################################################################

@@ -1,5 +1,7 @@
+config.py
 *.pyc
 *~
+/cert/
 /sessions/
 template.db
 database*.db
