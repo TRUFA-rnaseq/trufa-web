@@ -1,7 +1,10 @@
 config.py
 *.pyc
 *~
-/cert/
+*.crt
+*.csr
+*.key
+*.key.org
 /sessions/
 template.db
 database*.db
