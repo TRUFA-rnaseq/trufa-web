@@ -29,15 +29,12 @@ EMAIL_SMTP = "smtp.example.com"
 DB_RESET = True
 # path to the sqlite3 database
 DB_DATABASE = 'database.db'
-# path to the htpasswd file with web passwords
-DB_PASSFILE = 'htpasswd.db'
 
-# initial user to put on the database, valid only whern DB_RESET==True
-DB_TEST_USER = "admin"
-# initial user password, valid only whern DB_RESET==True
-DB_TEST_PASS = "admin"
-# initial user email, valid only whern DB_RESET==True
-DB_TEST_EMAIL = "j.smith@example.com"
+######################################################################
+### Users Module configuration ###
+
+# path of the python library used to authentificate users
+USERS_LIB = "/opt/users_library/lib"
 
 ######################################################################
 ### Job/runner configuration ###

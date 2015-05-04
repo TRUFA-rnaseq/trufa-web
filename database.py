@@ -2,18 +2,12 @@
 import logging
 import datetime
 import sqlite3
-import bcrypt
 import os
 import data
-import htpasswd
-import re
-from email.utils import parseaddr
 import config
 
 #-------------------------------------------------------------------------------
-BCRYPT_ROUNDS = 5
 database = config.DB_DATABASE
-passwdfile = config.DB_PASSFILE
 
 # JOB STATE
 JOB_CREATED = 0   # Just Created
@@ -26,8 +20,6 @@ JOB_CANCELED = 4 # Canceled
 FILEIN = 0
 FILEOUT = 1
 
-EMAIL_REGEX = re.compile(r"[^@ ]+@[^@ ]+\.[^@ ]+")
-
 #-------------------------------------------------------------------------------
 def mkEmptyDatabase( dbname ):
     if os.path.isfile( dbname ):
@@ -35,7 +27,7 @@ def mkEmptyDatabase( dbname ):
 
     conn = sqlite3.connect( dbname )
     c = conn.cursor()
-    c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, passwd text, email text, enabled INTEGER NOT NULL DEFAULT 1, UNIQUE(name), UNIQUE(email))" )
+    c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, UNIQUE(name) )" )
 
     c.execute( "CREATE TABLE file (fid INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, global INTEGER, filename text, filetype INTEGER)" )
     conn.commit()
@@ -80,11 +72,22 @@ def init():
         if not os.path.isfile( database ):
             mkEmptyDatabase( database )
 
-        # create empty password file
-        if not os.path.isfile( passwdfile ):
-            open( passwdfile, 'w' ).close()
+#-------------------------------------------------------------------------------
+def fixdbUserTable():
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
 
-        insertUser( config.DB_TEST_USER, config.DB_TEST_PASS, config.DB_TEST_EMAIL )
+    c.execute( "ALTER TABLE user RENAME TO user0" )
+
+    c.execute( "CREATE TABLE user (uid INTEGER PRIMARY KEY AUTOINCREMENT, name text, UNIQUE(name) )" )
+
+    c.execute( "INSERT INTO user (uid,name) SELECT user0.uid,user0.name FROM user0" )
+
+    c.execute( "DROP TABLE user0" )
+
+    conn.commit()
+
+    conn.close()
 
 #-------------------------------------------------------------------------------
 def fixdbJobName():
@@ -112,96 +115,14 @@ def fixdbJobName():
     conn.close()
 
 #-------------------------------------------------------------------------------
-def insertUser( name, passwd, email ):
-    checkedName, checkedEmail = parseaddr( email )
-    if len( checkedEmail ) == 0 or not EMAIL_REGEX.match( checkedEmail):
-        logging.error( "Invalid email %s", email )
-        return
-
-    h = bcrypt.hashpw( passwd, bcrypt.gensalt(BCRYPT_ROUNDS) )
-
-    conn = sqlite3.connect( database )
-    try:
-        with conn:
-            conn.execute( 'INSERT INTO user(uid,name,passwd,email) VALUES (null,?,?,?)',
-                          (name,h,checkedEmail) )
-    except sqlite3.IntegrityError:
-        logging.error( "User '%s' Already Exists", name )
-        return
-
-    try:
-        with htpasswd.Basic( passwdfile ) as userdb:
-            userdb.add( name, passwd )
-    except htpasswd.basic.UserExists, e:
-        logging.error( "User '%s' Already Exists [%s]", name, str(e) )
-
-    insertDemoData( name )
-        
-#-------------------------------------------------------------------------------
-def insertDemoData( name ):
-    for demo_f in config.DEMO_INFILES:
-
-        # Now only work for fastq files (f_type is set to 1)
-        insertFileWithType(name, demo_f, 1)
-        data.linkDemoFile(name, demo_f)
-
-#-------------------------------------------------------------------------------
-def getUserEmail( uid ):
-    conn = sqlite3.connect( database )
-    try:
-        with conn:
-            c = conn.cursor()
-            c.execute( 'SELECT email FROM user WHERE uid=?', (uid,) )
-            val = c.fetchone()
-            return val[0]
-    except:
-        logging.error("Unable to get user with uid:'%s' email", uid )
-        
-#-------------------------------------------------------------------------------
-def changeUserPassword( name, newpass ):
-    try:
-        with htpasswd.Basic( passwdfile ) as userdb:
-            userdb.change_password( name, newpass )
-    except htpasswd.basic.UserNotExists, e:
-        logging.error( "User Not Exists %s [%s]", name, str(e) )
-        return False
-
-    h = bcrypt.hashpw( newpass, bcrypt.gensalt(BCRYPT_ROUNDS) )
-
-    conn = sqlite3.connect( database )
-    try:
-        with conn:
-            conn.execute( 'UPDATE user SET passwd=? WHERE name=?', (h,name) )
-    except:
-        logging.error( "changing password %s", name )
-        return False
-
-    return True
-
-#-------------------------------------------------------------------------------
-def checkUser( name, passwd ):
-    conn = sqlite3.connect( database )
-    try:
-        with conn:
-            c = conn.cursor()
-            c.execute( 'SELECT passwd FROM user WHERE name=? AND enabled=1', (name,) )
-            val = c.fetchone()
-            if val is not None:
-                return bcrypt.hashpw( passwd, val[0] ) == val[0]
-    except:
-        return False
-
-    return False
-
-#-------------------------------------------------------------------------------
-def checkIfUserAvailable( name ):
+def checkIfUserExists( name ):
     conn = sqlite3.connect( database )
     try:
         with conn:
             c = conn.cursor()
             c.execute( 'SELECT * FROM user WHERE name=?', (name,) )
             val = c.fetchone()
-            if val is None:
+            if val is not None:
                 return True
     except:
         return False
@@ -209,24 +130,28 @@ def checkIfUserAvailable( name ):
     return False
 
 #-------------------------------------------------------------------------------
-def enableUser( name ):
-    conn = sqlite3.connect( database )
-    with conn:
-        c = conn.cursor()
-        c.execute( 'SELECT uid FROM user WHERE name=?', (name,) )
-        uidrow = c.fetchone()
-        if uidrow is not None:
-            c.execute( 'UPDATE user SET enabled=1 WHERE uid=?', (uidrow[0],) )
+def insertNewUser( name ):
+    if not checkIfUserExists( name ):
+        conn = sqlite3.connect( database )
+        try:
+            with conn:
+                conn.execute( 'INSERT INTO user(uid,name) VALUES (null,?)',
+                          (name,) )
+        except sqlite3.IntegrityError:
+            logging.error( "User '%s' Already Exists", name )
+            return
+
+        logging.warning( "Inserting new user '%s'", name )
+
+        insertDemoData( name )
 
 #-------------------------------------------------------------------------------
-def disableUser( name ):
-    conn = sqlite3.connect( database )
-    with conn:
-        c = conn.cursor()
-        c.execute( 'SELECT uid FROM user WHERE name=?', (name,) )
-        uidrow = c.fetchone()
-        if uidrow is not None:
-            c.execute( 'UPDATE user SET enabled=0 WHERE uid=?', (uidrow[0],) )
+def insertDemoData( name ):
+    for demo_f in config.DEMO_INFILES:
+
+        # Now only work for fastq files (f_type is set to 1)
+        insertFileWithType(name, demo_f, 1)
+        data.linkDemoFile(name, demo_f)
 
 #-------------------------------------------------------------------------------
 def deleteUser( name ):
@@ -260,12 +185,6 @@ def deleteUser( name ):
         logging.error( "Unknown user %s", name )
 
     conn.close()
-
-    try:
-        with htpasswd.Basic( passwdfile ) as userdb:
-            userdb.pop( name )
-    except htpasswd.basic.UserNotExists, e:
-        logging.error( "User Not Exists %s [%s]", name, str(e) )
 
 #-------------------------------------------------------------------------------
 def insertFile( user, filename ):

@@ -12,13 +12,21 @@ import database
 import smtplib
 from email.mime.text import MIMEText
 
+#-------------------------------------------------------------------------------
 sys.path.append(config.LAUNCHER_LIB)
-
 try:
     import launcher
 except ImportError:
     print "Error loading Launcher library"
     print "Check LAUNCHER_LIB at config file"
+    exit(-1)
+
+sys.path.append( config.USERS_LIB )
+try:
+    import users
+except ImportError:
+    print "Error loading Users library"
+    print "Check USERS_LIB at config file"
     exit(-1)
 
 #-------------------------------------------------------------------------------
@@ -168,9 +176,13 @@ def checkSlurmJob( slurmids ):
     return database.JOB_SUBMITTED
 
 #-------------------------------------------------------------------------------
-def sendJobCompletedEmail(jobid, uid):
+def sendJobCompletedEmail(jobid, username):
 
-    usermail = database.getUserEmail(uid)
+    usermail = users.getUserEmail( username )
+    if usermail == None:
+        logging.warning( "User %d hasn't email", username )
+        return
+
     jdata = database.getJobInfo(jobid)
 
     body = ""
@@ -229,7 +241,8 @@ def pipelineLoop():
                     logging.info( "Job %d COMPLETED", jobid )
                     database.setJobCompleted( jobid )
 
-                    #sendJobCompletedEmail(job['jid'], job['uid'])
+                    #username = database.getUserName( job['uid'] )
+                    #sendJobCompletedEmail( job['jid'], username )
 
     except KeyboardInterrupt:
         logging.info( "Ending pipeline loop" )

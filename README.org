@@ -12,7 +12,7 @@ Joint work done by:
 * Fast Install
 
   *PREREQUISITES*: You need to have installed Python with modules /webpy/,
-  /bcrypt/, /pysqlite2/ and /htpasswd/.
+  /bcrypt/, /pysqlite2/.
 
   Copy the file /config.py.example/ to /config.py/. This file should be edited
   to setup the web server.
@@ -28,6 +28,13 @@ Joint work done by:
   for testing you can install /trufa-server-null/ that mocks the necesary to
   deploy the web frontend.
 
+  Edit the file /config.py/ and set the variables ~USERS_LIB~ to point to the
+  TRUFA users module. This package allows the users authentification in the web
+  server, and it should be installed in the same host. You can use differents
+  users module, depend of the desired authentification scheme. The default
+  module for user authentification is /trufa-users-sqlite/ that saves user data
+  in a sqlite database.
+
   Edit the file /config.py/ and set the variables ~SERVER_CRT~ and ~SERVER_KEY~
   to point to valid SSL certificate and key. You can create a self-signed SSL
   Certificate which can be used for testing purposes with:
@@ -42,9 +49,6 @@ Joint work done by:
 
   Edit the file /config.py/ and set the variable ~DATADIR~ to point to a folder
   where you have write permission.
-
-  Edit the file /config.py/ and set the initial test user with variables
-  ~DB_TEST_USER~ and ~DB_TEST_PASS~.
 
   You should edit other variables at /config.py/ but these are the
   minimum. After that, you can start the web server with:

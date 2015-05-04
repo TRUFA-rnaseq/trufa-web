@@ -14,6 +14,15 @@ import pipeline
 import config
 
 #-------------------------------------------------------------------------------
+sys.path.append( config.USERS_LIB )
+try:
+    import users
+except ImportError:
+    print "Error loading Users library"
+    print "Check USERS_LIB at config file"
+    exit(-1)
+
+#-------------------------------------------------------------------------------
 CherryPyWSGIServer.ssl_certificate = config.SERVER_CRT
 CherryPyWSGIServer.ssl_private_key = config.SERVER_KEY
 
@@ -142,12 +151,14 @@ class Login:
         try:
             name = web.input().user
             passwd = web.input().passwd
-            if database.checkUser( name, passwd ):
+            if users.checkUser( name, passwd ):
                 session.login = 1
                 session.user = name
+                database.insertNewUser( name )
             else:
                 clearSession()
         except:
+            logging.error( str(sys.exc_info()) )
             clearSession()
 
         if logged():
@@ -178,12 +189,13 @@ class Register:
         try:
             name = web.input().user_name
             passwd = web.input().pwd
-            if database.checkIfUserAvailable( name ):
+            if users.checkIfUserAvailable( name ):
                 logging.warning( "User available" )
             else:
                 logging.warning( "User not available" )
 
         except:
+            logging.error( str(sys.exc_info()) )
             clearSession()
 
 #-------------------------------------------------------------------------------
@@ -197,8 +209,11 @@ class AjaxMe:
     def PUT( self ):
         if logged():
             try:
+                if not users.allowPasswordChange( session.user ):
+                    return json.dumps( {'ok':False, 'msg': "Users Module doesn't allow password change." } )
+
                 passwd = web.input().oldpass
-                if not database.checkUser( session.user, passwd ):
+                if not users.checkUser( session.user, passwd ):
                     return json.dumps( {'ok':False, 'msg': "invalid password" } )
 
                 newpass = web.input().newpass
@@ -207,7 +222,7 @@ class AjaxMe:
                 if newpass != repeatpass:
                     return json.dumps( {'ok':False, 'msg': "password check invalid" } )
 
-                if database.changeUserPassword( session.user, newpass ):
+                if users.changeUserPassword( session.user, passwd, newpass ):
                     return json.dumps( {'ok':True } )
                 else:
                     return json.dumps( {'ok':False, 'msg': "password change error" } )
