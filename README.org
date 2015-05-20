@@ -40,7 +40,7 @@ Joint work done by:
   Certificate which can be used for testing purposes with:
 
   #+begin_src bash
-  openssl genrsa -des3 -out trufa.key 1024
+  openssl genrsa -des3 -out trufa.key 2048
   openssl req -new -key trufa.key -out trufa.csr
   cp trufa.key trufa.key.org
   openssl rsa -in trufa.key.org -out trufa.key
