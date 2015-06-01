@@ -167,7 +167,7 @@ def cancelJob( user, jobid ):
 
     if jobinfo['state'] == database.JOB_COMPLETED or jobinfo['state'] == database.JOB_CANCELED:
         logging.warning( "job %d already canceled", jobid )
-        return true
+        return True
 
     # Canceling Jobid:
     logging.info( str(jobinfo['slurmids']) )
