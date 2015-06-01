@@ -16,14 +16,6 @@ import json
 from cStringIO import StringIO
 
 #-------------------------------------------------------------------------------
-sys.path.append(config.LAUNCHER_LIB)
-try:
-    import launcher
-except ImportError:
-    print "Error loading Launcher library"
-    print "Check LAUNCHER_LIB at config file"
-    exit(-1)
-
 sys.path.append( config.USERS_LIB )
 try:
     import users

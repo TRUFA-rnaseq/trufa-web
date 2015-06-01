@@ -50,8 +50,6 @@ DATADIR = "/srv/share/testing"
 
 # path of the command tool used to submit jobs
 LAUNCHER_TOOL = "/opt/submit_library/pipe_launcher.py"
-# path of the python library used to submit jobs
-LAUNCHER_LIB = "/opt/submit_library/lib"
 # authority part of the job launcher service
 LAUNCHER_SERVICE = "localhost:6661"
 
