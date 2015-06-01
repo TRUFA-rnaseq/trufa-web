@@ -11,6 +11,9 @@ import config
 import database
 import smtplib
 from email.mime.text import MIMEText
+import httplib
+import json
+from cStringIO import StringIO
 
 #-------------------------------------------------------------------------------
 sys.path.append(config.LAUNCHER_LIB)
@@ -37,6 +40,124 @@ data_dir = config.DATADIR
 
 reSLURMLINE = re.compile(r"slurmids: (?P<slurmids>\d+(,\d+)*)")
 reSLURMID = re.compile(r"\,")
+
+authority = config.LAUNCHER_SERVICE
+
+#-------------------------------------------------------------------------------
+def encodeRESTParams( params ):
+    payload = json.dumps( params, ensure_ascii=False )
+    payload.encode( 'utf-8' )
+
+    # define the params encoding
+    headers = { 'Content-Type': 'application/json; charset=utf-8'}
+
+    return (payload, headers)
+
+#-------------------------------------------------------------------------------
+def getRESTResult( conn ):
+    # get output from connection
+    retValues = {}
+    response = conn.getresponse()
+    if response.status == 200:
+        try:
+            retValues = json.loads( response.read() )
+        except ValueError:
+            logging.error( "can't decode json response" )
+            return None
+    else:
+        logging.error( "http error %d, %s"
+                       % (response.status, response.reason) )
+        return None
+
+    # check error
+    if not retValues.get('ok' , False ):
+        logging.error( "REST return: "
+                       + retValues.get('errormsg', "unknown error") )
+        return None
+
+    return retValues
+
+#-------------------------------------------------------------------------------
+def callGetJobStatus( joblist ):
+    conn = httplib.HTTPConnection( authority )
+
+    payload, headers = encodeRESTParams( {'joblist': joblist} )
+
+    # call the remote service
+    try:
+        conn.request( 'GET', '/jobs', body=payload, headers=headers )
+    except:
+        logging.error( str(sys.exc_info()) )
+        return None
+
+    result = getRESTResult( conn )
+
+    print result
+
+    return result
+
+#-------------------------------------------------------------------------------
+def callRunJob( user, params ):
+    conn = httplib.HTTPConnection( authority )
+
+    # encode the request params
+    params = {
+        'user': user,
+        'program': 'trufa',
+        'params': params,
+        }
+
+    payload, headers = encodeRESTParams( params )
+
+    # call the remote service
+    try:
+        conn.request( 'PUT', '/jobs', body=payload, headers=headers )
+    except:
+        logging.error( str(sys.exc_info()) )
+        return None
+
+    result = getRESTResult( conn )
+
+    print result
+
+    return result
+
+#-------------------------------------------------------------------------------
+def callJobStatus( jobid ):
+    conn = httplib.HTTPConnection( authority )
+
+    # call the remote service
+    try:
+        conn.request( 'GET', '/jobs/'+str(jobid) )
+    except:
+        logging.error( str(sys.exc_info()) )
+        return None
+
+    result = getRESTResult( conn )
+
+    print result
+
+    return result
+
+#-------------------------------------------------------------------------------
+def callCancelJob( jobid ):
+    conn = httplib.HTTPConnection( authority )
+
+    payload, headers = encodeRESTParams( {'cancel': True} )
+
+    # call the remote service
+    try:
+        conn.request( 'POST', '/jobs/'+str(jobid),
+                      body=payload, headers=headers )
+    except:
+        logging.error( str(sys.exc_info()) )
+        return None
+
+    result = getRESTResult( conn )
+
+    print result
+
+    return result
 
 #-------------------------------------------------------------------------------
 def startJob( user, var1 ):
