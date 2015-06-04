@@ -322,7 +322,7 @@ def isFileAllowedFromUser( fileid, user ):
     return fdata[1] != 0 or fdata[0] == udata[0]
 
 #-------------------------------------------------------------------------------
-def createJob( user ):
+def insertNewJob( user, jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
     c.execute( 'SELECT uid FROM user WHERE name=?', (user,) )
@@ -335,18 +335,22 @@ def createJob( user ):
             newjuid = lastjuid + 1
 
         now = datetime.datetime.now()
-
         jobname = 'job ' + str(newjuid)
-        c.execute( 'INSERT INTO job(jid,juid,uid,name,state,created,updated) VALUES (null,?,?,?,0,?,?)',
-                   (newjuid,uid[0],jobname,now,now) )
-        c.execute( 'SELECT last_insert_rowid() FROM job' )
-        jobid = c.fetchone()[0]
-        conn.commit()
+        try:
+            c.execute( 'INSERT INTO job(jid,juid,uid,name,state,created,updated) VALUES (?,?,?,?,0,?,?)',
+                   (jobid,newjuid,uid[0],jobname,now,now) )
+            conn.commit()
+        except sqlite3.IntegrityError:
+            logging.error( "Jobid '%d' Already Exists", jobid )
+            conn.close()
+            return False
+
         conn.close()
-        return jobid
     else:
         conn.close()
         raise RuntimeError( "createJob with invalid user " + user )
+
+    return True
 
 #-------------------------------------------------------------------------------
 def getUserJobs( user ):
