@@ -110,9 +110,10 @@ def callRunJob( user, params ):
 
     result = getRESTResult( conn )
 
-    print result
+    if result:
+        return result.get( 'jobid', None )
 
-    return result
+    return None
 
 #-------------------------------------------------------------------------------
 def callJobStatus( jobid ):
@@ -153,11 +154,12 @@ def callCancelJob( jobid ):
 
 #-------------------------------------------------------------------------------
 def startJob( user, var1 ):
-    jobid = database.createJob( user )
+    jobid = callRunJob( user, var1 )
+    if jobid is not None:
+        if database.insertNewJob( user, jobid ):
+            return True
 
-    p = multiprocessing.Process( target=runjob, args=(user, jobid, var1) )
-    logging.debug( str(var1) )
-    p.start()
+    raise RuntimeError( "Can't start new job for user " + user )
 
 #-------------------------------------------------------------------------------
 def cancelJob( user, jobid ):
@@ -192,78 +194,6 @@ def cancelJob( user, jobid ):
 
     database.setJobCanceled( jobid )
     return True
-
-#-------------------------------------------------------------------------------
-def getSlurmIds( output ):
-    mm = reSLURMLINE.search( output )
-    sids = []
-    if mm:
-        slurmline = mm.group('slurmids')
-        slurmids = reSLURMID.split( slurmline )
-        sids = map(int,slurmids)
-
-    return sids
-
-#-------------------------------------------------------------------------------
-def runjob( user, jobid, var1):
-    logging.info( "RUNNING JOB %d", jobid )
-
-# stagein
-    if "file" in var1:
-        fileid1 = int(var1["file"])
-        localfile1 = database.getFileFullName( fileid1 )
-        remotefile1 = os.path.join( remotehome, localfile1 )
-        database.addJobFile( jobid, fileid1, database.FILEIN )
-        var1['file_read1'] = remotefile1
-
-    if "file2" in var1:
-        fileid2 = int(var1["file2"])
-        localfile2 = database.getFileFullName( fileid2 )
-        remotefile2 = os.path.join( remotehome, localfile2 )
-        database.addJobFile( jobid, fileid2, database.FILEIN )
-        var1['file_read2'] = remotefile2
-
-    if "file3" in var1:
-        fileid3 = int(var1["file3"])
-        localfile3 = database.getFileFullName( fileid3 )
-        remotefile3 = os.path.join( remotehome, localfile3 )
-        database.addJobFile( jobid, fileid3, database.FILEIN )
-        var1['file_ass'] = remotefile3
-
-
-        # submit
-
-    jinfo = database.getJobInfo( jobid )
-    juid =  jinfo['juid']
-
-    if var1["input_type"] == "single":
-        command = [ pipe_launch, user, str(var1), remotefile1, str(juid) ]
-    elif var1["input_type"] == "paired":
-        command = [ pipe_launch, user, str(var1), remotefile1, remotefile2, str(juid) ]
-    elif var1.input_type =="contigs":
-        command = [ pipe_launch, user, str(var1), remotefile3, str(juid) ]
-    elif var1.input_type =="contigs_with_single":
-        command = [ pipe_launch, user, str(var1), remotefile1, remotefile3,
-                    str(juid) ]
-    elif var1.input_type =="contigs_with_paired":
-        command = [ pipe_launch, user, str(var1), remotefile1, remotefile2,
-                    remotefile3, str(juid) ]
-
-    logging.debug( str(command) )
-    logging.debug( str(var1) )
-
-    proc = subprocess.Popen( command, stdout=subprocess.PIPE )
-    output = proc.communicate()[0]
-
-    slurmids = getSlurmIds( output )
-
-    if len(slurmids) > 0:
-        database.setJobSubmitted( jobid )
-    else:
-        logging.warning( "Task without slurm ids" )
-
-    for si in slurmids:
-        database.addJobSlurmRef( jobid, si )
 
 #-------------------------------------------------------------------------------
 def run():
