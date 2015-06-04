@@ -35,9 +35,6 @@ def mkEmptyDatabase( dbname ):
     c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, name text NOT NULL DEFAULT 'unnamed', created TEXT NOT NULL DEFAULT '2014-03-01 08:00:00.000000', updated TEXT NOT NULL DEFAULT '2014-03-01 08:00:00.000000', FOREIGN KEY(uid) REFERENCES user(uid) )" )
     conn.commit()
 
-    c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
-    conn.commit()
-
     c.execute( "CREATE TABLE jobfile (jid INTEGER, fid INTEGER, jobfiletype INTEGER, PRIMARY KEY(jid, fid) )" )
     conn.commit()
 
@@ -50,15 +47,10 @@ def dropJobTables():
 
     c.execute( "DROP TABLE IF EXISTS jobfile" )
     conn.commit()
-    c.execute( "DROP TABLE IF EXISTS jobslurm" )
-    conn.commit()
     c.execute( "DROP TABLE IF EXISTS job" )
     conn.commit()
 
     c.execute( "CREATE TABLE job (jid INTEGER PRIMARY KEY AUTOINCREMENT, juid INTEGER NOT NULL, uid INTEGER NOT NULL, state INTEGER, name text NOT NULL DEFAULT 'unnamed', created TEXT NOT NULL DEFAULT '2014-03-01 08:00:00.000000', updated TEXT NOT NULL DEFAULT '2014-03-01 08:00:00.000000', FOREIGN KEY(uid) REFERENCES user(uid) )" )
-    conn.commit()
-
-    c.execute( "CREATE TABLE jobslurm (jid INTEGER, slurmid INTEGER, PRIMARY KEY(jid, slurmid), FOREIGN KEY(jid) REFERENCES job(jid) )" )
     conn.commit()
 
     c.execute( "CREATE TABLE jobfile (jid INTEGER, fid INTEGER, jobfiletype INTEGER, PRIMARY KEY(jid, fid) )" )
@@ -110,6 +102,16 @@ def fixdbJobName():
         logging.info( "Set job name %d = '%s'", j[0], jobname )
         c.execute( 'UPDATE job SET %s=? WHERE jid=?' % (column_name,),
                    (jobname, j[0],) )
+    conn.commit()
+
+    conn.close()
+
+#-------------------------------------------------------------------------------
+def fixdbDeleteSlurm():
+    conn = sqlite3.connect( database )
+    c = conn.cursor()
+
+    c.execute( "DROP TABLE IF EXISTS jobslurm" )
     conn.commit()
 
     conn.close()
@@ -168,7 +170,6 @@ def deleteUser( name ):
         for jobrow in dbjobs:
             jid = jobrow[0]
             logging.info( "Deleting user job %d", jid )
-            c.execute( 'DELETE FROM jobslurm WHERE jid=?', (jid,) )
             c.execute( 'DELETE FROM jobfile WHERE jid=?', (jid,) )
             c.execute( 'DELETE FROM job WHERE jid=?', (jid,) )
         conn.commit()
@@ -374,18 +375,6 @@ def addJobFile( jobid, fileid, jftype ):
     conn.close()
 
 #-------------------------------------------------------------------------------
-def addJobSlurmRef( jobid, slurmid ):
-    conn = sqlite3.connect( database )
-    try:
-        with conn:
-            conn.execute( 'INSERT INTO jobslurm(jid,slurmid) VALUES (?,?)',
-                          (jobid,slurmid) )
-    except sqlite3.IntegrityError:
-        logging.error( "Adding duplicate slurm id %d on job %d", slurmid, jobid )
-
-    conn.close()
-
-#-------------------------------------------------------------------------------
 def setJobSubmitted( jobid ):
     now = datetime.datetime.now()
     conn = sqlite3.connect( database )
@@ -426,7 +415,6 @@ def deleteJob( jobid ):
     conn = sqlite3.connect( database )
     c = conn.cursor()
     logging.info( "Deleting job %d", jobid )
-    c.execute( 'DELETE FROM jobslurm WHERE jid=?', (jobid,) )
     c.execute( 'DELETE FROM jobfile WHERE jid=?', (jobid,) )
     c.execute( 'DELETE FROM job WHERE jid=?', (jobid,) )
     conn.commit()
@@ -462,18 +450,11 @@ def getJobInfo( jobid ):
 
         files.append( {'fid': jf[0], 'name': fdata[0], 'type': jf[1] } )
 
-    c.execute('SELECT slurmid FROM jobslurm WHERE jid=?', (jobid,) )
-    jslurms = c.fetchall()
-
-    slurms = []
-    for js in jslurms:
-        slurms.append( {'slurmid': js[0] } )
-
     conn.close()
 
-    return { 'jobid': jobid, 'juid': jdata[1], 'name': jdata[2], 'state': jdata[0],
-             'created': jdata[3], 'updated': jdata[4],
-             'slurmids': slurms, 'files': files }
+    return { 'jobid': jobid, 'juid': jdata[1], 'name': jdata[2],
+             'state': jdata[0], 'created': jdata[3],
+             'updated': jdata[4], 'files': files }
 
 #-------------------------------------------------------------------------------
 def getJustCreatedJobs():
@@ -495,14 +476,7 @@ def getActiveJobs():
     jdata = c.fetchall()
     jobs = []
     for j in jdata:
-        c.execute('SELECT slurmid FROM jobslurm WHERE jid=?', (j[0],) )
-        jslurms = c.fetchall()
-
-        slurms = []
-        for js in jslurms:
-            slurms.append( js[0] )
-
-        jobs.append( {'jid':j[0],'juid':j[1],'uid':j[2],'state':j[3],'slurmids':slurms} )
+        jobs.append( {'jid':j[0],'juid':j[1],'uid':j[2],'state':j[3]} )
 
     conn.close()
 
