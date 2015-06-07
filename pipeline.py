@@ -148,9 +148,10 @@ def callCancelJob( jobid ):
 
     result = getRESTResult( conn )
 
-    print result
+    if result:
+        return result.get( 'ok', False )
 
-    return result
+    return False
 
 #-------------------------------------------------------------------------------
 def startJob( user, var1 ):
@@ -172,15 +173,10 @@ def cancelJob( user, jobid ):
         logging.warning( "job %d already canceled", jobid )
         return True
 
-    # Canceling Jobid:
-    logging.info( str(jobinfo['slurmids']) )
-    for slurmid in jobinfo['slurmids']:
-        logging.info( "canceling slurm job %d", slurmid["slurmid"] )
-
-        command = ["ssh", remotehost, "mncancel", str(slurmid["slurmid"]) ]
-        proc = subprocess.Popen( command, stdout=subprocess.PIPE )
-        output = proc.communicate()[0]
-        logging.info( str(output) )
+    ret = callCancelJob( jobid )
+    if ret:
+        database.setJobCanceled( jobid )
+        return True
 
     # Removing job folders:
         # Web and server job names should be corresponding before activating this
@@ -193,8 +189,7 @@ def cancelJob( user, jobid ):
     # proc = subprocess.Popen( command, stdout=subprocess.PIPE )
     #output = proc.communicate()[0]
 
-    database.setJobCanceled( jobid )
-    return True
+    return False
 
 #-------------------------------------------------------------------------------
 def run():
