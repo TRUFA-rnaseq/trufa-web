@@ -84,9 +84,10 @@ def callGetJobStatus( joblist ):
 
     result = getRESTResult( conn )
 
-    print result
+    if result is not None:
+        return result.get( 'jobs', [] )
 
-    return result
+    return []
 
 #-------------------------------------------------------------------------------
 def callRunJob( user, params ):
@@ -198,23 +199,6 @@ def run():
     return p
 
 #-------------------------------------------------------------------------------
-def checkSlurmJob( slurmids ):
-    if len(slurmids) > 0:
-        idsstr = ",".join(map(str,slurmids))
-        command = ["ssh", remotehost, "mnq", "--job", idsstr ]
-        proc = subprocess.Popen( command, stdout=subprocess.PIPE )
-        output = proc.communicate()[0]
-
-        if len(output.splitlines()) <= 1:
-            return database.JOB_COMPLETED
-
-        mm = re.search( "RUNNING", output )
-        if mm is not None:
-            return database.JOB_RUNNING
-
-    return database.JOB_SUBMITTED
-
-#-------------------------------------------------------------------------------
 def sendJobCompletedEmail(jobid, username):
 
     usermail = users.getUserEmail( username )
@@ -241,47 +225,47 @@ def sendJobCompletedEmail(jobid, username):
     s.quit()
 
 #-------------------------------------------------------------------------------
+def updatePipelineState():
+    jobs = database.getActiveJobs()
+    if len(jobs) > 0:
+        logging.info( "Checking %d job/s", len(jobs) )
+
+    jobids = map( lambda j: j['jid'], jobs )
+    jobstats = callGetJobStatus( jobids )
+
+    for stat in jobstats:
+        jobid = stat['jobid']
+        newstate = {
+            'created': database.JOB_CREATED,
+            'submitted': database.JOB_SUBMITTED,
+            'running': database.JOB_RUNNING,
+            'completed': database.JOB_COMPLETED,
+            'canceled': database.JOB_CANCELED,
+            }.get( stat['state'], database.JOB_CREATED )
+
+        job = database.getJobInfo( jobid )
+        print jobid, newstate, job
+        if newstate == database.JOB_RUNNING and job['state'] != database.JOB_RUNNING:
+            logging.info( "Job %d start RUNNING", jobid )
+            database.setJobRunning( jobid )
+
+        if newstate == database.JOB_COMPLETED:
+            # TODO stageout
+
+            logging.info( "Job %d COMPLETED", jobid )
+            database.setJobCompleted( jobid )
+
+            #username = database.getUserName( job['uid'] )
+            #sendJobCompletedEmail( job['jid'], username )
+
+#-------------------------------------------------------------------------------
 def pipelineLoop():
     try:
         logging.info( "Start pipeline loop" )
         while (1 == 1):
-            time.sleep( 60 )
-            # check
-            zjobs = database.getJustCreatedJobs()
-            if len(zjobs) > 0:
-                zjids = map( lambda js: js['jid'], zjobs )
-                logging.warning( "%d zombie jobs: %s", len(zjobs), str(zjids) )
+            time.sleep( 300 )
 
-            jobs = database.getActiveJobs()
-            if len(jobs) > 0:
-                logging.info( "Checking %d job/s", len(jobs) )
-
-            for job in jobs:
-                jobid = job['jid']
-                newstate = checkSlurmJob( job['slurmids'] )
-                if newstate == database.JOB_RUNNING and job['state'] != database.JOB_RUNNING:
-                    logging.info( "Job %d start RUNNING", jobid )
-                    database.setJobRunning( jobid )
-
-                if newstate == database.JOB_COMPLETED:
-            #         userid = job['uid']
-            #         slurmid = job['slurmid']
-            #         # stageout
-            #         outs = ["jor_"+str(slurmid)+".out", "jor_"+str(slurmid)+".err"]
-            #         for fileoutname in outs:
-            #             fileout = database.createFile( userid, fileoutname )
-            #             database.addJobFile( jobid, fileout, database.FILEOUT )
-            #             localfile = database.getFileFullName( fileout )
-            #             (localdir, localbase) = os.path.split( localfile )
-            #             remotedir = os.path.join( remotehome, localdir )
-            #             remotefile = os.path.join( remotehome, localfile )
-            #             os.system('scp "%s:%s" "%s"' % (remotehost, remotefile, localfile) )
-
-                    logging.info( "Job %d COMPLETED", jobid )
-                    database.setJobCompleted( jobid )
-
-                    #username = database.getUserName( job['uid'] )
-                    #sendJobCompletedEmail( job['jid'], username )
+            updatePipelineState()
 
     except KeyboardInterrupt:
         logging.info( "Ending pipeline loop" )
