@@ -337,8 +337,8 @@ def insertNewJob( user, jobid ):
         now = datetime.datetime.now()
         jobname = 'job ' + str(newjuid)
         try:
-            c.execute( 'INSERT INTO job(jid,juid,uid,name,state,created,updated) VALUES (?,?,?,?,0,?,?)',
-                   (jobid,newjuid,uid[0],jobname,now,now) )
+            c.execute( 'INSERT INTO job(jid,juid,uid,name,state,created,updated) VALUES (?,?,?,?,?,?,?)',
+                   (jobid,newjuid,uid[0],jobname,JOB_SUBMITTED,now,now) )
             conn.commit()
         except sqlite3.IntegrityError:
             logging.error( "Jobid '%d' Already Exists", jobid )
