@@ -154,6 +154,7 @@ def callCancelJob( jobid ):
 
 #-------------------------------------------------------------------------------
 def startJob( user, var1 ):
+    logging.info( "RUNNIN JOB of '%s'", user )
     jobid = callRunJob( user, var1 )
     if jobid is not None:
         if database.insertNewJob( user, jobid ):
