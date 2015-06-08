@@ -15,6 +15,7 @@ JOB_SUBMITTED = 1 # Submitted
 JOB_RUNNING = 2   # Running
 JOB_COMPLETED = 3 # Completed
 JOB_CANCELED = 4 # Canceled
+JOB_FAILED = 5 # job failed
 
 # JOB FILE TYPE
 FILEIN = 0

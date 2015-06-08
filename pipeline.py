@@ -237,6 +237,7 @@ def updatePipelineState():
             'running': database.JOB_RUNNING,
             'completed': database.JOB_COMPLETED,
             'canceled': database.JOB_CANCELED,
+            'failed': database.JOB_FAILED,
             }.get( stat['state'], database.JOB_CREATED )
 
         job = database.getJobInfo( jobid )
