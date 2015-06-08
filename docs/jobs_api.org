@@ -15,7 +15,7 @@ The four calls we need from the web are:
 
 * get job status
 
-Get the jobs status (~RUNNING~, ~COMPLETED~....) from a list of jobs.
+Get the jobs status from a list of jobs.
 
 #+begin_src
 GET /jobs
@@ -27,12 +27,15 @@ params = {
 returns {
     'ok': True,
     'jobs': [
-        { 'jobid': 1, 'jobstatus': STATUS_1},
-        { 'jobid': 4, 'jobstatus': STATUS_4},
+        { 'jobid': 1, 'state': STATE_1},
+        { 'jobid': 4, 'state': STATE_4},
         ...
-        { 'jobid': n, 'jobstatus': STATUS_N},
+        { 'jobid': n, 'state': STATE_N},
 }
 #+end_src
+
+With state one of /created/, /submitted/, /running/, /completed/, /canceled/,
+/failed/
 
 * run job
 
@@ -55,7 +58,7 @@ get the job status of a current ~jobid~.
 #+begin_src
 GET /jobs/[jobid]
 
-returns {'ok': True, 'jobid': N, 'jobstatus': STATUS_N }
+returns {'ok': True, 'job': {'jobid': N, 'state': STATE_N } }
 #+end_src
 
 * cancel job
@@ -68,8 +71,8 @@ POST /jobs/[jobid]
 
 params = { 'cancel': True }
 
-returns {'ok': True, 'jobid': N, 'jobstatus': 'CANCELED' }
-returns {'ok': True, 'jobid': N, 'jobstatus': 'COMPLETED' }
+returns {'ok': True, 'job': {'jobid': N, 'state': 'canceled' } }
+returns {'ok': True, 'job': {'jobid': N, 'state': 'completed' } }
 #+end_src
 
 it can return canceled status or completed status if the job is already done. Or
