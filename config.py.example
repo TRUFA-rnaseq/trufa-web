@@ -48,8 +48,6 @@ REMOTEHOME = "testing"
 # distributed Filesystem linked with REMOTEHOME
 DATADIR = "/srv/share/testing"
 
-# path of the command tool used to submit jobs
-LAUNCHER_TOOL = "/opt/submit_library/pipe_launcher.py"
 # authority part of the job launcher service
 LAUNCHER_SERVICE = "localhost:6661"
 

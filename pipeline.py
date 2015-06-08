@@ -27,11 +27,7 @@ except ImportError:
 #-------------------------------------------------------------------------------
 remotehost = config.REMOTEHOST
 remotehome = config.REMOTEHOME
-pipe_launch = config.LAUNCHER_TOOL
 data_dir = config.DATADIR
-
-reSLURMLINE = re.compile(r"slurmids: (?P<slurmids>\d+(,\d+)*)")
-reSLURMID = re.compile(r"\,")
 
 authority = config.LAUNCHER_SERVICE
 
