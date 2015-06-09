@@ -266,18 +266,24 @@ def updatePipelineState():
 
 #-------------------------------------------------------------------------------
 def pipelineLoop():
-    try:
-        logging.info( "Start pipeline loop" )
-        while (1 == 1):
-            time.sleep( 300 )
-            logging.info( "Update pipeline" )
 
+    running = True
+    logging.info( "Start pipeline loop" )
+    while( running ):
+        try:
+
+            time.sleep( 100 )
+            logging.info( "Update pipeline" )
             updatePipelineState()
 
-    except KeyboardInterrupt:
-        logging.info( "Ending pipeline loop" )
+        except KeyboardInterrupt:
+            running = False
+            break
 
-    except:
-        logging.error( "unknown error on loop: " + str(sys.exc_info()) )
+        except:
+            logging.error( "unknown error on loop: " + str(sys.exc_info()) )
+
+    logging.info( "Ending pipeline loop" )
+
 
 #-------------------------------------------------------------------------------
