@@ -273,7 +273,7 @@ def pipelineLoop():
     while( running ):
         try:
 
-            time.sleep( 100 )
+            time.sleep( 300 )
             logging.info( "Update pipeline" )
             updatePipelineState()
 
