@@ -380,40 +380,34 @@ def addJobFile( jobid, fileid, jftype ):
     conn.close()
 
 #-------------------------------------------------------------------------------
-def setJobSubmitted( jobid ):
+def setJobState( jobid, newstate ):
     now = datetime.datetime.now()
     conn = sqlite3.connect( database )
     c = conn.cursor()
-    c.execute( 'UPDATE job SET state=1,updated=? WHERE jid=?', (now,jobid,) )
+    c.execute( 'UPDATE job SET state=?,updated=? WHERE jid=?',
+               (newstate,now,jobid,) )
     conn.commit()
     conn.close()
+
+#-------------------------------------------------------------------------------
+def setJobSubmitted( jobid ):
+    setJobState( jobid, JOB_SUBMITTED )
 
 #-------------------------------------------------------------------------------
 def setJobRunning( jobid ):
-    now = datetime.datetime.now()
-    conn = sqlite3.connect( database )
-    c = conn.cursor()
-    c.execute( 'UPDATE job SET state=2,updated=? WHERE jid=?', (now,jobid,) )
-    conn.commit()
-    conn.close()
+    setJobState( jobid, JOB_RUNNING )
 
 #-------------------------------------------------------------------------------
 def setJobCompleted( jobid ):
-    now = datetime.datetime.now()
-    conn = sqlite3.connect( database )
-    c = conn.cursor()
-    c.execute( 'UPDATE job SET state=3,updated=? WHERE jid=?', (now,jobid,) )
-    conn.commit()
-    conn.close()
+    setJobState( jobid, JOB_COMPLETED )
 
 #-------------------------------------------------------------------------------
 def setJobCanceled( jobid ):
-    now = datetime.datetime.now()
-    conn = sqlite3.connect( database )
-    c = conn.cursor()
-    c.execute( 'UPDATE job SET state=4,updated=? WHERE jid=?', (now,jobid,) )
-    conn.commit()
-    conn.close()
+    setJobState( jobid, JOB_CANCELED )
+
+#-------------------------------------------------------------------------------
+def setJobFailed( jobid ):
+    setJobState( jobid, JOB_FAILED )
 
 #-------------------------------------------------------------------------------
 def deleteJob( jobid ):
