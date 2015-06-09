@@ -202,15 +202,15 @@ def sendJobCompletedEmail(jobid, username):
         logging.warning( "User %d hasn't email", username )
         return
 
-    jdata = database.getJobInfo(jobid)
+    jobinfo = database.getJobInfo(jobid)
 
     body = ""
     with open( config.EMAIL_JOB_COMPLETE, 'r' ) as f:
         body = f.read()
 
-    msg = MIMEText( body.format(jdata['name'], jdata['juid']))
+    msg = MIMEText( body.format(jobinfo['name'], jobinfo['juid']))
 
-    msg['Subject'] = config.EMAIL_JOB_COMPLETE_SUBJECT.format(jdata['name'])
+    msg['Subject'] = config.EMAIL_JOB_COMPLETE_SUBJECT.format(jobinfo['name'])
     msg['From'] = config.EMAIL_SENDER
     msg['To'] = usermail
 
@@ -240,9 +240,9 @@ def updatePipelineState():
             'failed': database.JOB_FAILED,
             }.get( stat['state'], database.JOB_CREATED )
 
-        job = database.getJobInfo( jobid )
-        print jobid, newstate, job
-        if newstate == database.JOB_RUNNING and job['state'] != database.JOB_RUNNING:
+        jobinfo = database.getJobInfo( jobid )
+
+        if newstate == database.JOB_RUNNING and jobinfo['state'] != database.JOB_RUNNING:
             logging.info( "Job %d start RUNNING", jobid )
             database.setJobRunning( jobid )
 
@@ -252,8 +252,16 @@ def updatePipelineState():
             logging.info( "Job %d COMPLETED", jobid )
             database.setJobCompleted( jobid )
 
-            #username = database.getUserName( job['uid'] )
-            #sendJobCompletedEmail( job['jid'], username )
+            #username = database.getUserName( jobinfo['uid'] )
+            #sendJobCompletedEmail( jobinfo['jid'], username )
+
+        if newstate == database.JOB_CANCELED:
+            logging.info( "Job %d CANCELED", jobid )
+            database.setJobCompleted( jobid )
+
+        if newstate == database.JOB_FAILED:
+            logging.info( "Job %d FAILED", jobid )
+            database.setJobFailed( jobid )
 
 #-------------------------------------------------------------------------------
 def pipelineLoop():

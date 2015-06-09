@@ -364,7 +364,7 @@ def getUserJobs( user ):
         c.execute( 'SELECT jid,juid,name FROM job WHERE uid=?', (uid[0],) )
         dbjobs = c.fetchall()
         for j in dbjobs:
-            jobs.append( {'id': j[0],'juid': j[1], 'name': j[2]} )
+            jobs.append( {'jid': j[0],'juid': j[1], 'name': j[2]} )
 
     conn.close()
 
@@ -457,7 +457,7 @@ def getJobInfo( jobid ):
 
     conn.close()
 
-    return { 'jobid': jobid, 'juid': jdata[1], 'name': jdata[2],
+    return { 'jid': jobid, 'juid': jdata[1], 'name': jdata[2],
              'state': jdata[0], 'created': jdata[3],
              'updated': jdata[4], 'files': files }
 
