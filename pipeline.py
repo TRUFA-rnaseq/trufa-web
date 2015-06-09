@@ -227,41 +227,42 @@ def updatePipelineState():
         logging.info( "Checking %d job/s", len(jobs) )
 
     jobids = map( lambda j: j['jid'], jobs )
-    jobstats = callGetJobStatus( jobids )
+    if len(jobids) > 0:
+        jobstats = callGetJobStatus( jobids )
 
-    for stat in jobstats:
-        jobid = stat['jobid']
-        newstate = {
-            'created': database.JOB_CREATED,
-            'submitted': database.JOB_SUBMITTED,
-            'running': database.JOB_RUNNING,
-            'completed': database.JOB_COMPLETED,
-            'canceled': database.JOB_CANCELED,
-            'failed': database.JOB_FAILED,
-            }.get( stat['state'], database.JOB_CREATED )
+        for stat in jobstats:
+            jobid = stat['jobid']
+            newstate = {
+                'created': database.JOB_CREATED,
+                'submitted': database.JOB_SUBMITTED,
+                'running': database.JOB_RUNNING,
+                'completed': database.JOB_COMPLETED,
+                'canceled': database.JOB_CANCELED,
+                'failed': database.JOB_FAILED,
+                }.get( stat['state'], database.JOB_CREATED )
 
-        jobinfo = database.getJobInfo( jobid )
+            jobinfo = database.getJobInfo( jobid )
 
-        if newstate == database.JOB_RUNNING and jobinfo['state'] != database.JOB_RUNNING:
-            logging.info( "Job %d start RUNNING", jobid )
-            database.setJobRunning( jobid )
+            if newstate == database.JOB_RUNNING and jobinfo['state'] != database.JOB_RUNNING:
+                logging.info( "Job %d start RUNNING", jobid )
+                database.setJobRunning( jobid )
 
-        if newstate == database.JOB_COMPLETED:
-            # TODO stageout
+            if newstate == database.JOB_COMPLETED:
+                # TODO stageout
 
-            logging.info( "Job %d COMPLETED", jobid )
-            database.setJobCompleted( jobid )
+                logging.info( "Job %d COMPLETED", jobid )
+                database.setJobCompleted( jobid )
 
-            #username = database.getUserName( jobinfo['uid'] )
-            #sendJobCompletedEmail( jobinfo['jid'], username )
+                #username = database.getUserName( jobinfo['uid'] )
+                #sendJobCompletedEmail( jobinfo['jid'], username )
 
-        if newstate == database.JOB_CANCELED:
-            logging.info( "Job %d CANCELED", jobid )
-            database.setJobCompleted( jobid )
+            if newstate == database.JOB_CANCELED:
+                logging.info( "Job %d CANCELED", jobid )
+                database.setJobCompleted( jobid )
 
-        if newstate == database.JOB_FAILED:
-            logging.info( "Job %d FAILED", jobid )
-            database.setJobFailed( jobid )
+            if newstate == database.JOB_FAILED:
+                logging.info( "Job %d FAILED", jobid )
+                database.setJobFailed( jobid )
 
 #-------------------------------------------------------------------------------
 def pipelineLoop():
