@@ -2,13 +2,13 @@
 * Job Service REST/API
 
 The job service is in charge of launch an execute the TRUFA web jobs. The web
-comunicates with thi sservice using a http REST/API for a RPC like protocol
-using JSON to pass parameters and results. Its posible to implement this service
-to execute jobs on different platforms, systems, like clod, Grid, Slurm,...etc.
+communicates with this service using a http REST/API for a RPC like protocol
+using JSON to pass parameters and results. Its possible to implement this service
+to execute jobs on different platforms like cloud, Grid, Slurm,...etc.
 
 The params of the web service calls will be encoded on a JSON dictionary. And
 the return also will be encode on a JSON dictionary. All returns will had the
-~ok~ value with ~True~ or ~False~ to indicate if the call was rigth and in the
+~ok~ value with ~True~ or ~False~ to indicate if the call was right and in the
 case the ~ok==False~ an ~errormsg~ string with the error message.
 
 The four calls we need from the web are:
@@ -76,4 +76,4 @@ returns {'ok': True, 'job': {'jobid': N, 'state': 'completed' } }
 #+end_src
 
 it can return canceled status or completed status if the job is already done. Or
-~ok==False~ if there someting wrong.
+~ok==False~ if there something wrong.
