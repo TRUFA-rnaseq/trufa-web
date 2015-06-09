@@ -8,7 +8,7 @@ import subprocess
 import re
 import time
 import config
-import database
+import database as db
 import smtplib
 from email.mime.text import MIMEText
 import httplib
@@ -155,7 +155,7 @@ def startJob( user, var1 ):
     logging.info( "RUNNIN JOB of '%s'", user )
     jobid = callRunJob( user, var1 )
     if jobid is not None:
-        if database.insertNewJob( user, jobid ):
+        if db.insertNewJob( user, jobid ):
             return True
 
     raise RuntimeError( "Can't start new job for user " + user )
@@ -163,16 +163,17 @@ def startJob( user, var1 ):
 #-------------------------------------------------------------------------------
 def cancelJob( user, jobid ):
     logging.info( "CANCELING JOB %d", jobid )
-    jobinfo = database.getJobInfo( jobid )
+    jobinfo = db.getJobInfo( jobid )
     logging.debug( str(jobinfo) )
 
-    if jobinfo['state'] == database.JOB_COMPLETED or jobinfo['state'] == database.JOB_CANCELED:
+    state = jobinfo['state']
+    if state == db.JOB_COMPLETED or state == db.JOB_CANCELED:
         logging.warning( "job %d already canceled", jobid )
         return True
 
     ret = callCancelJob( jobid )
     if ret:
-        database.setJobCanceled( jobid )
+        db.setJobCanceled( jobid )
         return True
 
     # Removing job folders:
@@ -202,7 +203,7 @@ def sendJobCompletedEmail(jobid, username):
         logging.warning( "User %d hasn't email", username )
         return
 
-    jobinfo = database.getJobInfo(jobid)
+    jobinfo = db.getJobInfo(jobid)
 
     body = ""
     with open( config.EMAIL_JOB_COMPLETE, 'r' ) as f:
@@ -222,7 +223,7 @@ def sendJobCompletedEmail(jobid, username):
 
 #-------------------------------------------------------------------------------
 def updatePipelineState():
-    jobs = database.getActiveJobs()
+    jobs = db.getActiveJobs()
     if len(jobs) > 0:
         logging.info( "Checking %d job/s", len(jobs) )
 
@@ -233,36 +234,36 @@ def updatePipelineState():
         for stat in jobstats:
             jobid = stat['jobid']
             newstate = {
-                'created': database.JOB_CREATED,
-                'submitted': database.JOB_SUBMITTED,
-                'running': database.JOB_RUNNING,
-                'completed': database.JOB_COMPLETED,
-                'canceled': database.JOB_CANCELED,
-                'failed': database.JOB_FAILED,
-                }.get( stat['state'], database.JOB_CREATED )
+                'created': db.JOB_CREATED,
+                'submitted': db.JOB_SUBMITTED,
+                'running': db.JOB_RUNNING,
+                'completed': db.JOB_COMPLETED,
+                'canceled': db.JOB_CANCELED,
+                'failed': db.JOB_FAILED,
+                }.get( stat['state'], db.JOB_CREATED )
 
-            jobinfo = database.getJobInfo( jobid )
-
-            if newstate == database.JOB_RUNNING and jobinfo['state'] != database.JOB_RUNNING:
+            jobinfo = db.getJobInfo( jobid )
+            oldstate = jobinfo['state']
+            if newstate == db.JOB_RUNNING and oldstate != db.JOB_RUNNING:
                 logging.info( "Job %d start RUNNING", jobid )
-                database.setJobRunning( jobid )
+                db.setJobRunning( jobid )
 
-            if newstate == database.JOB_COMPLETED:
+            if newstate == db.JOB_COMPLETED:
                 # TODO stageout
 
                 logging.info( "Job %d COMPLETED", jobid )
-                database.setJobCompleted( jobid )
+                db.setJobCompleted( jobid )
 
-                #username = database.getUserName( jobinfo['uid'] )
+                #username = db.getUserName( jobinfo['uid'] )
                 #sendJobCompletedEmail( jobinfo['jid'], username )
 
-            if newstate == database.JOB_CANCELED:
+            if newstate == db.JOB_CANCELED:
                 logging.info( "Job %d CANCELED", jobid )
-                database.setJobCompleted( jobid )
+                db.setJobCompleted( jobid )
 
-            if newstate == database.JOB_FAILED:
+            if newstate == db.JOB_FAILED:
                 logging.info( "Job %d FAILED", jobid )
-                database.setJobFailed( jobid )
+                db.setJobFailed( jobid )
 
 #-------------------------------------------------------------------------------
 def pipelineLoop():
