@@ -1,10 +1,10 @@
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 import shutil
 import os
 import os.path
 import config
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 DATADIR = config.DATADIR
 
@@ -19,7 +19,7 @@ FT_SEQ_DB_NUC = 3
 FT_SEQ_DB_AA = 4
 # Assembled transcripts (.fas)
 FT_ASSEM = 5
-# Mapped transcripts (.bam )
+# Mapped transcripts (.bam)
 FT_MAP_ASSEM = 6
 # Protein hmm for hmmer (.hmm)
 FT_HMM = 7
@@ -35,14 +35,14 @@ fileExtTable = {
 }
 
 fileOptionTable = {
-    'undef' : FT_UNKNOWN,
-    'fast' : FT_FAST,
-    'tgz_fast' : FT_TGZ_FAST,
-    'seq_db_nuc' : FT_SEQ_DB_NUC,
-    'seq_db_aa' : FT_SEQ_DB_AA,
-    'assem' : FT_ASSEM,
-    'map_assem' : FT_MAP_ASSEM,
-    'hmm_profile' : FT_HMM
+    'undef': FT_UNKNOWN,
+    'fast': FT_FAST,
+    'tgz_fast': FT_TGZ_FAST,
+    'seq_db_nuc': FT_SEQ_DB_NUC,
+    'seq_db_aa': FT_SEQ_DB_AA,
+    'assem': FT_ASSEM,
+    'map_assem': FT_MAP_ASSEM,
+    'hmm_profile': FT_HMM
 }
 
 #         typo            extension
@@ -55,65 +55,72 @@ fileOptionTable = {
 # 6       mapped assbl.   .bam or .sam
 # 7       hmm profile     .hmm
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 IO_FOLDER = "data"
 PARTIAL_SUFFIX = ".part"
 
-#-------------------------------------------------------------------------------
-def getUserFilename( username, filename ):
-    return os.path.join( DATADIR, username, IO_FOLDER, filename )
 
-#-------------------------------------------------------------------------------
-def saveFile( filename, filedata ):
-    dir = os.path.dirname( filename )
-    if not os.path.isdir( dir ):
-        os.makedirs( dir )
+# ------------------------------------------------------------------------------
+def getUserFilename(username, filename):
+    return os.path.join(DATADIR, username, IO_FOLDER, filename)
 
-    with open( filename, 'w' ) as f:
-        shutil.copyfileobj( filedata, f )
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+def saveFile(filename, filedata):
+    dir = os.path.dirname(filename)
+    if not os.path.isdir(dir):
+        os.makedirs(dir)
+
+    with open(filename, 'w') as f:
+        shutil.copyfileobj(filedata, f)
+
+
+# ------------------------------------------------------------------------------
 def linkDemoFile(username, demo_f):
     # Now only work for fastq files (f_type is set to 1)
 
-    dir = os.path.join( config.DATADIR, username, IO_FOLDER )
-    if not os.path.isdir( dir ):
-        os.makedirs( dir )
+    dir = os.path.join(config.DATADIR, username, IO_FOLDER)
+    if not os.path.isdir(dir):
+        os.makedirs(dir)
 
-    lpath = os.path.join( dir , demo_f )
-    fpath = os.path.join( config.DEMO_DIR, demo_f )
+    lpath = os.path.join(dir, demo_f)
+    fpath = os.path.join(config.DEMO_DIR, demo_f)
 
     if not os.path.islink(lpath):
-        os.symlink( fpath, lpath )
+        os.symlink(fpath, lpath)
 
-#-------------------------------------------------------------------------------
-def clearFilePart( filename ):
-    if os.path.isfile( filename + PARTIAL_SUFFIX ):
-        os.remove( filename + PARTIAL_SUFFIX )
 
-#-------------------------------------------------------------------------------
-def saveFilePart( filename, filedata ):
-    dir = os.path.dirname( filename )
-    if not os.path.isdir( dir ):
-        os.makedirs( dir )
+# ------------------------------------------------------------------------------
+def clearFilePart(filename):
+    if os.path.isfile(filename + PARTIAL_SUFFIX):
+        os.remove(filename + PARTIAL_SUFFIX)
 
-    with open( filename + PARTIAL_SUFFIX, 'a' ) as f:
-        shutil.copyfileobj( filedata, f )
 
-#-------------------------------------------------------------------------------
-def endFilePart( filename ):
-    if os.path.isfile( filename + PARTIAL_SUFFIX ):
-        shutil.move( filename + PARTIAL_SUFFIX, filename )
+# ------------------------------------------------------------------------------
+def saveFilePart(filename, filedata):
+    dir = os.path.dirname(filename)
+    if not os.path.isdir(dir):
+        os.makedirs(dir)
 
-#-------------------------------------------------------------------------------
-def getFileType( filename, option ):
+    with open(filename + PARTIAL_SUFFIX, 'a') as f:
+        shutil.copyfileobj(filedata, f)
+
+
+# ------------------------------------------------------------------------------
+def endFilePart(filename):
+    if os.path.isfile(filename + PARTIAL_SUFFIX):
+        shutil.move(filename + PARTIAL_SUFFIX, filename)
+
+
+# ------------------------------------------------------------------------------
+def getFileType(filename, option):
     if option == 'auto':
         lname = filename.lower()
-        for k,v in fileExtTable.items():
-            if lname.endswith( k ):
+        for k, v in fileExtTable.items():
+            if lname.endswith(k):
                 return v
         return FT_UNKNOWN
 
-    return fileOptionTable.get( option.lower(), FT_UNKNOWN )
+    return fileOptionTable.get(option.lower(), FT_UNKNOWN)
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
