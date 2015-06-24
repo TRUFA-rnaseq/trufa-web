@@ -114,12 +114,18 @@ class Howto:
 #-------------------------------------------------------------------------------
 class RunJob:
     def GET( self ):
-        return get_render().run_job()
+        if logged():
+            return get_render().run_job()
+        else:
+            raise web.seeother('/')
 
 #-------------------------------------------------------------------------------
 class Faq:
     def GET ( self ):
-        return get_render().faq()
+        if logged():
+            return get_render().faq()
+        else:
+            raise web.seeother('/')
 
 #-------------------------------------------------------------------------------
 class About:
