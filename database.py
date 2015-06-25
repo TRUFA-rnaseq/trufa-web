@@ -47,6 +47,10 @@ def mkEmptyDatabase(dbname):
               "FOREIGN KEY(uid) REFERENCES user(uid))")
     conn.commit()
 
+    c.execute("CREATE TABLE jobid ( "
+              "uid INTEGER PRIMARY KEY, nextid INTEGER NOT NULL DEFAULT 1, "
+              "FOREIGN KEY(uid) REFERENCES user(uid))")
+
     c.execute("CREATE TABLE jobfile ( "
               "jid INTEGER, fid INTEGER, jobfiletype INTEGER, "
               "PRIMARY KEY(jid, fid))")
@@ -74,11 +78,43 @@ def dropJobTables():
               "FOREIGN KEY(uid) REFERENCES user(uid))")
     conn.commit()
 
+    c.execute("CREATE TABLE jobid ( "
+              "uid INTEGER PRIMARY KEY, nextid INTEGER NOT NULL DEFAULT 1, "
+              "FOREIGN KEY(uid) REFERENCES user(uid))")
+
     c.execute("CREATE TABLE jobfile ( "
               "jid INTEGER, fid INTEGER, jobfiletype INTEGER, "
               "PRIMARY KEY(jid, fid))")
     conn.commit()
 
+    conn.close()
+
+    setupJobids()
+
+
+# ------------------------------------------------------------------------------
+def setupJobids():
+    conn = sqlite3.connect(database)
+
+    cur = conn.cursor()
+    cur.execute('SELECT uid FROM user')
+
+    jobids = []
+    dbusers = cur.fetchall()
+    for user in dbusers:
+        uid = user[0]
+        newjuid = 1
+        cur.execute('SELECT max(juid) FROM job WHERE uid=?', (uid,))
+        lastjuid = cur.fetchone()[0]
+        if lastjuid is not None:
+            newjuid = lastjuid + 1
+
+        jobids.append((uid, newjuid))
+
+    cur.executemany('INSERT OR REPLACE INTO jobid(uid,nextid) '
+                  'VALUES(?,?)', jobids)
+
+    conn.commit()
     conn.close()
 
 
@@ -150,6 +186,20 @@ def fixdbDeleteSlurm():
 
 
 # ------------------------------------------------------------------------------
+def fixdbJobids():
+    conn = sqlite3.connect(database)
+
+    conn.execute("CREATE TABLE jobid ( "
+                 "uid INTEGER PRIMARY KEY, nextid INTEGER NOT NULL DEFAULT 1, "
+                 "FOREIGN KEY(uid) REFERENCES user(uid))")
+
+    conn.commit()
+    conn.close()
+
+    setupJobids()
+
+
+# ------------------------------------------------------------------------------
 def checkIfUserExists(name):
     conn = sqlite3.connect(database)
     try:
@@ -178,6 +228,15 @@ def insertNewUser(name):
             return
 
         logging.warning("Inserting new user '%s'", name)
+
+        conn = sqlite3.connect(database)
+        c = conn.cursor()
+
+        c.execute('INSERT INTO jobid(uid) '
+                  'SELECT uid FROM user WHERE name=?', (name,))
+
+        conn.commit()
+        conn.close()
 
         insertDemoData(name)
 
@@ -215,6 +274,8 @@ def deleteUser(name):
             fid = filerow[0]
             logging.info("Deleting user file %d", fid)
             c.execute('DELETE FROM file WHERE fid=?', (fid,))
+        conn.commit()
+        c.execute('DELETE FROM jobid WHERE uid=?', (uid,))
         conn.commit()
         c.execute('DELETE FROM user WHERE uid=?', (uid,))
         conn.commit()
@@ -379,11 +440,8 @@ def insertNewJob(user, jobid):
     c.execute('SELECT uid FROM user WHERE name=?', (user,))
     uid = c.fetchone()
     if uid is not None:
-        newjuid = 1
-        c.execute('SELECT max(juid) FROM job WHERE uid=?', (uid[0],))
-        lastjuid = c.fetchone()[0]
-        if lastjuid is not None:
-            newjuid = lastjuid + 1
+        c.execute('SELECT nextid FROM jobid WHERE uid=?', (uid[0],))
+        newjuid = c.fetchone()[0]
 
         now = datetime.datetime.now()
         jobname = 'job ' + str(newjuid)
@@ -398,6 +456,10 @@ def insertNewJob(user, jobid):
             conn.close()
             return False
 
+        c.execute('UPDATE jobid SET nextid=? WHERE uid=?',
+                  (newjuid+1, uid[0]))
+
+        conn.commit()
         conn.close()
     else:
         conn.close()
