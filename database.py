@@ -118,8 +118,8 @@ def fixdbJobName():
     # add new column if needed
     try:
         c.execute('SELECT %s FROM job' % (column_name,))
-    except sqlite3.OperationalError, e:
-        logging.info("Adding new Column %", column_name)
+    except sqlite3.OperationalError:
+        logging.info("Adding new Column %s", (column_name,))
         c.execute('ALTER TABLE job '
                   'ADD COLUMN %s TEXT NOT NULL DEFAULT "unnamed"' %
                   (column_name,))
