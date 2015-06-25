@@ -67,23 +67,23 @@ def getUserFilename(username, filename):
 
 # ------------------------------------------------------------------------------
 def saveFile(filename, filedata):
-    dir = os.path.dirname(filename)
-    if not os.path.isdir(dir):
-        os.makedirs(dir)
+    filedir = os.path.dirname(filename)
+    if not os.path.isdir(filedir):
+        os.makedirs(filedir)
 
-    with open(filename, 'w') as f:
-        shutil.copyfileobj(filedata, f)
+    with open(filename, 'w') as fdst:
+        shutil.copyfileobj(filedata, fdst)
 
 
 # ------------------------------------------------------------------------------
 def linkDemoFile(username, demo_f):
     # Now only work for fastq files (f_type is set to 1)
 
-    dir = os.path.join(config.DATADIR, username, IO_FOLDER)
-    if not os.path.isdir(dir):
-        os.makedirs(dir)
+    filedir = os.path.join(config.DATADIR, username, IO_FOLDER)
+    if not os.path.isdir(filedir):
+        os.makedirs(filedir)
 
-    lpath = os.path.join(dir, demo_f)
+    lpath = os.path.join(filedir, demo_f)
     fpath = os.path.join(config.DEMO_DIR, demo_f)
 
     if not os.path.islink(lpath):
@@ -98,12 +98,12 @@ def clearFilePart(filename):
 
 # ------------------------------------------------------------------------------
 def saveFilePart(filename, filedata):
-    dir = os.path.dirname(filename)
-    if not os.path.isdir(dir):
-        os.makedirs(dir)
+    filedir = os.path.dirname(filename)
+    if not os.path.isdir(filedir):
+        os.makedirs(filedir)
 
-    with open(filename + PARTIAL_SUFFIX, 'a') as f:
-        shutil.copyfileobj(filedata, f)
+    with open(filename + PARTIAL_SUFFIX, 'a') as fdst:
+        shutil.copyfileobj(filedata, fdst)
 
 
 # ------------------------------------------------------------------------------
@@ -116,9 +116,9 @@ def endFilePart(filename):
 def getFileType(filename, option):
     if option == 'auto':
         lname = filename.lower()
-        for k, v in fileExtTable.items():
-            if lname.endswith(k):
-                return v
+        for key, val in fileExtTable.items():
+            if lname.endswith(key):
+                return val
         return FT_UNKNOWN
 
     return fileOptionTable.get(option.lower(), FT_UNKNOWN)
