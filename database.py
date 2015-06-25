@@ -147,34 +147,6 @@ def fixdbUserTable():
 
 
 # ------------------------------------------------------------------------------
-def fixdbJobName():
-    column_name = 'name'
-    conn = sqlite3.connect(database)
-    c = conn.cursor()
-    # add new column if needed
-    try:
-        c.execute('SELECT %s FROM job' % (column_name,))
-    except sqlite3.OperationalError:
-        logging.info("Adding new Column %s", (column_name,))
-        c.execute('ALTER TABLE job '
-                  'ADD COLUMN %s TEXT NOT NULL DEFAULT "unnamed"' %
-                  (column_name,))
-        conn.commit()
-
-    # fix all jobs
-    c.execute('SELECT jid,juid FROM job')
-    jdata = c.fetchall()
-    for j in jdata:
-        jobname = "job " + str(j[1])
-        logging.info("Set job name %d = '%s'", j[0], jobname)
-        c.execute('UPDATE job SET %s=? WHERE jid=?' % (column_name,),
-                  (jobname, j[0],))
-    conn.commit()
-
-    conn.close()
-
-
-# ------------------------------------------------------------------------------
 def fixdbDeleteSlurm():
     conn = sqlite3.connect(database)
     c = conn.cursor()
