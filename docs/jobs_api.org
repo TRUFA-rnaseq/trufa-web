@@ -42,12 +42,17 @@ With state one of /created/, /submitted/, /running/, /completed/, /canceled/,
 Run a job. We design it to admit more than one workflow/program, but for our
 case that parameter will be ignored or set always to ~trufa~.
 
+If the user doesn't exist it should return ~ok~ equal ~False~ and the ~errormsg~
+string with the error message.
+
 #+begin_src
 PUT /jobs
 
 params = { 'user': username, 'program': workflowname, 'params': {...} }
 
 returns {'ok': True, 'jobid': N }
+
+returns {'ok': False, 'errormsg': 'invalid username' }
 #+end_src
 
 
