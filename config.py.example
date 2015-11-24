@@ -1,7 +1,7 @@
 ######################################################################
 PROJECT_NAME = "trufa"
-VERSION = "0.13.3"
-RELEASE_DATE = "2015/03/04"
+VERSION = "0.14.0"
+RELEASE_DATE = "2015/11/24"
 
 ######################################################################
 ### Web Configurations ###
@@ -29,15 +29,12 @@ EMAIL_SMTP = "smtp.example.com"
 DB_RESET = True
 # path to the sqlite3 database
 DB_DATABASE = 'database.db'
-# path to the htpasswd file with web passwords
-DB_PASSFILE = 'htpasswd.db'
 
-# initial user to put on the database, valid only whern DB_RESET==True
-DB_TEST_USER = "admin"
-# initial user password, valid only whern DB_RESET==True
-DB_TEST_PASS = "admin"
-# initial user email, valid only whern DB_RESET==True
-DB_TEST_EMAIL = "j.smith@example.com"
+######################################################################
+### Users Module configuration ###
+
+# path of the python library used to authentificate users
+USERS_LIB = "/opt/users_library/lib"
 
 ######################################################################
 ### Job/runner configuration ###
@@ -51,10 +48,8 @@ REMOTEHOME = "testing"
 # distributed Filesystem linked with REMOTEHOME
 DATADIR = "/srv/share/testing"
 
-# path of the command tool used to submit jobs
-LAUNCHER_TOOL = "/opt/submit_library/pipe_launcher.py"
-# path of the python library used to submit jobs
-LAUNCHER_LIB = "/opt/submit_library/lib"
+# authority part of the job launcher service
+LAUNCHER_SERVICE = "localhost:6661"
 
 # path to the demo data
 DEMO_DIR = "/srv/share/testing/demo_data/"

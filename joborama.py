@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 import logging
 import logging.handlers
 import web
@@ -13,20 +13,29 @@ import data
 import pipeline
 import config
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+sys.path.append(config.USERS_LIB)
+try:
+    import users
+except ImportError:
+    print "Error loading Users library"
+    print "Check USERS_LIB at config file"
+    exit(-1)
+
+# ------------------------------------------------------------------------------
 CherryPyWSGIServer.ssl_certificate = config.SERVER_CRT
 CherryPyWSGIServer.ssl_private_key = config.SERVER_KEY
 
 web.config.debug = config.WEB_DEBUG
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 urls = (
     '/favicon.ico', 'Favicon',
     '/robots.txt', 'Robots',
     '/', 'Home',
-    '/howto','Howto',
-    '/run_job',"RunJob",
-    '/faq','Faq',
+    '/howto', 'Howto',
+    '/run_job', "RunJob",
+    '/faq', 'Faq',
     '/about', 'About',
     '/login', 'Login',
     '/setup', 'Setup',
@@ -53,101 +62,126 @@ urls = (
     '/web/(.*)', 'WebRedirect',
 )
 
-#-------------------------------------------------------------------------------
-app = web.application( urls, globals() )
-store = web.session.DiskStore( 'sessions' )
-session = web.session.Session( app, store, initializer={'login': 0, 'user': None} )
+# ------------------------------------------------------------------------------
+app = web.application(urls, globals())
+store = web.session.DiskStore('sessions')
+session = web.session.Session(app, store,
+                              initializer={'login': 0, 'user': None})
 
-#-------------------------------------------------------------------------------
-globals = {'version': config.VERSION, 'release_date' : config.RELEASE_DATE }
+# ------------------------------------------------------------------------------
+globals = {'version': config.VERSION, 'release_date': config.RELEASE_DATE}
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 def logged():
     return (session.login == 1)
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 def get_render():
     if logged():
-        return web.template.render( 'templates/logged', base="layout", globals=globals )
+        return web.template.render('templates/logged', base="layout",
+                                   globals=globals)
     else:
-        return web.template.render( 'templates/anom', base="layout", globals=globals )
+        return web.template.render('templates/anom', base="layout",
+                                   globals=globals)
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 def clearSession():
     session.login = 0
     session.user = None
 
-#-------------------------------------------------------------------------------
-class WebRedirect():
-    def GET( self, name ):
-        raise web.seeother( '/' + name )
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+class WebRedirect():
+    def GET(self, name):
+        raise web.seeother('/' + name)
+
+
+# ------------------------------------------------------------------------------
 class Favicon:
-    def GET( self ):
+    def GET(self):
         raise web.seeother('/static/favicon.ico')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class Robots:
-    def GET( self ):
+    def GET(self):
         raise web.seeother('/static/robots.txt')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class Home:
-    def GET( self ):
+    def GET(self):
         return get_render().main()
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class Howto:
-    def GET( self ):
+    def GET(self):
         return get_render().howto()
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class RunJob:
-    def GET( self ):
-        return get_render().run_job()
+    def GET(self):
+        if logged():
+            return get_render().run_job()
+        else:
+            raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class Faq:
-    def GET ( self ):
-        return get_render().faq()
+    def GET(self):
+        if logged():
+            return get_render().faq()
+        else:
+            raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class About:
-    def GET( self ):
+    def GET(self):
         return get_render().about()
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class Manager:
-    def GET( self ):
+    def GET(self):
         if logged():
             return get_render().manager()
         else:
             raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class Setup:
-    def GET( self ):
+    def GET(self):
         if logged():
             return get_render().setup()
         else:
             raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class Login:
-    def GET( self ):
+    def GET(self):
         raise web.seeother('/')
 
     def POST(self):
         try:
             name = web.input().user
             passwd = web.input().passwd
-            if database.checkUser( name, passwd ):
+            if users.checkUser(name, passwd):
                 session.login = 1
                 session.user = name
+                database.insertNewUser(name)
             else:
                 clearSession()
         except:
+            logging.error(str(sys.exc_info()))
             clearSession()
 
         if logged():
@@ -155,22 +189,25 @@ class Login:
         else:
             raise web.seeother('/login_error')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class LoginError:
-    def GET( self ):
+    def GET(self):
         return get_render().login_error()
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class Logout:
-    def GET( self ):
+    def GET(self):
         session.login = 0
         session.kill()
         raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class Register:
-    ##### UNDER DVPT #####
-    def GET( self):
+    # #### UNDER DVPT #####
+    def GET(self):
         return get_render().register()
 
     def PUT(self):
@@ -178,197 +215,224 @@ class Register:
         try:
             name = web.input().user_name
             passwd = web.input().pwd
-            if database.checkIfUserAvailable( name ):
-                logging.warning( "User available" )
+            if users.checkIfUserAvailable(name):
+                logging.warning("User available")
             else:
-                logging.warning( "User not available" )
+                logging.warning("User not available")
 
         except:
+            logging.error(str(sys.exc_info()))
             clearSession()
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class AjaxMe:
-    def GET( self ):
+    def GET(self):
         if logged():
-            return json.dumps( {'username': session.user} )
+            return json.dumps({'username': session.user})
         else:
             raise web.seeother('/')
 
-    def PUT( self ):
+    def PUT(self):
         if logged():
             try:
+                if not users.allowPasswordChange(session.user):
+                    return json.dumps(
+                        {'ok': False,
+                         'msg': "Module doesn't allow password change."})
+
                 passwd = web.input().oldpass
-                if not database.checkUser( session.user, passwd ):
-                    return json.dumps( {'ok':False, 'msg': "invalid password" } )
+                if not users.checkUser(session.user, passwd):
+                    return json.dumps({'ok': False, 'msg': "invalid password"})
 
                 newpass = web.input().newpass
                 repeatpass = web.input().repeatpass
 
                 if newpass != repeatpass:
-                    return json.dumps( {'ok':False, 'msg': "password check invalid" } )
+                    return json.dumps({'ok': False,
+                                       'msg': "password check invalid"})
 
-                if database.changeUserPassword( session.user, newpass ):
-                    return json.dumps( {'ok':True } )
+                if users.changeUserPassword(session.user, passwd, newpass):
+                    return json.dumps({'ok': True})
                 else:
-                    return json.dumps( {'ok':False, 'msg': "password change error" } )
+                    return json.dumps({'ok': False,
+                                       'msg': "password change error"})
 
             except:
-                logging.error( str(sys.exc_info()) )
-                return json.dumps( {'ok':False, 'msg':"can't update user"} )
+                logging.error(str(sys.exc_info()))
+                return json.dumps({'ok': False, 'msg': "can't update user"})
 
-            return json.dumps( {'ok':False, 'msg':"unknown error"} )
+            return json.dumps({'ok': False, 'msg': "unknown error"})
         else:
             raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class AjaxFiles:
-    def GET( self ):
+    def GET(self):
         if logged():
             web.header('Content-Type', 'application/json')
             x = web.input()
             try:
                 files = []
-                if x.has_key( 'filetype' ):
+                if 'filetype' in x:
                     filetype = x['filetype']
-                    files = database.getUserFilesWithType( session.user, int(filetype) )
+                    files = database.getUserFilesWithType(session.user,
+                                                          int(filetype))
                 else:
-                    files = database.getUserFiles( session.user )
+                    files = database.getUserFiles(session.user)
 
-                return json.dumps( {'files': files} )
+                return json.dumps({'files': files})
             except:
-                logging.error( str(sys.exc_info()) )
-                web.debug( "can't get filelist" )
+                logging.error(str(sys.exc_info()))
+                web.debug("can't get filelist")
 
         else:
             raise web.seeother('/')
 
-    def PUT( self ):
+    def PUT(self):
         if logged():
             try:
                 x = web.input(myfile={})
-                filename = data.getUserFilename( session.user, x['myfile'].filename )
-                filetype = data.getFileType( x['myfile'].filename, x['myfiletype'] )
-                data.saveFile( filename, x['myfile'].file )
-                database.insertFileWithType( session.user, x['myfile'].filename, filetype )
+                filename = data.getUserFilename(session.user,
+                                                x['myfile'].filename)
+                filetype = data.getFileType(x['myfile'].filename,
+                                            x['myfiletype'])
+                data.saveFile(filename, x['myfile'].file)
+                database.insertFileWithType(session.user, x['myfile'].filename,
+                                            filetype)
             except:
-                logging.error( str(sys.exc_info()) )
-                web.debug( "can't save file" )
+                logging.error(str(sys.exc_info()))
+                web.debug("can't save file")
 
             return "OK"
 
         else:
             raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class AjaxFileParts:
-    def PUT( self ):
+    def PUT(self):
         if logged():
             try:
                 x = web.input(myfile={})
                 if x['status'] == "start":
-                    filename = data.getUserFilename( session.user, x['myfilename'] )
-                    data.clearFilePart( filename )
+                    filename = data.getUserFilename(session.user,
+                                                    x['myfilename'])
+                    data.clearFilePart(filename)
                 elif x['status'] == "end":
-                    filename = data.getUserFilename( session.user, x['myfilename'] )
-                    filetype = data.getFileType( x['myfilename'], x['myfiletype'] )
-                    data.endFilePart( filename )
-                    database.insertFileWithType( session.user, x['myfilename'], filetype )
+                    filename = data.getUserFilename(session.user,
+                                                    x['myfilename'])
+                    filetype = data.getFileType(x['myfilename'],
+                                                x['myfiletype'])
+                    data.endFilePart(filename)
+                    database.insertFileWithType(session.user,
+                                                x['myfilename'], filetype)
                 elif x['status'] == "part":
-                    filename = data.getUserFilename( session.user, x['myfilename'] )
-                    data.saveFilePart( filename, x['myfile'].file )
+                    filename = data.getUserFilename(session.user,
+                                                    x['myfilename'])
+                    data.saveFilePart(filename, x['myfile'].file)
 
             except:
-                logging.error( str(sys.exc_info()) )
-                web.debug( "can't save file" )
+                logging.error(str(sys.exc_info()))
+                web.debug("can't save file")
 
             return "OK"
 
         else:
             raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class AjaxJobs:
-    def GET( self ):
+    def GET(self):
         if logged():
             web.header('Content-Type', 'application/json')
-            jobs = database.getUserJobs( session.user )
-            return json.dumps( {'jobs': jobs} )
+            jobs = database.getUserJobs(session.user)
+            return json.dumps({'jobs': jobs})
         else:
             raise web.seeother('/')
 
-    def POST( self ):
+    def POST(self):
         if logged():
             x = web.input()
-            logging.info( str(x) )
+            logging.info(str(x))
             try:
-                pipeline.startJob( session.user, x )
+                pipeline.startJob(session.user, x)
 
             except:
-                logging.error( str(sys.exc_info()) )
-                web.debug( "can't start new job" )
-                return json.dumps( {'ok':False, 'msg':"can't start new job"} )
+                logging.error(str(sys.exc_info()))
+                web.debug("can't start new job")
+                return json.dumps({'ok': False, 'msg': "can't start new job"})
 
-            return json.dumps( {'ok':True} )
+            return json.dumps({'ok': True})
         else:
             raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class AjaxJob:
-    def DELETE( self, jobid ):
+    def DELETE(self, jobid):
         try:
-            if pipeline.cancelJob( session.user, jobid ):
-                return json.dumps( {'ok':True} )
+            if pipeline.cancelJob(session.user, jobid):
+                return json.dumps({'ok': True})
         except:
-            logging.error( str(sys.exc_info()) )
+            logging.error(str(sys.exc_info()))
 
-        web.debug( "can't delete job " + str(jobid) )
-        return json.dumps( {'ok':False, 'msg':"can't delete job"} )
+        web.debug("can't delete job " + str(jobid))
+        return json.dumps({'ok': False, 'msg': "can't delete job"})
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class AjaxJobName:
-    def GET( self ):
+    def GET(self):
         raise web.seeother('/')
 
-    def PUT( self ):
+    def PUT(self):
         if logged():
             x = web.input()
             try:
-                database.changeJobName( x['jobid'], x['newname'] )
+                database.changeJobName(x['jobid'], x['newname'])
             except:
-                logging.error( str(sys.exc_info()) )
-                web.debug( "can't change job name" )
-                return json.dumps( {'ok':False, 'msg':"can't change job name"} )
+                logging.error(str(sys.exc_info()))
+                web.debug("can't change job name")
+                return json.dumps({'ok': False,
+                                   'msg': "can't change job name"})
 
-            return json.dumps( {'ok':True} )
+            return json.dumps({'ok': True})
         else:
             raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class File:
-    def GET( self, fileid ):
+    def GET(self, fileid):
         if logged():
-            if database.isFileAllowedFromUser( fileid, session.user ):
-                filename = database.getFileFullName( fileid )
-                with open( filename, "r" ) as f:
+            if database.isFileAllowedFromUser(fileid, session.user):
+                filename = database.getFileFullName(fileid)
+                with open(filename, "r") as f:
                     return f.read()
             else:
                 return get_render().notallowed()
         else:
             raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 class Job:
-    def GET( self, jobid ):
+    def GET(self, jobid):
         if logged():
-            if database.isJobFromUser( jobid, session.user ):
-                jobinfo = database.getJobInfo( jobid )
-                return get_render().job( jobinfo )
+            if database.isJobFromUser(jobid, session.user):
+                jobinfo = database.getJobInfo(jobid)
+                return get_render().job(jobinfo)
             else:
                 return get_render().notallowed()
         else:
             raise web.seeother('/')
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 def configureLogging():
     # create logger
     logger = logging.getLogger()
@@ -378,32 +442,34 @@ def configureLogging():
     if config.USELOGFILE:
         # create file handler
         ch = logging.handlers.RotatingFileHandler(
-            config.LOGFILE, mode='a', maxBytes=config.LOGFILEBYTES, backupCount=5 )
+            config.LOGFILE, mode='a',
+            maxBytes=config.LOGFILEBYTES, backupCount=5)
     else:
         # create console handler and set level to debug
         ch = logging.StreamHandler()
 
-    ch.setLevel( logging.DEBUG )
+    ch.setLevel(logging.DEBUG)
 
     # create formatter
     formatter = logging.Formatter(
         fmt='%(asctime)s -%(levelname)s- %(message)s',
-        datefmt='%Y%m%d %H:%M:%S' )
+        datefmt='%Y%m%d %H:%M:%S')
 
     # add formatter to ch
-    ch.setFormatter( formatter )
+    ch.setFormatter(formatter)
 
     # add ch to logger
-    logger.addHandler( ch )
+    logger.addHandler(ch)
 
-    logging.captureWarnings( True )
+    logging.captureWarnings(True)
 
     if config.USEWLOGFILE:
-         fout = open( config.WLOGFILE, 'a' )
-         sys.stdout = fout
-         sys.stderr = fout
+        fout = open(config.WLOGFILE, 'a')
+        sys.stdout = fout
+        sys.stderr = fout
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 if __name__ == "__main__":
     configureLogging()
 
@@ -412,4 +478,5 @@ if __name__ == "__main__":
     app.run()
     p.terminate()
 
-#-------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------

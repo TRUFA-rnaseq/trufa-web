@@ -1,0 +1,84 @@
+#+STARTUP: showall
+* Job Service REST/API
+
+The job service is in charge of launch an execute the TRUFA web jobs. The web
+communicates with this service using a http REST/API for a RPC like protocol
+using JSON to pass parameters and results. Its possible to implement this service
+to execute jobs on different platforms like cloud, Grid, Slurm,...etc.
+
+The params of the web service calls will be encoded on a JSON dictionary. And
+the return also will be encode on a JSON dictionary. All returns will had the
+~ok~ value with ~True~ or ~False~ to indicate if the call was right and in the
+case the ~ok==False~ an ~errormsg~ string with the error message.
+
+The four calls we need from the web are:
+
+* get job status
+
+Get the jobs status from a list of jobs.
+
+#+begin_src
+GET /jobs
+
+params = {
+    'joblist': [1,4....n]
+}
+
+returns {
+    'ok': True,
+    'jobs': [
+        { 'jobid': 1, 'state': STATE_1},
+        { 'jobid': 4, 'state': STATE_4},
+        ...
+        { 'jobid': n, 'state': STATE_N},
+}
+#+end_src
+
+With state one of /created/, /submitted/, /running/, /completed/, /canceled/,
+/failed/
+
+* run job
+
+Run a job. We design it to admit more than one workflow/program, but for our
+case that parameter will be ignored or set always to ~trufa~.
+
+If the user doesn't exist it should return ~ok~ equal ~False~ and the ~errormsg~
+string with the error message.
+
+#+begin_src
+PUT /jobs
+
+params = { 'user': username, 'program': workflowname, 'params': {...} }
+
+returns {'ok': True, 'jobid': N }
+
+returns {'ok': False, 'errormsg': 'invalid username' }
+#+end_src
+
+
+* get job status
+
+get the job status of a current ~jobid~.
+
+#+begin_src
+GET /jobs/[jobid]
+
+returns {'ok': True, 'job': {'jobid': N, 'state': STATE_N } }
+#+end_src
+
+* cancel job
+
+Cancel a job. You should notice I don't use ~DELETE /jobs/[jobid]~. Thats
+because we don't delete the job, we only modify its state.
+
+#+begin_src
+POST /jobs/[jobid]
+
+params = { 'cancel': True }
+
+returns {'ok': True, 'job': {'jobid': N, 'state': 'canceled' } }
+returns {'ok': True, 'job': {'jobid': N, 'state': 'completed' } }
+#+end_src
+
+it can return canceled status or completed status if the job is already done. Or
+~ok==False~ if there something wrong.
