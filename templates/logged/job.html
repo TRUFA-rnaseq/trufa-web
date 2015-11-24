@@ -23,7 +23,7 @@ $def with( jobinfo )
           <i class="icon-edit" id="jobnameicon"></i>
         </h2>
         <input type="hidden" name="oldname" value="$jobinfo['name']">
-        <input type="hidden" name="jobid" value="$jobinfo['jobid']">
+        <input type="hidden" name="jobid" value="$jobinfo['jid']">
       </form>
 
       <div><strong>Job Created:</strong> $jobinfo['created']</div>
@@ -70,5 +70,5 @@ $def with( jobinfo )
 <script src="/web/static/js/main.js"></script>
 <script src="/web/static/js/job.js"></script>
 <script>
-  setJobid( $jobinfo['jobid']  )
+  setJobid( $jobinfo['jid']  )
 </script>
