@@ -82,13 +82,16 @@ function endJobSending( ret ){
 function fillupBlatMenu0(){
     getFileListWithType( 3, function( files ){
         var items1 = [];
+	items1.push("<li role=\"presentation\"><input type='checkbox' class='cleaning_steps' name='blatn_custom_reads_n1' value='univec' href='#' disabled> univec </li>")
+	items1.push("<li role=\"presentation\"><input type='checkbox' class='cleaning_steps' name='blatn_custom_reads_n2' value='ecoli' href='#' disabled> ecoli </li>")
+	items1.push("<li role=\"presentation\"><input type='checkbox' class='cleaning_steps' name='blatn_custom_reads_n2' value='scere' href='#' disabled> scere </li>")
 
-        var count = 0
+        var count = 4
         $.each(files, function( key, val ) {
 
             // this currently defines an array but dont get all values in (just one)
             //            items1.push( "<li role=\"presentation\"><input type='checkbox' name='my_blat_custom[]' value=" + val['file'] + " href=\"#\"> " + val['file'] + "</li>" )
-            items1.push( "<li role=\"presentation\"><input type='checkbox' class='cleaning_steps' name='blat_custom_reads_n" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
+            items1.push( "<li role=\"presentation\"><input type='checkbox' class='cleaning_steps' name='blatn_custom_reads_n" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
             count = count + 1
         });
 
@@ -100,11 +103,12 @@ function fillupBlatMenu0(){
 function fillupBlatMenu1(){
     getFileListWithType( 3, function( files ){
         var items1 = [];
+	
 
         var count = 0
         $.each(files, function( key, val ) {
 
-            items1.push( "<li role=\"presentation\"><input type='checkbox' class='identification_steps' name='blat_custom_ass_n" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
+            items1.push( "<li role=\"presentation\"><input type='checkbox' class='identification_steps' name='blatn_custom_ass_n" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
 
             count = count + 1
         });
@@ -117,8 +121,10 @@ function fillupBlatMenu1(){
 function fillupBlatMenu2(){
     getFileListWithType( 4, function( files ){
         var items1 = [];
+	items1.push("<li role=\"presentation\"><input type='checkbox' class='identification_steps' name='blatx_custom_ass_n1' value='uniref' href='#' disabled> uniref </li>")
+	items1.push("<li role=\"presentation\"><input type='checkbox' class='identification_steps' name='blatx_custom_ass_n2' value='nr' href='#' disabled> nr </li>")
 
-    var count = 0
+    var count = 3
         $.each(files, function( key, val ) {
 
             items1.push( "<li role=\"presentation\"><input type='checkbox' class='identification_steps' name='blat_custom_ass_aa" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
@@ -134,8 +140,9 @@ function fillupBlatMenu2(){
 function fillupHmmerMenu0(){
     getFileListWithType( 7, function( files ){
         var items1 = [];
+	items1.push("<li role=\"presentation\"><input type='checkbox' class='identification_steps' name='hmmer_custom_n1' value='PfamA' href='#' disabled> PfamA </li>")
 
-    var count = 0
+    var count = 2
         $.each(files, function( key, val ) {
 
             items1.push( "<li role=\"presentation\"><input type='checkbox' class='identification_steps' name='hmm_custom" + count + "' value=" + val['file'] + " href=\"#\" disabled> " + val['file'] + "</li>" )
