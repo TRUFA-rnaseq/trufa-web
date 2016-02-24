@@ -90,14 +90,14 @@ def callGetJobStatus(joblist):
 
 
 # ------------------------------------------------------------------------------
-def callRunJob(user, params):
+def callRunJob(user, jobparams):
     conn = httplib.HTTPConnection(authority)
 
     # encode the request params
     params = {
         'user': user,
         'program': 'trufa',
-        'params': params,
+        'params': jobparams,
         }
 
     payload, headers = encodeRESTParams(params)
@@ -158,9 +158,36 @@ def callCancelJob(jobid):
 
 
 # ------------------------------------------------------------------------------
+def jobStagein(jobparams):
+    if "file" in jobparams:
+        fileid1 = int(jobparams["file"])
+        localfile1 = database.getFileFullName( fileid1 )
+        remotefile1 = os.path.join( remotehome, localfile1 )
+        database.addJobFile( jobid, fileid1, database.FILEIN )
+        jobparams['file_read1'] = remotefile1
+
+    if "file2" in jobparams:
+        fileid2 = int(jobparams["file2"])
+        localfile2 = database.getFileFullName( fileid2 )
+        remotefile2 = os.path.join( remotehome, localfile2 )
+        database.addJobFile( jobid, fileid2, database.FILEIN )
+        jobparams['file_read2'] = remotefile2
+
+    if "file3" in jobparams:
+        fileid3 = int(jobparams["file3"])
+        localfile3 = database.getFileFullName( fileid3 )
+        remotefile3 = os.path.join( remotehome, localfile3 )
+        database.addJobFile( jobid, fileid3, database.FILEIN )
+        jobparams['file_ass'] = remotefile3
+
+    return jobparams
+
+
+# ------------------------------------------------------------------------------
 def startJob(user, var1):
     logging.info("RUNNIN JOB of '%s'", user)
-    jobid = callRunJob(user, var1)
+    jobparams = jobStagein( var1 )
+    jobid = callRunJob(user, jobparams)
     if jobid is not None:
         if db.insertNewJob(user, jobid):
             return True
