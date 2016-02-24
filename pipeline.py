@@ -161,28 +161,37 @@ def callCancelJob(jobid):
 def jobStagein(jobparams):
     if "file" in jobparams:
         fileid1 = int(jobparams["file"])
-        localfile1 = database.getFileFullName( fileid1 )
+        localfile1 = db.getFileFullName( fileid1 )
         remotefile1 = os.path.join( remotehome, localfile1 )
-        database.addJobFile( jobid, fileid1, database.FILEIN )
         jobparams['file_read1'] = remotefile1
 
     if "file2" in jobparams:
         fileid2 = int(jobparams["file2"])
-        localfile2 = database.getFileFullName( fileid2 )
+        localfile2 = db.getFileFullName( fileid2 )
         remotefile2 = os.path.join( remotehome, localfile2 )
-        database.addJobFile( jobid, fileid2, database.FILEIN )
         jobparams['file_read2'] = remotefile2
 
     if "file3" in jobparams:
         fileid3 = int(jobparams["file3"])
-        localfile3 = database.getFileFullName( fileid3 )
+        localfile3 = db.getFileFullName( fileid3 )
         remotefile3 = os.path.join( remotehome, localfile3 )
-        database.addJobFile( jobid, fileid3, database.FILEIN )
         jobparams['file_ass'] = remotefile3
 
     return jobparams
 
-
+def saveJobFile(jobid, jobparams):
+    if "file" in jobparams:
+        fileid1 = int(jobparams["file"])
+        db.addJobFile( jobid, fileid1, db.FILEIN )
+        
+    if "file2" in jobparams:
+        fileid2 = int(jobparams["file2"])
+        db.addJobFile( jobid, fileid2, db.FILEIN )
+        
+    if "file3" in jobparams:
+        fileid3 = int(jobparams["file3"])
+        db.addJobFile( jobid, fileid3, db.FILEIN )
+        
 # ------------------------------------------------------------------------------
 def startJob(user, var1):
     logging.info("RUNNIN JOB of '%s'", user)
@@ -190,6 +199,7 @@ def startJob(user, var1):
     jobid = callRunJob(user, jobparams)
     if jobid is not None:
         if db.insertNewJob(user, jobid):
+            saveJobFile(jobid, jobparams)
             return True
 
     raise RuntimeError("Can't start new job for user " + user)
