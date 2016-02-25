@@ -107,18 +107,6 @@
 	</label>
 
 	<h4>BLAT against potential contaminants:</h4>
-	<label class="checkbox">
-	  <input class="cleaning_steps" type="checkbox" id="univec_reads" name="BLAT_UNIVEC" disabled>
-	  Univec hits
-	</label>
-	<label class="checkbox">
-	  <input class="cleaning_steps" type="checkbox" id="Ecoli_reads" name="BLAT_ECOLI" disabled>
-	  E. coli hits
-	</label>
-	<label class="checkbox">
-	  <input class="cleaning_steps" type="checkbox" id="Scere_reads" name="BLAT_SCERE" disabled>
-	  S. cerevisiae hits
-	</label>
 	<ul class="nav nav-pills" id="custom_blat_reads_db">
 	  <li class="dropdown">
             <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">Nucleotide db<b class="caret"></b></a>
@@ -660,20 +648,6 @@
 	  <p> You have to produce an assembly or upload a fasta file with the assembly to perform the following steps </p>
 	</div>
 	<h4> Blat searches:</h4>
-	<label class="checkbox hidden">
-	  <input type="checkbox" id="blat_cegma" name="BLAT_CEGMA" class="identification_steps" disabled>
-	  Cegma
-	</label>
-	<label class="checkbox">
-	  <input type="checkbox" id="blat_uniref" name="BLAT_UNIREF" class="identification_steps" disabled>
-	  Uniref
-	</label>
-	<label class="checkbox">
-	  <input type="checkbox" id="blat_nr" name="BLAT_NR" class="identification_steps" disabled>
-	  nr
-	</label>
-
-	Add custom nucleotides or protein sequences databases for the blat search (uploaded in fasta format):
 	<div class="bs-docs-example">
 	  <ul class="nav nav-pills">
             <li class="dropdown">
@@ -695,22 +669,6 @@
 	</div> <!-- end contig blatx dropdown -->
 
 	<h4>HMMER searches:</h4>
-
-	<!-- <label class="checkbox"> -->
-	<!--   <input type="checkbox" id="hmmer_cegma" name="HMMER_CEGMA" class="identification_steps" disabled> -->
-	<!--   Cegma -->
-	<!-- </label> -->
-
-	<label class="checkbox">
-	  <input type="checkbox" id="hmmer_PfamA" name="HMMER_PFAMA" class="identification_steps" disabled>
-	  PfamA
-	</label>
-	<label class="checkbox hidden">
-	  <input type="checkbox" id="hmmer_PfamB" name="HMMER_PFAMB" class="identification_steps" disabled>
-	  PfamB
-	</label>
-
-	Add custom profiles for the hmmer search:
 	<div class="bs-docs-example">
 	  <ul class="nav nav-pills">
             <li class="dropdown">
