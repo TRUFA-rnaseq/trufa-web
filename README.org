@@ -33,7 +33,9 @@ Joint work done by:
   server, and it should be installed in the same host. You can use differents
   users module, depend of the desired authentification scheme. The default
   module for user authentification is /trufa-users-sqlite/ that saves user data
-  in a sqlite database.
+  in a sqlite database. You have the /trufa-users-sqlite/ module already
+  available in this repository inside of the /users/ folder. You can use it
+  pointing ~USERS_LIB~ to the parent folder of /users/ folder.
 
   Edit the file /config.py/ and set the variables ~SERVER_CRT~ and ~SERVER_KEY~
   to point to valid SSL certificate and key. You can create a self-signed SSL
